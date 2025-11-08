@@ -98,6 +98,16 @@
             box-shadow: 0 4px 12px rgba(16, 185, 129, 0.4);
         }
 
+        .tierlist-btn {
+            background: linear-gradient(to right, #f59e0b, #d97706);
+            color: white;
+        }
+
+        .tierlist-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 4px 12px rgba(245, 158, 11, 0.4);
+        }
+
         .cards-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
@@ -307,21 +317,101 @@
             align-items: center;
             justify-content: center;
             transition: background-color 0.2s;
+            z-index: 10;
         }
 
         .close-btn:hover {
             background-color: rgba(255, 255, 255, 0.2);
         }
 
-        .modal-video {
+        .modal-body {
+            display: flex;
+            flex-direction: column;
             height: calc(100% - 60px);
+        }
+
+        .modal-video {
+            flex-grow: 1;
             background-color: black;
+            position: relative;
         }
 
         .modal-video iframe {
             width: 100%;
             height: 100%;
             border: none;
+        }
+
+        .tier-selection-panel {
+            padding: 15px;
+            background-color: rgba(0, 0, 0, 0.3);
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .tier-selection-title {
+            font-size: 0.9rem;
+            font-weight: bold;
+            margin-bottom: 10px;
+            text-align: center;
+            color: #d1d5db;
+        }
+
+        .tier-options {
+            display: flex;
+            justify-content: center;
+            gap: 8px;
+            margin-bottom: 10px;
+        }
+
+        .tier-option {
+            width: 40px;
+            height: 40px;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 1rem;
+            color: white;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .tier-option:hover {
+            transform: scale(1.05);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+        }
+
+        .tier-option.selected {
+            transform: scale(1.05);
+            box-shadow: 0 0 0 3px white;
+        }
+
+        .tier-option.disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .tier-option.disabled:hover {
+            transform: none;
+            box-shadow: none;
+        }
+
+        .tier-s { background-color: #ff7f7f; }
+        .tier-a { background-color: #ffbf7f; }
+        .tier-b { background-color: #ffff7f; }
+        .tier-c { background-color: #7fff7f; }
+        .tier-d { background-color: #7fffff; }
+        .tier-f { background-color: #7f7fff; }
+
+        .tier-selection-status {
+            text-align: center;
+            font-size: 0.8rem;
+            color: #9ca3af;
+        }
+
+        .tier-selection-status.success {
+            color: #10b981;
         }
 
         /* Modal para añadir influencer */
@@ -590,6 +680,247 @@
         .card.revealed .music-icon {
             animation: none;
         }
+
+        /* Modal para ver tierlist */
+        .tierlist-modal-content {
+            width: 95%;
+            max-width: 1200px;
+            height: 80vh;
+            background-color: #1f2937;
+            border-radius: 16px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .tierlist-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            position: sticky;
+            top: 0;
+            background-color: #1f2937;
+            z-index: 10;
+        }
+
+        .tierlist-title {
+            font-size: 1.8rem;
+            font-weight: bold;
+            background: linear-gradient(to right, #f59e0b, #d97706);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .tierlist-container {
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            overflow-y: auto;
+            padding-right: 10px;
+        }
+
+        .tierlist-container::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .tierlist-container::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 4px;
+        }
+
+        .tierlist-container::-webkit-scrollbar-thumb {
+            background: linear-gradient(to right, #f59e0b, #d97706);
+            border-radius: 4px;
+        }
+
+        .tierlist-container::-webkit-scrollbar-thumb:hover {
+            background: linear-gradient(to right, #d97706, #b45309);
+        }
+
+        .tier-row {
+            display: flex;
+            min-height: 100px;
+            margin-bottom: 8px;
+            border-radius: 8px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .tier-row.drag-over {
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+
+        .tier-label {
+            width: 80px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 1.2rem;
+            color: white;
+            flex-shrink: 0;
+        }
+
+        .tier-s { background-color: #ff7f7f; }
+        .tier-a { background-color: #ffbf7f; }
+        .tier-b { background-color: #ffff7f; }
+        .tier-c { background-color: #7fff7f; }
+        .tier-d { background-color: #7fffff; }
+        .tier-f { background-color: #7f7fff; }
+
+        .tier-items {
+            flex-grow: 1;
+            background-color: rgba(255, 255, 255, 0.1);
+            display: flex;
+            flex-wrap: wrap;
+            align-content: flex-start;
+            padding: 10px;
+            gap: 10px;
+            overflow: auto;
+            max-height: 120px;
+            min-height: 80px;
+        }
+
+        .tier-items::-webkit-scrollbar {
+            height: 6px;
+        }
+
+        .tier-items::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 3px;
+        }
+
+        .tier-items::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 3px;
+        }
+
+        .tier-item {
+            background-color: #374151;
+            border-radius: 8px;
+            padding: 8px 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            max-width: 200px;
+            transition: transform 0.2s, box-shadow 0.2s;
+            cursor: move;
+            position: relative;
+        }
+
+        .tier-item:hover {
+            transform: scale(1.05);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+        }
+
+        .tier-item.dragging {
+            opacity: 0.5;
+            transform: rotate(5deg);
+        }
+
+        .tier-item-thumbnail {
+            width: 40px;
+            height: 40px;
+            border-radius: 4px;
+            object-fit: cover;
+        }
+
+        .tier-item-name {
+            font-size: 0.9rem;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .tier-item-remove {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            width: 20px;
+            height: 20px;
+            background-color: #ef4444;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 12px;
+            color: white;
+            opacity: 0;
+            transition: opacity 0.2s;
+        }
+
+        .tier-item:hover .tier-item-remove {
+            opacity: 1;
+        }
+
+        .tier-stats {
+            display: flex;
+            justify-content: space-around;
+            margin-bottom: 20px;
+            padding: 15px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 8px;
+        }
+
+        .tier-stat {
+            text-align: center;
+        }
+
+        .tier-stat-number {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #f59e0b;
+        }
+
+        .tier-stat-label {
+            font-size: 0.9rem;
+            color: #d1d5db;
+        }
+
+        .empty-tierlist {
+            text-align: center;
+            padding: 40px;
+            color: #9ca3af;
+        }
+
+        .empty-tierlist-icon {
+            font-size: 3rem;
+            margin-bottom: 15px;
+        }
+
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 15px 20px;
+            background: linear-gradient(to right, #10b981, #059669);
+            color: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.4);
+            transform: translateX(400px);
+            transition: transform 0.3s ease-in-out;
+            z-index: 2000;
+        }
+
+        .notification.show {
+            transform: translateX(0);
+        }
+
+        .reorder-hint {
+            text-align: center;
+            color: #9ca3af;
+            font-size: 0.9rem;
+            margin-top: 10px;
+            font-style: italic;
+        }
     </style>
 </head>
 <body>
@@ -615,6 +946,15 @@
                     <line x1="5" y1="12" x2="19" y2="12"></line>
                 </svg>
                 Añadir Influencer
+            </button>
+            <button class="btn tierlist-btn" id="tierlistBtn">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <rect x="3" y="3" width="7" height="7"></rect>
+                    <rect x="14" y="3" width="7" height="7"></rect>
+                    <rect x="14" y="14" width="7" height="7"></rect>
+                    <rect x="3" y="14" width="7" height="7"></rect>
+                </svg>
+                Ver Tierlist
             </button>
         </div>
 
@@ -662,7 +1002,7 @@
                     </a>
                 </div>
             </div>
-        </footer>
+        </div>
     </div>
 
     <!-- Modal para ver el video -->
@@ -672,8 +1012,22 @@
                 <h3 class="modal-title" id="modalTitle"></h3>
                 <button class="close-btn" id="closeModal">×</button>
             </div>
-            <div class="modal-video">
-                <iframe id="modalVideo" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen=""></iframe>
+            <div class="modal-body">
+                <div class="modal-video">
+                    <iframe id="modalVideo" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen=""></iframe>
+                </div>
+                <div class="tier-selection-panel">
+                    <div class="tier-selection-title">Selecciona un tier:</div>
+                    <div class="tier-options">
+                        <div class="tier-option tier-s" data-tier="s">S</div>
+                        <div class="tier-option tier-a" data-tier="a">A</div>
+                        <div class="tier-option tier-b" data-tier="b">B</div>
+                        <div class="tier-option tier-c" data-tier="c">C</div>
+                        <div class="tier-option tier-d" data-tier="d">D</div>
+                        <div class="tier-option tier-f" data-tier="f">F</div>
+                    </div>
+                    <div class="tier-selection-status" id="tierSelectionStatus">Haz clic en un tier para clasificar esta canción</div>
+                </div>
             </div>
         </div>
     </div>
@@ -710,106 +1064,164 @@
         </div>
     </div>
 
+    <!-- Modal para ver tierlist -->
+    <div class="modal" id="tierlistModal">
+        <div class="tierlist-modal-content">
+            <div class="tierlist-header">
+                <h2 class="tierlist-title">MI TIERLIST</h2>
+                <button class="close-btn" id="closeTierlistModal">×</button>
+            </div>
+            
+            <div class="tier-stats">
+                <div class="tier-stat">
+                    <div class="tier-stat-number" id="totalRevealed">0</div>
+                    <div class="tier-stat-label">Canciones Reveladas</div>
+                </div>
+                <div class="tier-stat">
+                    <div class="tier-stat-number" id="totalSongs">0</div>
+                    <div class="tier-stat-label">Total Canciones</div>
+                </div>
+            </div>
+            
+            <div class="reorder-hint">💡 Arrastra y suelta los elementos para reordenar tu tierlist</div>
+            
+            <div class="tierlist-container">
+                <div class="tier-row" data-tier="s">
+                    <div class="tier-label tier-s">S</div>
+                    <div class="tier-items" id="tier-s"></div>
+                </div>
+                
+                <div class="tier-row" data-tier="a">
+                    <div class="tier-label tier-a">A</div>
+                    <div class="tier-items" id="tier-a"></div>
+                </div>
+                
+                <div class="tier-row" data-tier="b">
+                    <div class="tier-label tier-b">B</div>
+                    <div class="tier-items" id="tier-b"></div>
+                </div>
+                
+                <div class="tier-row" data-tier="c">
+                    <div class="tier-label tier-c">C</div>
+                    <div class="tier-items" id="tier-c"></div>
+                </div>
+                
+                <div class="tier-row" data-tier="d">
+                    <div class="tier-label tier-d">D</div>
+                    <div class="tier-items" id="tier-d"></div>
+                </div>
+                
+                <div class="tier-row" data-tier="f">
+                    <div class="tier-label tier-f">F</div>
+                    <div class="tier-items" id="tier-f"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Notificación -->
+    <div class="notification" id="notification"></div>
+
     <script>
-        // Datos de los influencers principales
+        // Datos de los influencers principales - LISTA COMPLETA
         const mainInfluencersData = [
-            { id: '1', name: 'OllieGamerZ', youtubeUrl: 'https://www.youtube.com/watch?v=62pWsLpR8so', videoId: '62pWsLpR8so' },
-            { id: '2', name: 'DalasReview', youtubeUrl: 'https://youtu.be/oMGHCWXNBOU?si=LuSrD52-_GmyEG1q', videoId: 'oMGHCWXNBOU' },
-            { id: '3', name: 'ElRubiusOMG', youtubeUrl: 'https://www.youtube.com/watch?v=VZzSBv6tXMw', videoId: 'VZzSBv6tXMw' },
-            { id: '4', name: 'ElRubius', youtubeUrl: 'https://youtu.be/OkFOETs00QA?si=oX9m0GMS6CI3KfaA', videoId: 'OkFOETs00QA' },
-            { id: '5', name: 'Ibai', youtubeUrl: 'https://www.youtube.com/watch?v=n66zQBqwI9A', videoId: 'n66zQBqwI9A' },
-            { id: '6', name: 'Robleis', youtubeUrl: 'https://youtu.be/GpFoGiscj7k?si=y_jc2UR1T4uAhzOT', videoId: 'GpFoGiscj7k' },
-            { id: '7', name: 'Agustin51', youtubeUrl: 'https://youtu.be/YNwg-tWMyyY?si=UtRJSu8xqDksTig_', videoId: 'YNwg-tWMyyY' },
-            { id: '8', name: 'RickyEdit', youtubeUrl: 'https://youtu.be/Y0VM6DtwM8g?si=k-QlE6h54mNYBrpP', videoId: 'Y0VM6DtwM8g' },
-            { id: '9', name: 'illojuan', youtubeUrl: 'https://youtu.be/65o77VtTcEk?si=Wj9TiQkPIk9lyyGF', videoId: '65o77VtTcEk' },
-            { id: '10', name: 'YoSoyPlex', youtubeUrl: 'https://youtu.be/7lQfj-_8Zg0?si=T3VR9-vxskBU9W4f', videoId: '7lQfj-_8Zg0' },
-            { id: '11', name: 'Xokas', youtubeUrl: 'https://youtu.be/0j3R4_PED1Q?si=l-r6wd7ZqXFCQMa3', videoId: '0j3R4_PED1Q' },
-            { id: '12', name: 'Karina', youtubeUrl: 'https://youtu.be/kKKgU8xf3qI?si=LsiA3A_7pA5TcyA5', videoId: 'kKKgU8xf3qI' },
-            { id: '13', name: 'Mikecrack', youtubeUrl: 'https://youtu.be/TaQj43Lf3tw?si=hKMDcCz0IByWk6en', videoId: 'TaQj43Lf3tw' },
-            { id: '14', name: 'Fede', youtubeUrl: 'https://youtu.be/CHeEEyi8Y-g?si=Qko7o2ii8PDm_QiP', videoId: 'CHeEEyi8Y-g' },
-            { id: '15', name: 'Salva (DualCoC)', youtubeUrl: 'https://youtu.be/XJaLFrYe6mk?si=_lCu3wxi7h2ZNNRl', videoId: 'XJaLFrYe6mk' },
-            { id: '16', name: 'Nil Ojeda', youtubeUrl: 'https://youtu.be/9DhPBgrSIaA?si=hZ5amS1ePWWjRAWp', videoId: '9DhPBgrSIaA' },
-            { id: '17', name: 'Goorgo', youtubeUrl: 'https://youtu.be/-zeayRzldyI?si=KRUk_-L5UDA6e02L', videoId: '-zeayRzldyI' },
-            { id: '18', name: 'Willyrex', youtubeUrl: 'https://youtu.be/CW9uky3MZXM?si=0h8nlM-VDBJ1VwU6', videoId: 'CW9uky3MZXM' },
-            { id: '19', name: 'WhiteZunder', youtubeUrl: 'https://youtu.be/rN7mwzCICn0?si=ob-Gm5K1DaEeEXWT', videoId: 'rN7mwzCICn0' },
-            { id: '20', name: 'MissaSinfonia', youtubeUrl: 'https://youtu.be/iuQoT2hUVjk?si=LGj6HQ5_aFpjPFc3', videoId: 'iuQoT2hUVjk' },
-            { id: '21', name: 'YelloMmellow', youtubeUrl: 'https://youtu.be/Bnip21mbOD0?si=wdIeziNpbaafhPR_', videoId: 'Bnip21mbOD0' },
-            { id: '22', name: 'Spreen', youtubeUrl: 'https://youtu.be/5rjCRPG3mkw?si=Ndpw-VX17K-KScZ1', videoId: '5rjCRPG3mkw' },
-            { id: '23', name: 'Carreraa', youtubeUrl: 'https://youtu.be/oE2rfyhIsuk?si=F067GpyMxTXkTSNw', videoId: 'oE2rfyhIsuk' },
-            { id: '24', name: 'JuanGuarnizo', youtubeUrl: 'https://youtu.be/VoN4x3R0TCQ?si=OrIQXpTTTNYoqQbu', videoId: 'VoN4x3R0TCQ' },
-            { id: '25', name: 'AriGameplays', youtubeUrl: 'https://youtu.be/aHYvmY3nV5U?si=5uOMvcyJPG3KiMaC', videoId: 'aHYvmY3nV5U' },
-            { id: '26', name: 'Fernanfloo', youtubeUrl: 'https://youtu.be/BW3fTla26MM?si=Y8GplmdCn9gurxJk', videoId: 'BW3fTla26MM' },
-            { id: '27', name: 'German Garmendia', youtubeUrl: 'https://youtu.be/9EmXVhPsJQQ?si=lup3rdjHQENE5dF2', videoId: '9EmXVhPsJQQ' },
-            { id: '28', name: 'rojuu', youtubeUrl: 'https://youtu.be/wxKBvF2pS_A?si=avaObdkacZ-OAnzH', videoId: 'wxKBvF2pS_A' },
-            { id: '29', name: 'Orslok', youtubeUrl: 'https://youtu.be/xMAmnQgV6ss?si=oeXwqY5Tmsh91oq4', videoId: 'xMAmnQgV6ss' },
-            { id: '30', name: 'Oscu', youtubeUrl: 'https://youtu.be/TXu9N_zhSZE?si=m7StAyOjApZ_dZWR', videoId: 'TXu9N_zhSZE' },
-            { id: '31', name: 'Angie Velasco', youtubeUrl: 'https://youtu.be/1C1awEClK84?si=yCXeBmoS4xPcsbYk', videoId: '1C1awEClK84' },
-            { id: '32', name: 'Alondrissa', youtubeUrl: 'https://youtu.be/yU1_NmePLFg?si=GNIZBYj8HzxpImvI', videoId: 'yU1_NmePLFg' },
-            { id: '33', name: 'Coscu', youtubeUrl: 'https://youtu.be/87y1ZCFFYqc?si=cLCot9mK3ocPXVmv', videoId: '87y1ZCFFYqc' },
-            { id: '34', name: 'RobertoCein', youtubeUrl: 'https://youtu.be/LSXw8cketoc?si=yJE8Ie3UettzDjjZ', videoId: 'LSXw8cketoc' },
-            { id: '35', name: 'Rodezel', youtubeUrl: 'https://youtu.be/ZXpk7tv47kc?si=PM_58WfB2_HtdcnU', videoId: 'ZXpk7tv47kc' },
-            { id: '36', name: 'Nuvia', youtubeUrl: 'https://youtu.be/S2eQjr_MXIE?si=QVD8_kx8oZJxcbzw', videoId: 'S2eQjr_MXIE' },
-            { id: '37', name: 'ElMariana', youtubeUrl: 'https://youtu.be/vcdxMNgHTrc?si=aTppOKFNuN2zCbRe', videoId: 'vcdxMNgHTrc' },
-            { id: '38', name: 'Komanche', youtubeUrl: 'https://youtu.be/gSTwJTgYm3I?si=i_b-F8xxuj-pFnWC', videoId: 'gSTwJTgYm3I' },
-            { id: '39', name: 'Lyna Vallejos', youtubeUrl: 'https://youtu.be/zFJAX23KIh8?si=mK2BUoC3r39n1tmy', videoId: 'zFJAX23KIh8' },
-            { id: '40', name: 'Wismichu', youtubeUrl: 'https://youtu.be/M_B5fs76l3g?t=592', videoId: 'M_B5fs76l3g' },
-            { id: '41', name: 'Yao Cabrera', youtubeUrl: 'https://youtu.be/t4sAPvqKlgw?si=B5RAil8nl2Rwri9G', videoId: 't4sAPvqKlgw' },
-            { id: '42', name: 'Jordi Wild', youtubeUrl: 'https://youtu.be/IHD4zT8a4Lg?si=pqXBJiSNl3gYqOnZ', videoId: 'IHD4zT8a4Lg' },
-            { id: '43', name: 'Momo', youtubeUrl: 'https://youtu.be/5EouEAo9wy0?si=U_AuI-TGIdDT0yqB', videoId: '5EouEAo9wy0' },
-            { id: '44', name: 'Jägger', youtubeUrl: 'https://youtu.be/kvhUNv59XdY?si=5TOZ9bFQSF7Sr8rX', videoId: 'kvhUNv59XdY' },
-            { id: '45', name: 'Maximus', youtubeUrl: 'https://youtu.be/1LnTBgw-aGU?si=r9QeEt4ol_mjx27_', videoId: '1LnTBgw-aGU' },
-            { id: '46', name: 'Zorman', youtubeUrl: 'https://youtu.be/h6k5qbt72Os?si=Ajt_Qi0eREYWAXse', videoId: 'h6k5qbt72Os' },
-            { id: '47', name: 'Jaime Altozano', youtubeUrl: 'https://youtu.be/ziJuNQcJn24?si=iR34OM4NZZWAw2-C', videoId: 'ziJuNQcJn24' },
-            { id: '48', name: 'Corxea (Spaceronin7)', youtubeUrl: 'https://youtu.be/DMXdutHKJls?si=n-XHphP-3TuGBLPK', videoId: 'DMXdutHKJls' },
-            { id: '49', name: 'Jpelirrojo', youtubeUrl: 'https://youtu.be/UJGQaUu-uzA?si=8Twqa8vLKnC6GtRL', videoId: 'UJGQaUu-uzA' },
-            { id: '50', name: 'Wescol', youtubeUrl: 'https://youtu.be/EY47yXiQ1yM?t=172', videoId: 'EY47yXiQ1yM' },
-            { id: '51', name: 'Wescol2', youtubeUrl: 'https://youtu.be/o2eqeodAHj8?si=w70M-xaDCQTsiWZj', videoId: 'o2eqeodAHj8' },
-            { id: '52', name: 'DaniRep 2017', youtubeUrl: 'https://youtu.be/Wq6qp5ZsduY?si=nRyC-_HG88Zc2BZG', videoId: 'Wq6qp5ZsduY' },
-            { id: '53', name: 'DaniRep Actual', youtubeUrl: 'https://youtu.be/ZgkkEcx03Xw?si=KysF_254s-3L42aB', videoId: 'ZgkkEcx03Xw' },
-            { id: '54', name: 'MAAU,️‍PUVLO,LATE,URIEL- ONE COIN', youtubeUrl: 'https://youtu.be/vPN4WNZxxxE?si=LEF5lXNaUAJUJ-CX', videoId: 'vPN4WNZxxxE' },
-            { id: '55', name: 'LATE', youtubeUrl: 'https://youtu.be/zKO2FJEEVsw?si=vGiMHXz0ZUyoDZD8', videoId: 'zKO2FJEEVsw' },
-            { id: '56', name: 'Cry', youtubeUrl: 'https://youtu.be/rsfosxNojKc?si=AgwS8OncESvkmSAS', videoId: 'rsfosxNojKc' },
-            { id: '57', name: 'Capitán Gato', youtubeUrl: 'https://youtu.be/XG3_pbsUcCA?si=LjKx3Wg6RuuOA3h5', videoId: 'XG3_pbsUcCA' },
-            { id: '58', name: 'StarVTuber', youtubeUrl: 'https://youtu.be/ZyDUc1h582U?si=xFNdopPqw3l9HrqI', videoId: 'ZyDUc1h582U' },
-            { id: '59', name: 'Naim Darrechi', youtubeUrl: 'https://youtu.be/zFch_ru4eaI?si=iT8RliEeiaowSlkX', videoId: 'zFch_ru4eaI' },
-            { id: '60', name: 'Quackity', youtubeUrl: 'https://youtu.be/shniqa1sH_o?si=M4AbxTSYJnk7yN2m', videoId: 'shniqa1sH_o' },
-            { id: '61', name: 'Alana (participación corta)', youtubeUrl: 'https://youtu.be/UGTCE1W81jg?si=Q5wuEi1WYPhxwCz6', videoId: 'UGTCE1W81jg' },
-            { id: '62', name: 'Alana', youtubeUrl: 'https://youtu.be/Ue8dX791o18?si=HmXcxYqADFCYcxxm', videoId: 'Ue8dX791o18' },
-            { id: '63', name: 'Yuya', youtubeUrl: 'https://youtu.be/SNa5Z8W-70I?si=P1rZtF_cSw8Vq-xL', videoId: 'SNa5Z8W-70I' },
-            { id: '64', name: 'Masi', youtubeUrl: 'https://youtu.be/GoMGw4BkhfM?si=O3AhXZrpktcvTYv5', videoId: 'GoMGw4BkhfM' },
-            { id: '65', name: 'Guanyar,Misho Amoli,Nil Ojeda', youtubeUrl: 'https://youtu.be/5BYBDd_udCk?si=7aft3sem3RLMnuy0', videoId: '5BYBDd_udCk' },
-            { id: '66', name: 'Cristinini', youtubeUrl: 'https://youtu.be/RP4gxh-yqLs?si=fLNzyotoujEFxHCY', videoId: 'RP4gxh-yqLs' },
-            { id: '67', name: 'clersssss', youtubeUrl: 'https://youtu.be/cUydAxe0CYM?si=MEf_6LZELWQ-YUC_', videoId: 'cUydAxe0CYM' },
-            { id: '68', name: 'caprimint', youtubeUrl: 'https://youtu.be/2BZ3g0CaMQQ?si=4Wjag-tOXaxotUoA', videoId: '2BZ3g0CaMQQ' },
-            { id: '69', name: 'Bb trickz', youtubeUrl: 'https://youtu.be/C8WmCFg65C0?si=4zs8KrELlgsgzSr3', videoId: 'C8WmCFg65C0' },
-            { id: '70', name: 'Ruth \'La Peke\'', youtubeUrl: 'https://youtu.be/1dtugsaskAQ?si=m6p-XI6r6oWgQGQc', videoId: '1dtugsaskAQ' },
-            { id: '71', name: 'Yeri Mua', youtubeUrl: 'https://youtu.be/eJS0WziQHGw?si=fPaqhoxlsRISDeQr', videoId: 'eJS0WziQHGw' },
-            { id: '72', name: 'Arta', youtubeUrl: 'https://youtu.be/SZh1lPZX9XY?si=SRIqwOe1Aw3QegKL', videoId: 'SZh1lPZX9XY' },
-            { id: '73', name: 'vMario', youtubeUrl: 'https://youtu.be/qv9jUOXLK30?si=nOwybGC2jliOl_Hb', videoId: 'qv9jUOXLK30' },
-            { id: '74', name: 'Yolo', youtubeUrl: 'https://youtu.be/zXKmHe71Wa4?si=eV-uu6_iuxZ-Dtt0', videoId: 'zXKmHe71Wa4' },
-            { id: '75', name: 'Ricky Limon', youtubeUrl: 'https://youtu.be/xuNObVb4LpM?si=kIs07PztOu99z-du', videoId: 'xuNObVb4LpM' },
-            { id: '76', name: 'Susy Mouriz', youtubeUrl: 'https://youtu.be/K-zVyV0yuZU?si=v5ACXZV1oap98jow', videoId: 'K-zVyV0yuZU' },
-            { id: '77', name: 'ChuyMine', youtubeUrl: 'https://youtu.be/bpCEZ49hQMU?si=-3dxMVktwaev3aFC', videoId: 'bpCEZ49hQMU' },
-            { id: '78', name: 'xTurbo', youtubeUrl: 'https://youtu.be/cedhJXxVayE?si=8GNMg8DL0KBDPUlJ', videoId: 'cedhJXxVayE' },
-            { id: '79', name: 'Awita', youtubeUrl: 'https://youtu.be/GEgHoQtCWto?si=zlIG97iXBewHWv1O', videoId: 'GEgHoQtCWto' },
-            { id: '80', name: 'Jardred', youtubeUrl: 'https://youtu.be/JBJYfWHSMY4?si=rXSVwT3RdAu4ioJg', videoId: 'JBJYfWHSMY4' },
-            { id: '81', name: 'Elo YT', youtubeUrl: 'https://youtu.be/V5mMG7EdHGg?si=bEwYwQs6CbHRqDbZ', videoId: 'V5mMG7EdHGg' },
-            { id: '82', name: 'Arsel', youtubeUrl: 'https://youtu.be/EVDvU4ejh3M?si=KBZgxCldNXgXItTA', videoId: 'EVDvU4ejh3M' },
-            { id: '83', name: 'iTownGamePlay', youtubeUrl: 'https://youtu.be/-0xzODfv9aw?si=7K3gRO3I9Z0Q26pT', videoId: '-0xzODfv9aw' }
+            { id: '1', name: 'OllieGamerZ', youtubeUrl: 'https://www.youtube.com/watch?v=62pWsLpR8so', videoId: '62pWsLpR8so', tier: null },
+            { id: '2', name: 'DalasReview', youtubeUrl: 'https://youtu.be/oMGHCWXNBOU?si=LuSrD52-_GmyEG1q', videoId: 'oMGHCWXNBOU', tier: null },
+            { id: '3', name: 'ElRubiusOMG', youtubeUrl: 'https://www.youtube.com/watch?v=VZzSBv6tXMw', videoId: 'VZzSBv6tXMw', tier: null },
+            { id: '4', name: 'ElRubius', youtubeUrl: 'https://youtu.be/OkFOETs00QA?si=oX9m0GMS6CI3KfaA', videoId: 'OkFOETs00QA', tier: null },
+            { id: '5', name: 'Ibai', youtubeUrl: 'https://www.youtube.com/watch?v=n66zQBqwI9A', videoId: 'n66zQBqwI9A', tier: null },
+            { id: '6', name: 'Robleis', youtubeUrl: 'https://youtu.be/GpFoGiscj7k?si=y_jc2UR1T4uAhzOT', videoId: 'GpFoGiscj7k', tier: null },
+            { id: '7', name: 'Agustin51', youtubeUrl: 'https://youtu.be/YNwg-tWMyyY?si=UtRJSu8xqDksTig_', videoId: 'YNwg-tWMyyY', tier: null },
+            { id: '8', name: 'RickyEdit', youtubeUrl: 'https://youtu.be/Y0VM6DtwM8g?si=k-QlE6h54mNYBrpP', videoId: 'Y0VM6DtwM8g', tier: null },
+            { id: '9', name: 'illojuan', youtubeUrl: 'https://youtu.be/65o77VtTcEk?si=Wj9TiQkPIk9lyyGF', videoId: '65o77VtTcEk', tier: null },
+            { id: '10', name: 'YoSoyPlex', youtubeUrl: 'https://youtu.be/7lQfj-_8Zg0?si=T3VR9-vxskBU9W4f', videoId: '7lQfj-_8Zg0', tier: null },
+            { id: '11', name: 'Xokas', youtubeUrl: 'https://youtu.be/0j3R4_PED1Q?si=l-r6wd7ZqXFCQMa3', videoId: '0j3R4_PED1Q', tier: null },
+            { id: '12', name: 'Karina', youtubeUrl: 'https://youtu.be/kKKgU8xf3qI?si=LsiA3A_7pA5TcyA5', videoId: 'kKKgU8xf3qI', tier: null },
+            { id: '13', name: 'Mikecrack', youtubeUrl: 'https://youtu.be/TaQj43Lf3tw?si=hKMDcCz0IByWk6en', videoId: 'TaQj43Lf3tw', tier: null },
+            { id: '14', name: 'Fede', youtubeUrl: 'https://youtu.be/CHeEEyi8Y-g?si=Qko7o2ii8PDm_QiP', videoId: 'CHeEEyi8Y-g', tier: null },
+            { id: '15', name: 'Salva (DualCoC)', youtubeUrl: 'https://youtu.be/XJaLFrYe6mk?si=_lCu3wxi7h2ZNNRl', videoId: 'XJaLFrYe6mk', tier: null },
+            { id: '16', name: 'Nil Ojeda', youtubeUrl: 'https://youtu.be/9DhPBgrSIaA?si=hZ5amS1ePWWjRAWp', videoId: '9DhPBgrSIaA', tier: null },
+            { id: '17', name: 'Goorgo', youtubeUrl: 'https://youtu.be/-zeayRzldyI?si=KRUk_-L5UDA6e02L', videoId: '-zeayRzldyI', tier: null },
+            { id: '18', name: 'Willyrex', youtubeUrl: 'https://youtu.be/CW9uky3MZXM?si=0h8nlM-VDBJ1VwU6', videoId: 'CW9uky3MZXM', tier: null },
+            { id: '19', name: 'WhiteZunder', youtubeUrl: 'https://youtu.be/rN7mwzCICn0?si=ob-Gm5K1DaEeEXWT', videoId: 'rN7mwzCICn0', tier: null },
+            { id: '20', name: 'MissaSinfonia', youtubeUrl: 'https://youtu.be/iuQoT2hUVjk?si=LGj6HQ5_aFpjPFc3', videoId: 'iuQoT2hUVjk', tier: null },
+            { id: '21', name: 'YelloMmellow', youtubeUrl: 'https://youtu.be/Bnip21mbOD0?si=wdIeziNpbaafhPR_', videoId: 'Bnip21mbOD0', tier: null },
+            { id: '22', name: 'Spreen', youtubeUrl: 'https://youtu.be/5rjCRPG3mkw?si=Ndpw-VX17K-KScZ1', videoId: '5rjCRPG3mkw', tier: null },
+            { id: '23', name: 'Carreraa', youtubeUrl: 'https://youtu.be/oE2rfyhIsuk?si=F067GpyMxTXkTSNw', videoId: 'oE2rfyhIsuk', tier: null },
+            { id: '24', name: 'JuanGuarnizo', youtubeUrl: 'https://youtu.be/VoN4x3R0TCQ?si=OrIQXpTTTNYoqQbu', videoId: 'VoN4x3R0TCQ', tier: null },
+            { id: '25', name: 'AriGameplays', youtubeUrl: 'https://youtu.be/aHYvmY3nV5U?si=5uOMvcyJPG3KiMaC', videoId: 'aHYvmY3nV5U', tier: null },
+            { id: '26', name: 'Fernanfloo', youtubeUrl: 'https://youtu.be/BW3fTla26MM?si=Y8GplmdCn9gurxJk', videoId: 'BW3fTla26MM', tier: null },
+            { id: '27', name: 'German Garmendia', youtubeUrl: 'https://youtu.be/9EmXVhPsJQQ?si=lup3rdjHQENE5dF2', videoId: '9EmXVhPsJQQ', tier: null },
+            { id: '28', name: 'rojuu', youtubeUrl: 'https://youtu.be/wxKBvF2pS_A?si=avaObdkacZ-OAnzH', videoId: 'wxKBvF2pS_A', tier: null },
+            { id: '29', name: 'Orslok', youtubeUrl: 'https://youtu.be/xMAmnQgV6ss?si=oeXwqY5Tmsh91oq4', videoId: 'xMAmnQgV6ss', tier: null },
+            { id: '30', name: 'Oscu', youtubeUrl: 'https://youtu.be/TXu9N_zhSZE?si=m7StAyOjApZ_dZWR', videoId: 'TXu9N_zhSZE', tier: null },
+            { id: '31', name: 'Angie Velasco', youtubeUrl: 'https://youtu.be/1C1awEClK84?si=yCXeBmoS4xPcsbYk', videoId: '1C1awEClK84', tier: null },
+            { id: '32', name: 'Alondrissa', youtubeUrl: 'https://youtu.be/yU1_NmePLFg?si=GNIZBYj8HzxpImvI', videoId: 'yU1_NmePLFg', tier: null },
+            { id: '33', name: 'Coscu', youtubeUrl: 'https://youtu.be/87y1ZCFFYqc?si=cLCot9mK3ocPXVmv', videoId: '87y1ZCFFYqc', tier: null },
+            { id: '34', name: 'RobertoCein', youtubeUrl: 'https://youtu.be/LSXw8cketoc?si=yJE8Ie3UettzDjjZ', videoId: 'LSXw8cketoc', tier: null },
+            { id: '35', name: 'Rodezel', youtubeUrl: 'https://youtu.be/ZXpk7tv47kc?si=PM_58WfB2_HtdcnU', videoId: 'ZXpk7tv47kc', tier: null },
+            { id: '36', name: 'Nuvia', youtubeUrl: 'https://youtu.be/S2eQjr_MXIE?si=QVD8_kx8oZJxcbzw', videoId: 'S2eQjr_MXIE', tier: null },
+            { id: '37', name: 'ElMariana', youtubeUrl: 'https://youtu.be/vcdxMNgHTrc?si=aTppOKFNuN2zCbRe', videoId: 'vcdxMNgHTrc', tier: null },
+            { id: '38', name: 'Komanche', youtubeUrl: 'https://youtu.be/gSTwJTgYm3I?si=i_b-F8xxuj-pFnWC', videoId: 'gSTwJTgYm3I', tier: null },
+            { id: '39', name: 'Lyna Vallejos', youtubeUrl: 'https://youtu.be/zFJAX23KIh8?si=mK2BUoC3r39n1tmy', videoId: 'zFJAX23KIh8', tier: null },
+            { id: '40', name: 'Wismichu', youtubeUrl: 'https://youtu.be/M_B5fs76l3g?t=592', videoId: 'M_B5fs76l3g', tier: null },
+            { id: '41', name: 'Yao Cabrera', youtubeUrl: 'https://youtu.be/t4sAPvqKlgw?si=B5RAil8nl2Rwri9G', videoId: 't4sAPvqKlgw', tier: null },
+            { id: '42', name: 'Jordi Wild', youtubeUrl: 'https://youtu.be/IHD4zT8a4Lg?si=pqXBJiSNl3gYqOnZ', videoId: 'IHD4zT8a4Lg', tier: null },
+            { id: '43', name: 'Momo', youtubeUrl: 'https://youtu.be/5EouEAo9wy0?si=U_AuI-TGIdDT0yqB', videoId: '5EouEAo9wy0', tier: null },
+            { id: '44', name: 'Jägger', youtubeUrl: 'https://youtu.be/kvhUNv59XdY?si=5TOZ9bFQSF7Sr8rX', videoId: 'kvhUNv59XdY', tier: null },
+            { id: '45', name: 'Maximus', youtubeUrl: 'https://youtu.be/1LnTBgw-aGU?si=r9QeEt4ol_mjx27_', videoId: '1LnTBgw-aGU', tier: null },
+            { id: '46', name: 'Zorman', youtubeUrl: 'https://youtu.be/h6k5qbt72Os?si=Ajt_Qi0eREYWAXse', videoId: 'h6k5qbt72Os', tier: null },
+            { id: '47', name: 'Jaime Altozano', youtubeUrl: 'https://youtu.be/ziJuNQcJn24?si=iR34OM4NZZWAw2-C', videoId: 'ziJuNQcJn24', tier: null },
+            { id: '48', name: 'Corxea (Spaceronin7)', youtubeUrl: 'https://youtu.be/DMXdutHKJls?si=n-XHphP-3TuGBLPK', videoId: 'DMXdutHKJls', tier: null },
+            { id: '49', name: 'Jpelirrojo', youtubeUrl: 'https://youtu.be/UJGQaUu-uzA?si=8Twqa8vLKnC6GtRL', videoId: 'UJGQaUu-uzA', tier: null },
+            { id: '50', name: 'Wescol', youtubeUrl: 'https://youtu.be/EY47yXiQ1yM?t=172', videoId: 'EY47yXiQ1yM', tier: null },
+            { id: '51', name: 'Wescol2', youtubeUrl: 'https://youtu.be/o2eqeodAHj8?si=w70M-xaDCQTsiWZj', videoId: 'o2eqeodAHj8', tier: null },
+            { id: '52', name: 'DaniRep 2017', youtubeUrl: 'https://youtu.be/Wq6qp5ZsduY?si=nRyC-_HG88Zc2BZG', videoId: 'Wq6qp5ZsduY', tier: null },
+            { id: '53', name: 'DaniRep Actual', youtubeUrl: 'https://youtu.be/ZgkkEcx03Xw?si=KysF_254s-3L42aB', videoId: 'ZgkkEcx03Xw', tier: null },
+            { id: '54', name: 'MAAU,️‍PUVLO,LATE,URIEL- ONE COIN', youtubeUrl: 'https://youtu.be/vPN4WNZxxxE?si=LEF5lXNaUAJUJ-CX', videoId: 'vPN4WNZxxxE', tier: null },
+            { id: '55', name: 'LATE', youtubeUrl: 'https://youtu.be/zKO2FJEEVsw?si=vGiMHXz0ZUyoDZD8', videoId: 'zKO2FJEEVsw', tier: null },
+            { id: '56', name: 'Cry', youtubeUrl: 'https://youtu.be/rsfosxNojKc?si=AgwS8OncESvkmSAS', videoId: 'rsfosxNojKc', tier: null },
+            { id: '57', name: 'Capitán Gato', youtubeUrl: 'https://youtu.be/XG3_pbsUcCA?si=LjKx3Wg6RuuOA3h5', videoId: 'XG3_pbsUcCA', tier: null },
+            { id: '58', name: 'StarVTuber', youtubeUrl: 'https://youtu.be/ZyDUc1h582U?si=xFNdopPqw3l9HrqI', videoId: 'ZyDUc1h582U', tier: null },
+            { id: '59', name: 'Naim Darrechi', youtubeUrl: 'https://youtu.be/zFch_ru4eaI?si=iT8RliEeiaowSlkX', videoId: 'zFch_ru4eaI', tier: null },
+            { id: '60', name: 'Quackity', youtubeUrl: 'https://youtu.be/shniqa1sH_o?si=M4AbxTSYJnk7yN2m', videoId: 'shniqa1sH_o', tier: null },
+            { id: '61', name: 'Alana (participación corta)', youtubeUrl: 'https://youtu.be/UGTCE1W81jg?si=Q5wuEi1WYPhxwCz6', videoId: 'UGTCE1W81jg', tier: null },
+            { id: '62', name: 'Alana', youtubeUrl: 'https://youtu.be/Ue8dX791o18?si=HmXcxYqADFCYcxxm', videoId: 'Ue8dX791o18', tier: null },
+            { id: '63', name: 'Yuya', youtubeUrl: 'https://youtu.be/SNa5Z8W-70I?si=P1rZtF_cSw8Vq-xL', videoId: 'SNa5Z8W-70I', tier: null },
+            { id: '64', name: 'Masi', youtubeUrl: 'https://youtu.be/GoMGw4BkhfM?si=O3AhXZrpktcvTYv5', videoId: 'GoMGw4BkhfM', tier: null },
+            { id: '65', name: 'Guanyar,Misho Amoli,Nil Ojeda', youtubeUrl: 'https://youtu.be/5BYBDd_udCk?si=7aft3sem3RLMnuy0', videoId: '5BYBDd_udCk', tier: null },
+            { id: '66', name: 'Cristinini', youtubeUrl: 'https://youtu.be/RP4gxh-yqLs?si=fLNzyotoujEFxHCY', videoId: 'RP4gxh-yqLs', tier: null },
+            { id: '67', name: 'clersssss', youtubeUrl: 'https://youtu.be/cUydAxe0CYM?si=MEf_6LZELWQ-YUC_', videoId: 'cUydAxe0CYM', tier: null },
+            { id: '68', name: 'caprimint', youtubeUrl: 'https://youtu.be/2BZ3g0CaMQQ?si=4Wjag-tOXaxotUoA', videoId: '2BZ3g0CaMQQ', tier: null },
+            { id: '69', name: 'Bb trickz', youtubeUrl: 'https://youtu.be/C8WmCFg65C0?si=4zs8KrELlgsgzSr3', videoId: 'C8WmCFg65C0', tier: null },
+            { id: '70', name: 'Ruth \'La Peke\'', youtubeUrl: 'https://youtu.be/1dtugsaskAQ?si=m6p-XI6r6oWgQGQc', videoId: '1dtugsaskAQ', tier: null },
+            { id: '71', name: 'Yeri Mua', youtubeUrl: 'https://youtu.be/eJS0WziQHGw?si=fPaqhoxlsRISDeQr', videoId: 'eJS0WziQHGw', tier: null },
+            { id: '72', name: 'Arta', youtubeUrl: 'https://youtu.be/SZh1lPZX9XY?si=SRIqwOe1Aw3QegKL', videoId: 'SZh1lPZX9XY', tier: null },
+            { id: '73', name: 'vMario', youtubeUrl: 'https://youtu.be/qv9jUOXLK30?si=nOwybGC2jliOl_Hb', videoId: 'qv9jUOXLK30', tier: null },
+            { id: '74', name: 'Yolo', youtubeUrl: 'https://youtu.be/zXKmHe71Wa4?si=eV-uu6_iuxZ-Dtt0', videoId: 'zXKmHe71Wa4', tier: null },
+            { id: '75', name: 'Ricky Limon', youtubeUrl: 'https://youtu.be/xuNObVb4LpM?si=kIs07PztOu99z-du', videoId: 'xuNObVb4LpM', tier: null },
+            { id: '76', name: 'Susy Mouriz', youtubeUrl: 'https://youtu.be/K-zVyV0yuZU?si=v5ACXZV1oap98jow', videoId: 'K-zVyV0yuZU', tier: null },
+            { id: '77', name: 'ChuyMine', youtubeUrl: 'https://youtu.be/bpCEZ49hQMU?si=-3dxMVktwaev3aFC', videoId: 'bpCEZ49hQMU', tier: null },
+            { id: '78', name: 'xTurbo', youtubeUrl: 'https://youtu.be/cedhJXxVayE?si=8GNMg8DL0KBDPUlJ', videoId: 'cedhJXxVayE', tier: null },
+            { id: '79', name: 'Awita', youtubeUrl: 'https://youtu.be/GEgHoQtCWto?si=zlIG97iXBewHWv1O', videoId: 'GEgHoQtCWto', tier: null },
+            { id: '80', name: 'Jardred', youtubeUrl: 'https://youtu.be/JBJYfWHSMY4?si=rXSVwT3RdAu4ioJg', videoId: 'JBJYfWHSMY4', tier: null },
+            { id: '81', name: 'Elo YT', youtubeUrl: 'https://youtu.be/V5mMG7EdHGg?si=bEwYwQs6CbHRqDbZ', videoId: 'V5mMG7EdHGg', tier: null },
+            { id: '82', name: 'Arsel', youtubeUrl: 'https://youtu.be/EVDvU4ejh3M?si=KBZgxCldNXgXItTA', videoId: 'EVDvU4ejh3M', tier: null },
+            { id: '83', name: 'iTownGamePlay', youtubeUrl: 'https://youtu.be/-0xzODfv9aw?si=7K3gRO3I9Z0Q26pT', videoId: '-0xzODfv9aw', tier: null }
         ];
 
         // Datos de las canciones de fans
         const fansInfluencersData = [
-            { id: '84', name: 'Aroyitt', youtubeUrl: 'https://youtu.be/8M7qoUtjixc?si=EU4KEjHiUfGijMCv', videoId: '8M7qoUtjixc' },
-            { id: '85', name: 'Aroyitt (Cover)', youtubeUrl: 'https://youtu.be/BW3BGT3YqjU?si=3p7bsvmlUkVMSVYZ', videoId: 'BW3BGT3YqjU' },
-            { id: '86', name: 'Vegetta777', youtubeUrl: 'https://youtu.be/s1cj9Htf-Mg?si=zegfPcCQpNYzKyoo', videoId: 's1cj9Htf-Mg' },
-            { id: '87', name: 'Rivers', youtubeUrl: 'https://youtu.be/a2VX-d1kezY?si=k-FAHtTljrvteKL8', videoId: 'a2VX-d1kezY' },
-            { id: '88', name: 'Luzu', youtubeUrl: 'https://youtu.be/De8cf9txw-M?si=LRo6KmtxidezXFOH', videoId: 'De8cf9txw-M' },
-            { id: '89', name: 'Axozer (cover bichota)', youtubeUrl: 'https://youtu.be/_XPC_1ENvqs?si=59jnOVwdR2sVMAzs', videoId: '_XPC_1ENvqs' },
-            { id: '90', name: 'AuronPlay', youtubeUrl: 'https://youtu.be/82bb3TZLj9g?si=NTzpk5CcGXgAKJps', videoId: '82bb3TZLj9g' },
-            { id: '91', name: 'Elisa Waves', youtubeUrl: 'https://youtu.be/IQfvNIscci8?si=n2B3TJLJ3971mpfP', videoId: 'IQfvNIscci8' },
-            { id: '92', name: 'Reborn', youtubeUrl: 'https://youtu.be/IgXqlS5QTfg?si=ADaP-J-k-l7t3jJt', videoId: 'IgXqlS5QTfg' },
-            { id: '93', name: 'Fernanfloo', youtubeUrl: 'https://youtu.be/uHjW3zxbyf4?si=aRUlqUQIPCSJKqhf', videoId: 'uHjW3zxbyf4' }
+            { id: '84', name: 'Aroyitt', youtubeUrl: 'https://youtu.be/8M7qoUtjixc?si=EU4KEjHiUfGijMCv', videoId: '8M7qoUtjixc', tier: null },
+            { id: '85', name: 'Aroyitt (Cover)', youtubeUrl: 'https://youtu.be/BW3BGT3YqjU?si=3p7bsvmlUkVMSVYZ', videoId: 'BW3BGT3YqjU', tier: null },
+            { id: '86', name: 'Vegetta777', youtubeUrl: 'https://youtu.be/s1cj9Htf-Mg?si=zegfPcCQpNYzKyoo', videoId: 's1cj9Htf-Mg', tier: null },
+            { id: '87', name: 'Rivers', youtubeUrl: 'https://youtu.be/a2VX-d1kezY?si=k-FAHtTljrvteKL8', videoId: 'a2VX-d1kezY', tier: null },
+            { id: '88', name: 'Luzu', youtubeUrl: 'https://youtu.be/De8cf9txw-M?si=LRo6KmtxidezXFOH', videoId: 'De8cf9txw-M', tier: null },
+            { id: '89', name: 'Axozer (cover bichota)', youtubeUrl: 'https://youtu.be/_XPC_1ENvqs?si=59jnOVwdR2sVMAzs', videoId: '_XPC_1ENvqs', tier: null },
+            { id: '90', name: 'AuronPlay', youtubeUrl: 'https://youtu.be/82bb3TZLj9g?si=NTzpk5CcGXgAKJps', videoId: '82bb3TZLj9g', tier: null },
+            { id: '91', name: 'Elisa Waves', youtubeUrl: 'https://youtu.be/IQfvNIscci8?si=n2B3TJLJ3971mpfP', videoId: 'IQfvNIscci8', tier: null },
+            { id: '92', name: 'Reborn', youtubeUrl: 'https://youtu.be/IgXqlS5QTfg?si=ADaP-J-k-l7t3jJt', videoId: 'IgXqlS5QTfg', tier: null },
+            { id: '93', name: 'Fernanfloo', youtubeUrl: 'https://youtu.be/uHjW3zxbyf4?si=aRUlqUQIPCSJKqhf', videoId: 'uHjW3zxbyf4', tier: null }
         ];
 
         // Variables globales
@@ -817,35 +1229,11 @@
         let fansInfluencers = [...fansInfluencersData];
         let revealedCards = new Set();
         let isModalOpen = false;
-        let nextId = 94; // Siguiente ID para nuevos influencers
-        let fansToggleActive = false; // Estado del toggle de fans
-
-        // Elementos del DOM
-        const cardsGrid = document.getElementById('cardsGrid');
-        const fansCardsGrid = document.getElementById('fansCardsGrid');
-        const searchInput = document.getElementById('searchInput');
-        const shuffleBtn = document.getElementById('shuffleBtn');
-        const addBtn = document.getElementById('addBtn');
-        const noResults = document.getElementById('noResults');
-        const videoModal = document.getElementById('videoModal');
-        const modalTitle = document.getElementById('modalTitle');
-        const modalVideo = document.getElementById('modalVideo');
-        const closeModal = document.getElementById('closeModal');
-        
-        // Toggle de fans
-        const fansToggle = document.getElementById('fansToggle');
-        const fansSection = document.getElementById('fansSection');
-        const fansCount = document.getElementById('fansCount');
-        
-        // Modal para añadir influencer
-        const addModal = document.getElementById('addModal');
-        const addInfluencerForm = document.getElementById('addInfluencerForm');
-        const influencerNameInput = document.getElementById('influencerName');
-        const youtubeUrlInput = document.getElementById('youtubeUrl');
-        const cancelAddBtn = document.getElementById('cancelAddBtn');
-        const successMessage = document.getElementById('successMessage');
-        const nameError = document.getElementById('nameError');
-        const urlError = document.getElementById('urlError');
+        let nextId = 94;
+        let fansToggleActive = false;
+        let currentInfluencer = null;
+        let draggedElement = null;
+        let draggedInfluencer = null;
 
         // Función para extraer el ID del video de YouTube de una URL
         function getYouTubeId(url) {
@@ -961,22 +1349,229 @@
                 revealedCards.add(influencer.id);
                 card.classList.add('revealed');
                 
-                // Abrir el modal automáticamente después de voltear
-                setTimeout(() => {
-                    openModal(influencer);
-                }, 300);
+                // Abrir el modal directamente
+                openModal(influencer);
             }, 400);
+        }
+
+        // Función para añadir al tierlist
+        function addToTierlist(influencer) {
+            if (!influencer.tier) return;
+            
+            const tierContainer = document.getElementById(`tier-${influencer.tier}`);
+            if (!tierContainer) return;
+            
+            // Crear elemento del tierlist
+            const tierItem = createTierItem(influencer);
+            
+            // Añadir al tierlist
+            tierContainer.appendChild(tierItem);
+            
+            // Añadir a los datos
+            if (!tierlistData[influencer.tier]) {
+                tierlistData[influencer.tier] = [];
+            }
+            tierlistData[influencer.tier].push(influencer);
+            
+            // Actualizar estadísticas
+            updateTierlistStats();
+            
+            // Mostrar notificación
+            showNotification(`${influencer.name} añadido a tier ${influencer.tier.toUpperCase()}`);
+        }
+
+        // Función para crear un elemento del tierlist
+        function createTierItem(influencer) {
+            const tierItem = document.createElement('div');
+            tierItem.className = 'tier-item';
+            tierItem.dataset.influencerId = influencer.id;
+            tierItem.draggable = true;
+            
+            const thumbnail = document.createElement('img');
+            thumbnail.className = 'tier-item-thumbnail';
+            thumbnail.src = `https://img.youtube.com/vi/${influencer.videoId}/mqdefault.jpg`;
+            thumbnail.alt = influencer.name;
+            
+            const name = document.createElement('div');
+            name.className = 'tier-item-name';
+            name.textContent = influencer.name;
+            
+            const removeBtn = document.createElement('div');
+            removeBtn.className = 'tier-item-remove';
+            removeBtn.textContent = '×';
+            removeBtn.addEventListener('click', function(e) {
+                e.stopPropagation();
+                removeFromTierlist(influencer.id);
+            });
+            
+            tierItem.appendChild(thumbnail);
+            tierItem.appendChild(name);
+            tierItem.appendChild(removeBtn);
+            
+            // Event listeners para drag and drop
+            tierItem.addEventListener('dragstart', handleDragStart);
+            tierItem.addEventListener('dragend', handleDragEnd);
+            
+            return tierItem;
+        }
+
+        // Función para eliminar del tierlist
+        function removeFromTierlist(influencerId) {
+            const influencer = findInfluencerById(influencerId);
+            if (!influencer) return;
+            
+            // Eliminar del tier actual
+            if (influencer.tier) {
+                const tierContainer = document.getElementById(`tier-${influencer.tier}`);
+                const tierItem = tierContainer.querySelector(`[data-influencer-id="${influencerId}"]`);
+                if (tierItem) {
+                    tierItem.remove();
+                }
+                
+                // Eliminar de los datos
+                if (tierlistData[influencer.tier]) {
+                    tierlistData[influencer.tier] = tierlistData[influencer.tier].filter(item => item.id !== influencerId);
+                }
+                
+                // Resetear tier del influencer
+                influencer.tier = null;
+                
+                // Actualizar estadísticas
+                updateTierlistStats();
+                
+                // Mostrar notificación
+                showNotification(`${influencer.name} eliminado de la tierlist`);
+            }
+        }
+
+        // Función para encontrar un influencer por ID
+        function findInfluencerById(id) {
+            return [...mainInfluencersData, ...fansInfluencersData].find(inf => inf.id === id);
+        }
+
+        // Funciones de drag and drop
+        function handleDragStart(e) {
+            draggedElement = this;
+            draggedInfluencer = findInfluencerById(this.dataset.influencerId);
+            this.classList.add('dragging');
+            e.dataTransfer.effectAllowed = 'move';
+        }
+
+        function handleDragEnd(e) {
+            this.classList.remove('dragging');
+            
+            // Eliminar clases drag-over de todos los tiers
+            document.querySelectorAll('.tier-row').forEach(row => {
+                row.classList.remove('drag-over');
+            });
+        }
+
+        function handleDragOver(e) {
+            if (e.preventDefault) {
+                e.preventDefault();
+            }
+            e.dataTransfer.dropEffect = 'move';
+            
+            const tierRow = this.closest('.tier-row');
+            if (tierRow) {
+                tierRow.classList.add('drag-over');
+            }
+            
+            return false;
+        }
+
+        function handleDragLeave(e) {
+            const tierRow = this.closest('.tier-row');
+            if (tierRow) {
+                tierRow.classList.remove('drag-over');
+            }
+        }
+
+        function handleDrop(e) {
+            if (e.stopPropagation) {
+                e.stopPropagation();
+            }
+            e.preventDefault();
+            
+            const newTier = this.closest('.tier-row').dataset.tier;
+            
+            if (draggedInfluencer && draggedElement && newTier !== draggedInfluencer.tier) {
+                // Mover el elemento
+                this.appendChild(draggedElement);
+                
+                // Actualizar el tier del influencer
+                const oldTier = draggedInfluencer.tier;
+                draggedInfluencer.tier = newTier;
+                
+                // Actualizar los datos
+                if (oldTier && tierlistData[oldTier]) {
+                    tierlistData[oldTier] = tierlistData[oldTier].filter(item => item.id !== draggedInfluencer.id);
+                }
+                
+                if (!tierlistData[newTier]) {
+                    tierlistData[newTier] = [];
+                }
+                tierlistData[newTier].push(draggedInfluencer);
+                
+                // Mostrar notificación
+                showNotification(`${draggedInfluencer.name} movido a tier ${newTier.toUpperCase()}`);
+            }
+            
+            // Limpiar
+            document.querySelectorAll('.tier-row').forEach(row => {
+                row.classList.remove('drag-over');
+            });
+            
+            return false;
+        }
+
+        // Función para actualizar estadísticas del tierlist
+        function updateTierlistStats() {
+            const totalRevealed = revealedCards.size;
+            const totalSongs = mainInfluencersData.length + fansInfluencersData.length;
+            
+            const totalRevealedEl = document.getElementById('totalRevealed');
+            const totalSongsEl = document.getElementById('totalSongs');
+            
+            if (totalRevealedEl) totalRevealedEl.textContent = totalRevealed;
+            if (totalSongsEl) totalSongsEl.textContent = totalSongs;
         }
 
         // Función para abrir el modal
         function openModal(influencer) {
             if (isModalOpen) return;
             
+            currentInfluencer = influencer;
             isModalOpen = true;
+            
+            const modalTitle = document.getElementById('modalTitle');
+            const modalVideo = document.getElementById('modalVideo');
+            const tierSelectionStatus = document.getElementById('tierSelectionStatus');
+            const tierOptions = document.querySelectorAll('.tier-option');
+            
             modalTitle.textContent = influencer.name;
             modalVideo.src = `https://www.youtube.com/embed/${influencer.videoId}?rel=0&showinfo=0&modestbranding=1&autoplay=1`;
             
+            // Resetear selección de tier
+            tierOptions.forEach(option => {
+                option.classList.remove('selected', 'disabled');
+            });
+            
+            // Si ya tiene un tier asignado, marcarlo y deshabilitar
+            if (influencer.tier) {
+                const existingTierOption = document.querySelector(`.tier-option[data-tier="${influencer.tier}"]`);
+                if (existingTierOption) {
+                    existingTierOption.classList.add('selected', 'disabled');
+                    tierSelectionStatus.textContent = `Esta canción ya está clasificada en tier ${influencer.tier.toUpperCase()}`;
+                    tierSelectionStatus.classList.add('success');
+                }
+            } else {
+                tierSelectionStatus.textContent = 'Haz clic en un tier para clasificar esta canción';
+                tierSelectionStatus.classList.remove('success');
+            }
+            
             // Mostrar modal con animación
+            const videoModal = document.getElementById('videoModal');
             videoModal.style.display = 'flex';
             setTimeout(() => {
                 videoModal.classList.add('active');
@@ -986,18 +1581,47 @@
         // Función para cerrar el modal
         function closeModalFunc() {
             // Limpiar el video inmediatamente para detener la reproducción
+            const modalVideo = document.getElementById('modalVideo');
             modalVideo.src = '';
             
+            const videoModal = document.getElementById('videoModal');
             videoModal.classList.remove('active');
             isModalOpen = false;
+            currentInfluencer = null;
             
             setTimeout(() => {
                 videoModal.style.display = 'none';
             }, 300);
         }
 
+        // Función para manejar la selección de tier
+        function handleTierSelection(tier) {
+            if (!currentInfluencer || currentInfluencer.tier) return;
+            
+            // Asignar tier al influencer
+            currentInfluencer.tier = tier;
+            
+            // Añadir al tierlist
+            addToTierlist(currentInfluencer);
+            
+            // Actualizar UI
+            const tierSelectionStatus = document.getElementById('tierSelectionStatus');
+            tierSelectionStatus.textContent = `¡Clasificado en tier ${tier.toUpperCase()}!`;
+            tierSelectionStatus.classList.add('success');
+            
+            // Marcar el tier como seleccionado y deshabilitar todos
+            const tierOptions = document.querySelectorAll('.tier-option');
+            tierOptions.forEach(option => {
+                option.classList.add('disabled');
+                if (option.dataset.tier === tier) {
+                    option.classList.add('selected');
+                }
+            });
+        }
+
         // Función para abrir el modal de añadir influencer
         function openAddModal() {
+            const addModal = document.getElementById('addModal');
             addModal.style.display = 'flex';
             setTimeout(() => {
                 addModal.classList.add('active');
@@ -1006,16 +1630,60 @@
 
         // Función para cerrar el modal de añadir influencer
         function closeAddModal() {
+            const addModal = document.getElementById('addModal');
             addModal.classList.remove('active');
             
             setTimeout(() => {
                 addModal.style.display = 'none';
                 // Limpiar formulario
-                addInfluencerForm.reset();
+                const addInfluencerForm = document.getElementById('addInfluencerForm');
+                if (addInfluencerForm) addInfluencerForm.reset();
+                
                 // Ocultar mensajes de error y éxito
-                nameError.style.display = 'none';
-                urlError.style.display = 'none';
-                successMessage.style.display = 'none';
+                const nameError = document.getElementById('nameError');
+                const urlError = document.getElementById('urlError');
+                const successMessage = document.getElementById('successMessage');
+                
+                if (nameError) nameError.style.display = 'none';
+                if (urlError) urlError.style.display = 'none';
+                if (successMessage) successMessage.style.display = 'none';
+            }, 300);
+        }
+
+        // Función para abrir el modal de tierlist
+        function openTierlistModal() {
+            // Actualizar estadísticas
+            updateTierlistStats();
+            
+            // Configurar drag and drop para los tiers
+            setupTierlistDragAndDrop();
+            
+            // Mostrar modal con animación
+            const tierlistModal = document.getElementById('tierlistModal');
+            tierlistModal.style.display = 'flex';
+            setTimeout(() => {
+                tierlistModal.classList.add('active');
+            }, 10);
+        }
+
+        // Función para configurar drag and drop en la tierlist
+        function setupTierlistDragAndDrop() {
+            const tierItems = document.querySelectorAll('.tier-items');
+            
+            tierItems.forEach(tier => {
+                tier.addEventListener('dragover', handleDragOver);
+                tier.addEventListener('drop', handleDrop);
+                tier.addEventListener('dragleave', handleDragLeave);
+            });
+        }
+
+        // Función para cerrar el modal de tierlist
+        function closeTierlistModal() {
+            const tierlistModal = document.getElementById('tierlistModal');
+            tierlistModal.classList.remove('active');
+            
+            setTimeout(() => {
+                tierlistModal.style.display = 'none';
             }, 300);
         }
 
@@ -1027,14 +1695,16 @@
                 id: nextId.toString(),
                 name: name,
                 youtubeUrl: url,
-                videoId: videoId
+                videoId: videoId,
+                tier: null
             };
             
             mainInfluencers.push(newInfluencer);
             nextId++;
             
             // Mostrar mensaje de éxito
-            successMessage.style.display = 'block';
+            const successMessage = document.getElementById('successMessage');
+            if (successMessage) successMessage.style.display = 'block';
             
             // Renderizar las tarjetas
             renderCards();
@@ -1047,14 +1717,19 @@
 
         // Función para renderizar las tarjetas principales
         function renderCards() {
+            const cardsGrid = document.getElementById('cardsGrid');
+            if (!cardsGrid) return;
+            
             cardsGrid.innerHTML = '';
             
             if (mainInfluencers.length === 0) {
-                noResults.style.display = 'block';
+                const noResults = document.getElementById('noResults');
+                if (noResults) noResults.style.display = 'block';
                 return;
             }
             
-            noResults.style.display = 'none';
+            const noResults = document.getElementById('noResults');
+            if (noResults) noResults.style.display = 'none';
             
             mainInfluencers.forEach(influencer => {
                 const card = createCard(influencer);
@@ -1063,14 +1738,19 @@
                 // Si la tarjeta ya fue revelada, marcarla
                 if (revealedCards.has(influencer.id)) {
                     const cardElement = card.querySelector('.card');
-                    cardElement.classList.add('flipped');
-                    cardElement.classList.add('revealed');
+                    if (cardElement) {
+                        cardElement.classList.add('flipped');
+                        cardElement.classList.add('revealed');
+                    }
                 }
             });
         }
 
         // Función para renderizar las tarjetas de fans
         function renderFansCards() {
+            const fansCardsGrid = document.getElementById('fansCardsGrid');
+            if (!fansCardsGrid) return;
+            
             fansCardsGrid.innerHTML = '';
             
             fansInfluencers.forEach(influencer => {
@@ -1080,14 +1760,19 @@
                 // Si la tarjeta ya fue revelada, marcarla
                 if (revealedCards.has(influencer.id)) {
                     const cardElement = card.querySelector('.card');
-                    cardElement.classList.add('flipped');
-                    cardElement.classList.add('revealed');
+                    if (cardElement) {
+                        cardElement.classList.add('flipped');
+                        cardElement.classList.add('revealed');
+                    }
                 }
             });
         }
 
         // Función para buscar influencers
         function searchInfluencers() {
+            const searchInput = document.getElementById('searchInput');
+            if (!searchInput) return;
+            
             const searchTerm = searchInput.value.toLowerCase();
             
             if (searchTerm === '') {
@@ -1116,77 +1801,209 @@
         function toggleFans() {
             fansToggleActive = !fansToggleActive;
             
-            if (fansToggleActive) {
-                fansToggle.classList.add('active');
-                fansSection.classList.add('active');
-                renderFansCards();
-            } else {
-                fansToggle.classList.remove('active');
-                fansSection.classList.remove('active');
+            const fansToggle = document.getElementById('fansToggle');
+            const fansSection = document.getElementById('fansSection');
+            
+            if (fansToggle && fansSection) {
+                if (fansToggleActive) {
+                    fansToggle.classList.add('active');
+                    fansSection.classList.add('active');
+                    renderFansCards();
+                } else {
+                    fansToggle.classList.remove('active');
+                    fansSection.classList.remove('active');
+                }
             }
         }
 
-        // Event listeners
-        searchInput.addEventListener('input', searchInfluencers);
-        shuffleBtn.addEventListener('click', shuffleCards);
-        closeModal.addEventListener('click', closeModalFunc);
-        addBtn.addEventListener('click', openAddModal);
-        cancelAddBtn.addEventListener('click', closeAddModal);
-        fansToggle.addEventListener('click', toggleFans);
-        
-        videoModal.addEventListener('click', function(e) {
-            if (e.target === videoModal) {
-                closeModalFunc();
-            }
-        });
+        function copyToClipboard(text) {
+            navigator.clipboard.writeText(text).then(() => {
+                showNotification('URL copiada al portapapeles');
+            }).catch(err => {
+                console.error('Error al copiar al portapapeles:', err);
+                showNotification('Error al copiar la URL');
+            });
+        }
 
-        addModal.addEventListener('click', function(e) {
-            if (e.target === addModal) {
-                closeAddModal();
+        function showNotification(message) {
+            const notification = document.getElementById('notification');
+            if (notification) {
+                notification.textContent = message;
+                notification.classList.add('show');
+                
+                setTimeout(() => {
+                    notification.classList.remove('show');
+                }, 3000);
             }
-        });
+        }
 
-        // Prevenir que el modal se cierre al hacer clic en el video
-        modalVideo.addEventListener('click', function(e) {
-            e.stopPropagation();
-        });
+        // Variables para el tierlist
+        let tierlistData = {
+            s: [],
+            a: [],
+            b: [],
+            c: [],
+            d: [],
+            f: []
+        };
 
-        // Event listener para el formulario de añadir influencer
-        addInfluencerForm.addEventListener('submit', function(e) {
-            e.preventDefault();
+        // Configurar event listeners - Versión simplificada y robusta
+        function setupEventListeners() {
+            console.log('Configurando event listeners...');
             
-            // Resetear mensajes de error
-            nameError.style.display = 'none';
-            urlError.style.display = 'none';
-            
-            const name = influencerNameInput.value.trim();
-            const url = youtubeUrlInput.value.trim();
-            
-            let hasError = false;
-            
-            // Validar nombre
-            if (name.length < 2) {
-                nameError.style.display = 'block';
-                hasError = true;
+            // Botones principales
+            const shuffleBtn = document.getElementById('shuffleBtn');
+            if (shuffleBtn) {
+                shuffleBtn.addEventListener('click', shuffleCards);
+                console.log('Listener añadido a shuffleBtn');
             }
             
-            // Validar URL
-            if (!isValidYouTubeUrl(url)) {
-                urlError.style.display = 'block';
-                hasError = true;
+            const addBtn = document.getElementById('addBtn');
+            if (addBtn) {
+                addBtn.addEventListener('click', openAddModal);
+                console.log('Listener añadido a addBtn');
             }
             
-            if (!hasError) {
-                addInfluencer(name, url);
+            const tierlistBtn = document.getElementById('tierlistBtn');
+            if (tierlistBtn) {
+                tierlistBtn.addEventListener('click', openTierlistModal);
+                console.log('Listener añadido a tierlistBtn');
             }
-        });
+            
+            // Cerrar modales
+            const closeModal = document.getElementById('closeModal');
+            if (closeModal) {
+                closeModal.addEventListener('click', closeModalFunc);
+            }
+            
+            const cancelAddBtn = document.getElementById('cancelAddBtn');
+            if (cancelAddBtn) {
+                cancelAddBtn.addEventListener('click', closeAddModal);
+            }
+            
+            const closeTierlistModalBtn = document.getElementById('closeTierlistModal');
+            if (closeTierlistModalBtn) {
+                closeTierlistModalBtn.addEventListener('click', closeTierlistModal);
+            }
+            
+            // Búsqueda
+            const searchInput = document.getElementById('searchInput');
+            if (searchInput) {
+                searchInput.addEventListener('input', searchInfluencers);
+            }
+            
+            // Toggle de fans
+            const fansToggle = document.getElementById('fansToggle');
+            if (fansToggle) {
+                fansToggle.addEventListener('click', toggleFans);
+            }
+            
+            // Formulario de añadir influencer
+            const addInfluencerForm = document.getElementById('addInfluencerForm');
+            if (addInfluencerForm) {
+                addInfluencerForm.addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    
+                    // Resetear mensajes de error
+                    const nameError = document.getElementById('nameError');
+                    const urlError = document.getElementById('urlError');
+                    
+                    if (nameError) nameError.style.display = 'none';
+                    if (urlError) urlError.style.display = 'none';
+                    
+                    const influencerNameInput = document.getElementById('influencerName');
+                    const youtubeUrlInput = document.getElementById('youtubeUrl');
+                    
+                    if (!influencerNameInput || !youtubeUrlInput) return;
+                    
+                    const name = influencerNameInput.value.trim();
+                    const url = youtubeUrlInput.value.trim();
+                    
+                    let hasError = false;
+                    
+                    // Validar nombre
+                    if (name.length < 2) {
+                        if (nameError) nameError.style.display = 'block';
+                        hasError = true;
+                    }
+                    
+                    // Validar URL
+                    if (!isValidYouTubeUrl(url)) {
+                        if (urlError) urlError.style.display = 'block';
+                        hasError = true;
+                    }
+                    
+                    if (!hasError) {
+                        addInfluencer(name, url);
+                    }
+                });
+            }
+            
+            // Event listeners para los tiers en el modal de video
+            const tierOptions = document.querySelectorAll('.tier-option');
+            tierOptions.forEach(option => {
+                option.addEventListener('click', function() {
+                    const tier = this.dataset.tier;
+                    handleTierSelection(tier);
+                });
+            });
+            
+            // Cerrar modales al hacer clic fuera
+            const videoModal = document.getElementById('videoModal');
+            if (videoModal) {
+                videoModal.addEventListener('click', function(e) {
+                    if (e.target === videoModal) {
+                        closeModalFunc();
+                    }
+                });
+            }
+            
+            const addModal = document.getElementById('addModal');
+            if (addModal) {
+                addModal.addEventListener('click', function(e) {
+                    if (e.target === addModal) {
+                        closeAddModal();
+                    }
+                });
+            }
+            
+            const tierlistModal = document.getElementById('tierlistModal');
+            if (tierlistModal) {
+                tierlistModal.addEventListener('click', function(e) {
+                    if (e.target === tierlistModal) {
+                        closeTierlistModal();
+                    }
+                });
+            }
+            
+            // Prevenir que el modal se cierre al hacer clic en el video
+            const modalVideo = document.getElementById('modalVideo');
+            if (modalVideo) {
+                modalVideo.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                });
+            }
+            
+            console.log('Todos los event listeners configurados');
+        }
 
         // Inicialización
         document.addEventListener('DOMContentLoaded', function() {
+            console.log('Inicializando aplicación...');
+            
+            // Configurar event listeners
+            setupEventListeners();
+            
+            // Renderizar tarjetas iniciales
             renderCards();
             
             // Actualizar contador de fans
-            fansCount.textContent = `${fansInfluencersData.length} canciones disponibles`;
+            const fansCount = document.getElementById('fansCount');
+            if (fansCount) {
+                fansCount.textContent = `${fansInfluencersData.length} canciones disponibles`;
+            }
+            
+            console.log('Aplicación inicializada correctamente');
         });
     </script>
 
