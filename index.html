@@ -3,7 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CANCIONES DE INFLUENCERS</title>
+    <!-- Título Cambiado a CANCINFLUENCERS -->
+    <title>CANCINFLUENCERS</title>
+    <!-- Favicon Añadido -->
+    <link rel="icon" type="image/x-icon" href="https://i.imgur.com/qQ7aGbv.png">
     <style>
         * {
             margin: 0;
@@ -27,6 +30,23 @@
         header {
             text-align: center;
             margin-bottom: 30px;
+            /* Flexbox para centrar el logo y el título verticalmente */
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* Estilo para el logo añadido */
+        .header-logo {
+            max-height: 60px;
+            margin-bottom: 15px;
+            filter: drop-shadow(0 0 10px rgba(168, 85, 247, 0.5));
+            transition: transform 0.3s ease;
+        }
+
+        .header-logo:hover {
+            transform: scale(1.1);
         }
 
         h1 {
@@ -1044,6 +1064,8 @@
 <body>
     <div class="container">
         <header>
+            <!-- Logo Añadido -->
+            <img src="https://i.imgur.com/qQ7aGbv.png" alt="Cancinfluencers Logo" class="header-logo">
             <h1>CANCINFLUENCERS</h1>
             <p class="subtitle">Descubre las canciones de tus influencers favoritos haciendo clic en las tarjetas</p>
         </header>
@@ -1120,8 +1142,8 @@
                     </a>
                 </div>
             </div>
-        </footer></div>
-    
+        </footer>
+    </div>
 
     <!-- Modal para ver el video -->
     <div class="modal" id="videoModal">
@@ -2439,5 +2461,5 @@
         });
     </script>
 
-
-</body></html>
+</body>
+</html>
