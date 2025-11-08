@@ -718,6 +718,31 @@
             background-clip: text;
         }
 
+        .tierlist-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .edit-tiers-btn {
+            background: linear-gradient(to right, #8b5cf6, #6366f1);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            padding: 8px 16px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .edit-tiers-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 4px 12px rgba(139, 92, 246, 0.4);
+        }
+
         .tierlist-container {
             flex-grow: 1;
             display: flex;
@@ -921,6 +946,98 @@
             margin-top: 10px;
             font-style: italic;
         }
+
+        /* Modal para editar tiers */
+        .edit-tiers-modal-content {
+            width: 100%;
+            max-width: 600px;
+            background-color: #1f2937;
+            border-radius: 16px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+        }
+
+        .edit-tiers-header {
+            margin-bottom: 25px;
+            text-align: center;
+        }
+
+        .edit-tiers-title {
+            font-size: 1.5rem;
+            font-weight: bold;
+            background: linear-gradient(to right, #8b5cf6, #6366f1);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .edit-tiers-subtitle {
+            color: #9ca3af;
+            margin-top: 5px;
+            font-size: 0.9rem;
+        }
+
+        .tier-edit-group {
+            margin-bottom: 20px;
+        }
+
+        .tier-edit-label {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: #d1d5db;
+        }
+
+        .tier-color-preview {
+            width: 24px;
+            height: 24px;
+            border-radius: 4px;
+        }
+
+        .tier-edit-input {
+            width: 100%;
+            padding: 10px 15px;
+            border-radius: 8px;
+            border: 1px solid #374151;
+            background-color: #374151;
+            color: white;
+            font-size: 16px;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+
+        .tier-edit-input:focus {
+            outline: none;
+            border-color: #8b5cf6;
+            box-shadow: 0 0 0 2px rgba(139, 92, 246, 0.2);
+        }
+
+        .edit-tiers-buttons {
+            display: flex;
+            gap: 15px;
+            margin-top: 25px;
+        }
+
+        .reset-tiers-btn {
+            background-color: #374151;
+            color: white;
+        }
+
+        .reset-tiers-btn:hover {
+            background-color: #4b5563;
+            transform: scale(1.02);
+        }
+
+        .save-tiers-btn {
+            background: linear-gradient(to right, #8b5cf6, #6366f1);
+            color: white;
+        }
+
+        .save-tiers-btn:hover {
+            transform: scale(1.02);
+            box-shadow: 0 4px 12px rgba(139, 92, 246, 0.4);
+        }
     </style>
 </head>
 <body>
@@ -1069,7 +1186,16 @@
         <div class="tierlist-modal-content">
             <div class="tierlist-header">
                 <h2 class="tierlist-title">MI TIERLIST</h2>
-                <button class="close-btn" id="closeTierlistModal">×</button>
+                <div class="tierlist-actions">
+                    <button class="edit-tiers-btn" id="editTiersBtn">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Editar Nombres
+                    </button>
+                    <button class="close-btn" id="closeTierlistModal">×</button>
+                </div>
             </div>
             
             <div class="tier-stats">
@@ -1115,6 +1241,69 @@
                     <div class="tier-label tier-f">F</div>
                     <div class="tier-items" id="tier-f"></div>
                 </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal para editar tiers -->
+    <div class="modal" id="editTiersModal">
+        <div class="edit-tiers-modal-content">
+            <div class="edit-tiers-header">
+                <h2 class="edit-tiers-title">Personalizar Nombres de Tiers</h2>
+                <p class="edit-tiers-subtitle">Edita los nombres de tus tiers para personalizar tu experiencia</p>
+            </div>
+            
+            <div class="tier-edit-group">
+                <div class="tier-edit-label">
+                    <div class="tier-color-preview tier-s"></div>
+                    <span>Nombre del Tier S:</span>
+                </div>
+                <input type="text" class="tier-edit-input" id="tier-name-s" placeholder="Ej: Excelente, God Tier, S+">
+            </div>
+            
+            <div class="tier-edit-group">
+                <div class="tier-edit-label">
+                    <div class="tier-color-preview tier-a"></div>
+                    <span>Nombre del Tier A:</span>
+                </div>
+                <input type="text" class="tier-edit-input" id="tier-name-a" placeholder="Ej: Muy Bueno, Great, A+">
+            </div>
+            
+            <div class="tier-edit-group">
+                <div class="tier-edit-label">
+                    <div class="tier-color-preview tier-b"></div>
+                    <span>Nombre del Tier B:</span>
+                </div>
+                <input type="text" class="tier-edit-input" id="tier-name-b" placeholder="Ej: Bueno, Average, B+">
+            </div>
+            
+            <div class="tier-edit-group">
+                <div class="tier-edit-label">
+                    <div class="tier-color-preview tier-c"></div>
+                    <span>Nombre del Tier C:</span>
+                </div>
+                <input type="text" class="tier-edit-input" id="tier-name-c" placeholder="Ej: Regular, Average, C+">
+            </div>
+            
+            <div class="tier-edit-group">
+                <div class="tier-edit-label">
+                    <div class="tier-color-preview tier-d"></div>
+                    <span>Nombre del Tier D:</span>
+                </div>
+                <input type="text" class="tier-edit-input" id="tier-name-d" placeholder="Ej: Malo, Below Average, D+">
+            </div>
+            
+            <div class="tier-edit-group">
+                <div class="tier-edit-label">
+                    <div class="tier-color-preview tier-f"></div>
+                    <span>Nombre del Tier F:</span>
+                </div>
+                <input type="text" class="tier-edit-input" id="tier-name-f" placeholder="Ej: Terrible, Fail, F-">
+            </div>
+            
+            <div class="edit-tiers-buttons">
+                <button class="form-btn reset-tiers-btn" id="resetTiersBtn">Restablecer</button>
+                <button class="form-btn save-tiers-btn" id="saveTiersBtn">Guardar Cambios</button>
             </div>
         </div>
     </div>
@@ -1234,6 +1423,42 @@
         let currentInfluencer = null;
         let draggedElement = null;
         let draggedInfluencer = null;
+
+        // Nombres personalizados de tiers
+        let customTierNames = {
+            s: 'S',
+            a: 'A',
+            b: 'B',
+            c: 'C',
+            d: 'D',
+            f: 'F'
+        };
+
+        // Función para cargar nombres personalizados desde localStorage
+        function loadCustomTierNames() {
+            const saved = localStorage.getItem('customTierNames');
+            if (saved) {
+                try {
+                    customTierNames = JSON.parse(saved);
+                } catch (e) {
+                    console.error('Error al cargar nombres personalizados:', e);
+                }
+            }
+        }
+
+        // Función para guardar nombres personalizados en localStorage
+        function saveCustomTierNames() {
+            try {
+                localStorage.setItem('customTierNames', JSON.stringify(customTierNames));
+            } catch (e) {
+                console.error('Error al guardar nombres personalizados:', e);
+            }
+        }
+
+        // Función para obtener el nombre del tier
+        function getTierName(tier) {
+            return customTierNames[tier] || tier.toUpperCase();
+        }
 
         // Función para extraer el ID del video de YouTube de una URL
         function getYouTubeId(url) {
@@ -1377,7 +1602,7 @@
             updateTierlistStats();
             
             // Mostrar notificación
-            showNotification(`${influencer.name} añadido a tier ${influencer.tier.toUpperCase()}`);
+            showNotification(`${influencer.name} añadido a tier ${getTierName(influencer.tier)}`);
         }
 
         // Función para crear un elemento del tierlist
@@ -1514,7 +1739,7 @@
                 tierlistData[newTier].push(draggedInfluencer);
                 
                 // Mostrar notificación
-                showNotification(`${draggedInfluencer.name} movido a tier ${newTier.toUpperCase()}`);
+                showNotification(`${draggedInfluencer.name} movido a tier ${getTierName(newTier)}`);
             }
             
             // Limpiar
@@ -1537,6 +1762,27 @@
             if (totalSongsEl) totalSongsEl.textContent = totalSongs;
         }
 
+        // Función para actualizar nombres de tiers en la UI
+        function updateTierNames() {
+            const tiers = ['s', 'a', 'b', 'c', 'd', 'f'];
+            
+            // Actualizar etiquetas en el modal de video
+            tiers.forEach(tier => {
+                const option = document.querySelector(`.tier-option[data-tier="${tier}"]`);
+                if (option) {
+                    option.textContent = getTierName(tier);
+                }
+            });
+            
+            // Actualizar etiquetas en la tierlist
+            tiers.forEach(tier => {
+                const label = document.querySelector(`.tier-row[data-tier="${tier}"] .tier-label`);
+                if (label) {
+                    label.textContent = getTierName(tier);
+                }
+            });
+        }
+
         // Función para abrir el modal
         function openModal(influencer) {
             if (isModalOpen) return;
@@ -1555,6 +1801,9 @@
             // Resetear selección de tier
             tierOptions.forEach(option => {
                 option.classList.remove('selected', 'disabled');
+                // Actualizar texto con nombres personalizados
+                const tier = option.dataset.tier;
+                option.textContent = getTierName(tier);
             });
             
             // Si ya tiene un tier asignado, marcarlo y deshabilitar
@@ -1562,7 +1811,7 @@
                 const existingTierOption = document.querySelector(`.tier-option[data-tier="${influencer.tier}"]`);
                 if (existingTierOption) {
                     existingTierOption.classList.add('selected', 'disabled');
-                    tierSelectionStatus.textContent = `Esta canción ya está clasificada en tier ${influencer.tier.toUpperCase()}`;
+                    tierSelectionStatus.textContent = `Esta canción ya está clasificada en tier ${getTierName(influencer.tier)}`;
                     tierSelectionStatus.classList.add('success');
                 }
             } else {
@@ -1606,7 +1855,7 @@
             
             // Actualizar UI
             const tierSelectionStatus = document.getElementById('tierSelectionStatus');
-            tierSelectionStatus.textContent = `¡Clasificado en tier ${tier.toUpperCase()}!`;
+            tierSelectionStatus.textContent = `¡Clasificado en tier ${getTierName(tier)}!`;
             tierSelectionStatus.classList.add('success');
             
             // Marcar el tier como seleccionado y deshabilitar todos
@@ -1655,6 +1904,9 @@
             // Actualizar estadísticas
             updateTierlistStats();
             
+            // Actualizar nombres de tiers
+            updateTierNames();
+            
             // Configurar drag and drop para los tiers
             setupTierlistDragAndDrop();
             
@@ -1666,15 +1918,84 @@
             }, 10);
         }
 
-        // Función para configurar drag and drop en la tierlist
-        function setupTierlistDragAndDrop() {
-            const tierItems = document.querySelectorAll('.tier-items');
-            
-            tierItems.forEach(tier => {
-                tier.addEventListener('dragover', handleDragOver);
-                tier.addEventListener('drop', handleDrop);
-                tier.addEventListener('dragleave', handleDragLeave);
+        // Función para abrir el modal de edición de tiers
+        function openEditTiersModal() {
+            // Cargar nombres actuales en los inputs
+            const tiers = ['s', 'a', 'b', 'c', 'd', 'f'];
+            tiers.forEach(tier => {
+                const input = document.getElementById(`tier-name-${tier}`);
+                if (input) {
+                    input.value = customTierNames[tier];
+                }
             });
+            
+            // Mostrar modal con animación
+            const editTiersModal = document.getElementById('editTiersModal');
+            editTiersModal.style.display = 'flex';
+            setTimeout(() => {
+                editTiersModal.classList.add('active');
+            }, 10);
+        }
+
+        // Función para cerrar el modal de edición de tiers
+        function closeEditTiersModal() {
+            const editTiersModal = document.getElementById('editTiersModal');
+            editTiersModal.classList.remove('active');
+            
+            setTimeout(() => {
+                editTiersModal.style.display = 'none';
+            }, 300);
+        }
+
+        // Función para guardar los nombres personalizados
+        function saveTierNames() {
+            const tiers = ['s', 'a', 'b', 'c', 'd', 'f'];
+            let hasChanges = false;
+            
+            tiers.forEach(tier => {
+                const input = document.getElementById(`tier-name-${tier}`);
+                if (input) {
+                    const newName = input.value.trim();
+                    if (newName && newName !== customTierNames[tier]) {
+                        customTierNames[tier] = newName;
+                        hasChanges = true;
+                    }
+                }
+            });
+            
+            if (hasChanges) {
+                saveCustomTierNames();
+                updateTierNames();
+                showNotification('Nombres de tiers actualizados correctamente');
+            }
+            
+            closeEditTiersModal();
+        }
+
+        // Función para restablecer nombres de tiers
+        function resetTierNames() {
+            customTierNames = {
+                s: 'S',
+                a: 'A',
+                b: 'B',
+                c: 'C',
+                d: 'D',
+                f: 'F'
+            };
+            
+            saveCustomTierNames();
+            updateTierNames();
+            
+            // Actualizar inputs
+            const tiers = ['s', 'a', 'b', 'c', 'd', 'f'];
+            tiers.forEach(tier => {
+                const input = document.getElementById(`tier-name-${tier}`);
+                if (input) {
+                    input.value = customTierNames[tier];
+                }
+            });
+            
+            showNotification('Nombres de tiers restablecidos');
         }
 
         // Función para cerrar el modal de tierlist
@@ -1948,6 +2269,27 @@
                 });
             });
             
+            // Event listeners para edición de tiers
+            const editTiersBtn = document.getElementById('editTiersBtn');
+            if (editTiersBtn) {
+                editTiersBtn.addEventListener('click', openEditTiersModal);
+            }
+            
+            const saveTiersBtn = document.getElementById('saveTiersBtn');
+            if (saveTiersBtn) {
+                saveTiersBtn.addEventListener('click', saveTierNames);
+            }
+            
+            const resetTiersBtn = document.getElementById('resetTiersBtn');
+            if (resetTiersBtn) {
+                resetTiersBtn.addEventListener('click', resetTierNames);
+            }
+            
+            const closeEditTiersModal = document.getElementById('editTiersModal');
+            if (closeEditTiersModal) {
+                closeEditTiersModal.addEventListener('click', closeEditTiersModal);
+            }
+            
             // Cerrar modales al hacer clic fuera
             const videoModal = document.getElementById('videoModal');
             if (videoModal) {
@@ -1976,6 +2318,15 @@
                 });
             }
             
+            const editTiersModal = document.getElementById('editTiersModal');
+            if (editTiersModal) {
+                editTiersModal.addEventListener('click', function(e) {
+                    if (e.target === editTiersModal) {
+                        closeEditTiersModal();
+                    }
+                });
+            }
+            
             // Prevenir que el modal se cierre al hacer clic en el video
             const modalVideo = document.getElementById('modalVideo');
             if (modalVideo) {
@@ -1987,9 +2338,23 @@
             console.log('Todos los event listeners configurados');
         }
 
+        // Función para configurar drag and drop en la tierlist
+        function setupTierlistDragAndDrop() {
+            const tierItems = document.querySelectorAll('.tier-items');
+            
+            tierItems.forEach(tier => {
+                tier.addEventListener('dragover', handleDragOver);
+                tier.addEventListener('drop', handleDrop);
+                tier.addEventListener('dragleave', handleDragLeave);
+            });
+        }
+
         // Inicialización
         document.addEventListener('DOMContentLoaded', function() {
             console.log('Inicializando aplicación...');
+            
+            // Cargar nombres personalizados
+            loadCustomTierNames();
             
             // Configurar event listeners
             setupEventListeners();
