@@ -799,6 +799,7 @@
         .tier-c { background-color: #7fff7f; }
         .tier-d { background-color: #7fffff; }
         .tier-f { background-color: #7f7fff; }
+        .tier-unclassified { background-color: #6b7280; } /* Nuevo estilo para la categoría sin clasificar */
 
         .tier-items {
             flex-grow: 1;
@@ -1241,6 +1242,12 @@
                     <div class="tier-label tier-f">F</div>
                     <div class="tier-items" id="tier-f"></div>
                 </div>
+
+                <!-- CATEGORÍA SIN CLASIFICAR MOVIDA AL FINAL -->
+                <div class="tier-row" data-tier="unclassified">
+                    <div class="tier-label tier-unclassified">Sin Clasificar</div>
+                    <div class="tier-items" id="tier-unclassified"></div>
+                </div>
             </div>
         </div>
     </div>
@@ -1522,6 +1529,10 @@
             videoThumbnail.className = 'video-thumbnail';
             videoThumbnail.src = `https://img.youtube.com/vi/${influencer.videoId}/maxresdefault.jpg`;
             videoThumbnail.alt = influencer.name;
+            videoThumbnail.dataset.videoId = influencer.videoId;
+            videoThumbnail.onerror = function() {
+                this.src = `https://img.youtube.com/vi/${this.dataset.videoId}/hqdefault.jpg`;
+            };
             
             const playButton = document.createElement('div');
             playButton.className = 'play-button';
@@ -1574,6 +1585,11 @@
                 revealedCards.add(influencer.id);
                 card.classList.add('revealed');
                 
+                // Añadir a la lista de no clasificados si no tiene tier
+                if (!influencer.tier) {
+                    tierlistData.unclassified.push(influencer);
+                }
+
                 // Abrir el modal directamente
                 openModal(influencer);
             }, 400);
@@ -1661,11 +1677,15 @@
                 // Resetear tier del influencer
                 influencer.tier = null;
                 
+                // Añadir a la lista de sin clasificar
+                tierlistData.unclassified.push(influencer);
+                renderUnclassifiedTier();
+
                 // Actualizar estadísticas
                 updateTierlistStats();
                 
                 // Mostrar notificación
-                showNotification(`${influencer.name} eliminado de la tierlist`);
+                showNotification(`${influencer.name} eliminado de la tierlist y movido a Sin Clasificar`);
             }
         }
 
@@ -1737,7 +1757,12 @@
                     tierlistData[newTier] = [];
                 }
                 tierlistData[newTier].push(draggedInfluencer);
-                
+
+                // Si se movió desde "unclassified", actualizar esa lista
+                if (oldTier === 'unclassified') {
+                    renderUnclassifiedTier();
+                }
+
                 // Mostrar notificación
                 showNotification(`${draggedInfluencer.name} movido a tier ${getTierName(newTier)}`);
             }
@@ -1780,6 +1805,18 @@
                 if (label) {
                     label.textContent = getTierName(tier);
                 }
+            });
+        }
+
+        // NUEVA FUNCIÓN: Renderizar la categoría "Sin Clasificar"
+        function renderUnclassifiedTier() {
+            const unclassifiedContainer = document.getElementById('tier-unclassified');
+            if (!unclassifiedContainer) return;
+
+            unclassifiedContainer.innerHTML = '';
+            tierlistData.unclassified.forEach(influencer => {
+                const tierItem = createTierItem(influencer);
+                unclassifiedContainer.appendChild(tierItem);
             });
         }
 
@@ -1849,6 +1886,10 @@
             
             // Asignar tier al influencer
             currentInfluencer.tier = tier;
+
+            // Eliminar de la lista de sin clasificar
+            tierlistData.unclassified = tierlistData.unclassified.filter(item => item.id !== currentInfluencer.id);
+            renderUnclassifiedTier();
             
             // Añadir al tierlist
             addToTierlist(currentInfluencer);
@@ -1907,6 +1948,9 @@
             // Actualizar nombres de tiers
             updateTierNames();
             
+            // Renderizar todas las categorías
+            renderAllTiers();
+
             // Configurar drag and drop para los tiers
             setupTierlistDragAndDrop();
             
@@ -1916,6 +1960,28 @@
             setTimeout(() => {
                 tierlistModal.classList.add('active');
             }, 10);
+        }
+
+        // NUEVA FUNCIÓN: Renderizar todos los tiers a la vez
+        function renderAllTiers() {
+            const tiers = ['s', 'a', 'b', 'c', 'd', 'f'];
+            
+            // Renderizar la lista de sin clasificar primero
+            renderUnclassifiedTier();
+
+            // Renderizar el resto de los tiers
+            tiers.forEach(tier => {
+                const tierContainer = document.getElementById(`tier-${tier}`);
+                if (!tierContainer) return;
+                tierContainer.innerHTML = '';
+
+                if (tierlistData[tier]) {
+                    tierlistData[tier].forEach(influencer => {
+                        const tierItem = createTierItem(influencer);
+                        tierContainer.appendChild(tierItem);
+                    });
+                }
+            });
         }
 
         // Función para abrir el modal de edición de tiers
@@ -2160,6 +2226,7 @@
 
         // Variables para el tierlist
         let tierlistData = {
+            unclassified: [], // NUEVA CATEGORÍA
             s: [],
             a: [],
             b: [],
@@ -2285,9 +2352,9 @@
                 resetTiersBtn.addEventListener('click', resetTierNames);
             }
             
-            const closeEditTiersModal = document.getElementById('editTiersModal');
-            if (closeEditTiersModal) {
-                closeEditTiersModal.addEventListener('click', closeEditTiersModal);
+            const closeEditTiersModalBtn = document.getElementById('closeEditTiersModal');
+            if (closeEditTiersModalBtn) {
+                closeEditTiersModalBtn.addEventListener('click', closeEditTiersModal);
             }
             
             // Cerrar modales al hacer clic fuera
@@ -2318,10 +2385,10 @@
                 });
             }
             
-            const editTiersModal = document.getElementById('editTiersModal');
-            if (editTiersModal) {
-                editTiersModal.addEventListener('click', function(e) {
-                    if (e.target === editTiersModal) {
+            const editTiersModalEl = document.getElementById('editTiersModal');
+            if (editTiersModalEl) {
+                editTiersModalEl.addEventListener('click', function(e) {
+                    if (e.target === editTiersModalEl) {
                         closeEditTiersModal();
                     }
                 });
@@ -2372,4 +2439,5 @@
         });
     </script>
 
-</body></html>
+</body>
+</html>
