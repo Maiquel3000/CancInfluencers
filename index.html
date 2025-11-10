@@ -1890,25 +1890,21 @@ function loadInfluencersDataFromLocalStorage() {
 
 // Sincronizar los tiers de los influencers con los datos cargados
 // ¡Esta es la función más importante!
+// FUNCIÓN DEFINITIVA: syncInfluencerTiersFromLoadedData
 function syncInfluencerTiersFromLoadedData() {
-    // Primero, resetear todos los tiers a null
+    // 1. Resetear todos los tiers en los datos maestros a null
     [...mainInfluencersData, ...fansInfluencersData].forEach(influencer => {
         influencer.tier = null;
     });
 
-    // Luego, aplicar los tiers guardados
+    // 2. Crear un conjunto (Set) con todos los IDs de los influencers clasificados
+    const classifiedIds = new Set();
     Object.keys(tierlistData).forEach(tierKey => {
-        if (tierKey === 'unclassified') {
-            // Para los no clasificados, asegurarse de que su tier sea null
+        // Ignorar la lista de 'unclassified' por ahora
+        if (tierKey !== 'unclassified') {
             tierlistData[tierKey].forEach(influencer => {
-                const masterInfluencer = findInfluencerById(influencer.id);
-                if (masterInfluencer) {
-                    masterInfluencer.tier = null;
-                }
-            });
-        } else {
-            // Para los clasificados, asignar su tier
-            tierlistData[tierKey].forEach(influencer => {
+                classifiedIds.add(influencer.id);
+                // Actualizar el tier en los datos maestros
                 const masterInfluencer = findInfluencerById(influencer.id);
                 if (masterInfluencer) {
                     masterInfluencer.tier = tierKey;
@@ -1916,6 +1912,12 @@ function syncInfluencerTiersFromLoadedData() {
             });
         }
     });
+
+    // 3. RE-CONSTRUIR la lista de 'unclassified' desde cero.
+    // --- CORRECCIÓN CLAVE: Añadimos la condición de que esté revelado ---
+    tierlistData.unclassified = [...mainInfluencersData, ...fansInfluencersData].filter(influencer => 
+        !classifiedIds.has(influencer.id) && revealedCards.has(influencer.id)
+    );
 }
         // Datos de los influencers principales - LISTA ACTUALIZADA CON CATEGORÍAS
     const mainInfluencersData = [
@@ -2768,12 +2770,14 @@ function clearCategoryFilter() {
     const newTier = this.closest('.tier-row').dataset.tier;
     
     if (draggedInfluencer && draggedElement && newTier !== draggedInfluencer.tier) {
-        const oldTier = draggedInfluencer.tier;
-        
+        // --- CORRECCIÓN CLAVE: Obtener el tier de origen desde el DOM ---
+        const oldTierRow = draggedElement.closest('.tier-row');
+        const oldTier = oldTierRow ? oldTierRow.dataset.tier : null;
+
         // Mover el elemento en el DOM
         this.appendChild(draggedElement);
         
-        // Actualizar el tier del influencer
+        // Actualizar el tier del influencer en los datos maestros
         draggedInfluencer.tier = newTier;
         
         // Eliminar de los datos del tier anterior
@@ -2781,24 +2785,20 @@ function clearCategoryFilter() {
             tierlistData[oldTier] = tierlistData[oldTier].filter(item => item.id !== draggedInfluencer.id);
         }
 
-        // ¡CORRECCIÓN CLAVE! Si se movió desde "unclassified", eliminarlo también de los datos de "unclassified"
-        if (oldTier === 'unclassified') {
-            tierlistData.unclassified = tierlistData.unclassified.filter(item => item.id !== draggedInfluencer.id);
-        }
-
         // Añadir a los datos del nuevo tier
         if (!tierlistData[newTier]) {
             tierlistData[newTier] = [];
         }
+        
         // Evitar duplicados en el nuevo tier
         tierlistData[newTier] = tierlistData[newTier].filter(item => item.id !== draggedInfluencer.id);
         tierlistData[newTier].push(draggedInfluencer);
 
-        // GUARDAR: Guardar la tierlist después de mover un elemento
-        saveTierlistDataToLocalStorage();
-
         // Actualizar estadísticas
         updateTierlistStats();
+        
+        // Guardar el estado correcto en localStorage
+        saveTierlistDataToLocalStorage();
         
         // Mostrar notificación
         showNotification(`${draggedInfluencer.name} movido a tier ${getTierName(newTier)}`);
@@ -2859,7 +2859,8 @@ function clearCategoryFilter() {
         }
 
         // Función para abrir el modal
-        function openModal(influencer) {
+        // FUNCIÓN CORREGIDA: openModal
+function openModal(influencer) {
     if (isModalOpen) return;
     
     currentInfluencer = influencer;
@@ -2869,19 +2870,37 @@ function clearCategoryFilter() {
     const modalVideo = document.getElementById('modalVideo');
     const tierSelectionStatus = document.getElementById('tierSelectionStatus');
     const tierOptions = document.querySelectorAll('.tier-option');
-    const videoModal = document.getElementById('videoModal'); // <-- OBTENER REFERENCIA
     
     modalTitle.textContent = influencer.name;
     modalVideo.src = `https://www.youtube.com/embed/${influencer.videoId}?rel=0&showinfo=0&modestbranding=1&autoplay=1`;
     
-    // ... (el resto del código de configuración de tiers) ...
+    // --- PASO 1: Resetear SIEMPRE la UI a su estado por defecto ---
+    tierOptions.forEach(option => {
+        option.classList.remove('selected', 'disabled');
+        // Actualizar texto con nombres personalizados por si acaso
+        const tier = option.dataset.tier;
+        option.textContent = getTierName(tier);
+    });
     
-    // --- NUEVA LÓGICA ---
+    // Resetear el mensaje de estado a su valor inicial
+    tierSelectionStatus.textContent = 'Haz clic en un tier para clasificar esta canción';
+    tierSelectionStatus.classList.remove('success');
+    
+    // --- PASO 2: Aplicar el estado del influencer actual (si lo tiene) ---
+    if (influencer.tier) {
+        const existingTierOption = document.querySelector(`.tier-option[data-tier="${influencer.tier}"]`);
+        if (existingTierOption) {
+            existingTierOption.classList.add('selected');
+            tierSelectionStatus.textContent = `Esta canción está en tier ${getTierName(influencer.tier)}. Haz clic en otro tier para cambiarla.`;
+            tierSelectionStatus.classList.add('success');
+        }
+    }
+    
+    // Lógica para mostrar el modal sobre la tierlist (si es necesario)
+    const videoModal = document.getElementById('videoModal');
     if (isTierlistModalOpen) {
-        // Si la tierlist está abierta, añadir la clase especial
         videoModal.classList.add('on-top-of-tierlist');
     } else {
-        // Si no, asegurarse de que no tenga la clase
         videoModal.classList.remove('on-top-of-tierlist');
     }
     
