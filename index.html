@@ -1351,6 +1351,31 @@
     font-weight: bold;
     color: #06b6d4;
 }
+
+/* ESTILOS PARA LAS NOTIFICACIONES (ACTUALIZADOS) */
+.notification {
+    position: fixed;
+    top: 20px;          /* Posicionado arriba */
+    right: 20px;        /* Posicionado a la derecha */
+    background: linear-gradient(to right, #10b981, #059669); /* Fondo verde */
+    color: white;
+    padding: 15px 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(16, 185, 129, 0.4); /* Sombra verde para combinar */
+    z-index: 2000;       /* Asegura que esté por encima de todo */
+    opacity: 0;          /* Oculto por defecto */
+    transform: translateY(-20px); /* Posición inicial, un poco más arriba */
+    transition: opacity 0.4s ease, transform 0.4s ease; /* Animación suave */
+    font-weight: bold;
+    font-size: 0.95rem;
+    max-width: 300px;
+    pointer-events: none; /* Evita que la notificación bloquee clics */
+}
+
+.notification.show {
+    opacity: 1;          /* Visible */
+    transform: translateY(0); /* Posición final, en su lugar */
+}
     </style>
 </head>
 <body>
@@ -1674,14 +1699,224 @@
                 <button class="form-btn reset-tiers-btn" id="resetTiersBtn">Restablecer</button>
                 <button class="form-btn save-tiers-btn" id="saveTiersBtn">Guardar Cambios</button>
             </div>
-        </div>
-
-        <!-- Notificación -->
-        <div class="notification" id="notification">			
+        </div>		
     </div>
 
 
     <script>
+
+// --- CÓDIGO DEL EASTER EGG (CÓDIGO KONAMI - VERSIÓN CORREGIDA) ---
+
+const konamiCode = ['arrowup', 'arrowup', 'arrowdown', 'arrowdown', 'arrowleft', 'arrowright', 'arrowleft', 'arrowright', 'b', 'a'];
+let konamiCodePosition = 0;
+
+// Función para activar el Easter Egg (sin cambios)
+function triggerEasterEgg() {
+    if (localStorage.getItem('cancinfluencers_easterEggActivated') === 'true') {
+        showNotification('El Easter Egg ya fue descubierto.');
+        konamiCodePosition = 0;
+        return;
+    }
+
+    const easterEggInfluencer = {
+        id: 'easter_egg_maiquel3k',
+        name: 'Maiquel3k',
+        youtubeUrl: 'https://www.youtube.com/watch?v=lfVKuIAdfRY',
+        videoId: 'lfVKuIAdfRY',
+        tier: 's'
+    };
+
+    mainInfluencersData.push(easterEggInfluencer);
+    mainInfluencers.push(easterEggInfluencer);
+    revealedCards.add(easterEggInfluencer.id);
+    tierlistData.s.push(easterEggInfluencer);
+
+    localStorage.setItem('cancinfluencers_easterEggActivated', 'true');
+    saveRevealedCardsToLocalStorage();
+    saveTierlistDataToLocalStorage();
+
+    renderCards();
+    updateTierlistStats();
+    showNotification('🎉 ¡Código Konami Activado! Encontraste el Easter egg!');
+    openModal(easterEggInfluencer);
+    konamiCodePosition = 0;
+}
+
+// Función para cargar el Easter Egg si ya fue activado (sin cambios)
+function loadEasterEgg() {
+    if (localStorage.getItem('cancinfluencers_easterEggActivated') === 'true') {
+        const easterEggInfluencer = {
+            id: 'easter_egg_maiquel3k',
+            name: 'Maiquel3k',
+            youtubeUrl: 'https://www.youtube.com/watch?v=lfVKuIAdfRY',
+            videoId: 'lfVKuIAdfRY',
+            tier: 's'
+        };
+        
+        if (!mainInfluencersData.find(i => i.id === easterEggInfluencer.id)) {
+            mainInfluencersData.push(easterEggInfluencer);
+            mainInfluencers.push(easterEggInfluencer);
+            revealedCards.add(easterEggInfluencer.id);
+        }
+    }
+}
+
+// Listener para detectar el Código Konami (MÁS ROBUSTO)
+document.addEventListener('keydown', function(e) {
+    // Ignorar si el foco está en un campo de entrada de texto
+    if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA' || e.target.isContentEditable) {
+        return;
+    }
+
+    // Usamos e.key.toLowerCase() para que funcione tanto con 'b' como con 'B'
+    const key = e.key.toLowerCase();
+
+    // Comprobamos si la tecla es la correcta en la secuencia
+    if (key === konamiCode[konamiCodePosition]) {
+        konamiCodePosition++;
+        
+        // Si se ha completado toda la secuencia
+        if (konamiCodePosition === konamiCode.length) {
+            triggerEasterEgg();
+        }
+    } else {
+        // Si la tecla es incorrecta, reiniciar la secuencia
+        konamiCodePosition = 0;
+    }
+});
+
+    // --- FUNCIONES DE LOCALSTORAGE ---
+
+    // Guardar el siguiente ID disponible
+function saveNextIdToLocalStorage() {
+    try {
+        localStorage.setItem('cancinfluencers_nextId', nextId.toString());
+    } catch (e) {
+        console.error('Error al guardar nextId:', e);
+    }
+}
+
+// Cargar el siguiente ID disponible
+function loadNextIdFromLocalStorage() {
+    try {
+        const saved = localStorage.getItem('cancinfluencers_nextId');
+        if (saved) {
+            nextId = parseInt(saved, 10);
+        }
+    } catch (e) {
+        console.error('Error al cargar nextId:', e);
+    }
+}
+
+// Guardar las tarjetas reveladas
+function saveRevealedCardsToLocalStorage() {
+    try {
+        const revealedArray = Array.from(revealedCards);
+        localStorage.setItem('cancinfluencers_revealedCards', JSON.stringify(revealedArray));
+    } catch (e) {
+        console.error('Error al guardar tarjetas reveladas:', e);
+    }
+}
+
+// Cargar las tarjetas reveladas
+function loadRevealedCardsFromLocalStorage() {
+    try {
+        const saved = localStorage.getItem('cancinfluencers_revealedCards');
+        if (saved) {
+            const revealedArray = JSON.parse(saved);
+            revealedCards = new Set(revealedArray);
+        }
+    } catch (e) {
+        console.error('Error al cargar tarjetas reveladas:', e);
+        revealedCards = new Set(); // Resetear a un Set vacío en caso de error
+    }
+}
+
+// Guardar los datos de la tierlist
+function saveTierlistDataToLocalStorage() {
+    try {
+        localStorage.setItem('cancinfluencers_tierlistData', JSON.stringify(tierlistData));
+    } catch (e) {
+        console.error('Error al guardar datos de la tierlist:', e);
+    }
+}
+
+// Cargar los datos de la tierlist
+function loadTierlistDataFromLocalStorage() {
+    try {
+        const saved = localStorage.getItem('cancinfluencers_tierlistData');
+        if (saved) {
+            tierlistData = JSON.parse(saved);
+        }
+    } catch (e) {
+        console.error('Error al cargar datos de la tierlist:', e);
+        // Resetear a los valores por defecto en caso de error
+        tierlistData = {
+            unclassified: [],
+            s: [],
+            a: [],
+            b: [],
+            c: [],
+            d: [],
+            f: []
+        };
+    }
+}
+
+// Guardar la lista completa de influencers principales
+function saveInfluencersDataToLocalStorage() {
+    try {
+        localStorage.setItem('cancinfluencers_mainInfluencersData', JSON.stringify(mainInfluencersData));
+    } catch (e) {
+        console.error('Error al guardar la lista de influencers:', e);
+    }
+}
+
+// Cargar la lista completa de influencers principales
+function loadInfluencersDataFromLocalStorage() {
+    try {
+        const saved = localStorage.getItem('cancinfluencers_mainInfluencersData');
+        if (saved) {
+            const loadedInfluencers = JSON.parse(saved);
+            // Reemplazar el array original con el cargado
+            mainInfluencersData.length = 0; // Vaciar el array original
+            mainInfluencersData.push(...loadedInfluencers); // Añadir los elementos cargados
+        }
+    } catch (e) {
+        console.error('Error al cargar la lista de influencers:', e);
+        // Si hay un error, se seguirá usando la lista por defecto
+    }
+}
+
+// Sincronizar los tiers de los influencers con los datos cargados
+// ¡Esta es la función más importante!
+function syncInfluencerTiersFromLoadedData() {
+    // Primero, resetear todos los tiers a null
+    [...mainInfluencersData, ...fansInfluencersData].forEach(influencer => {
+        influencer.tier = null;
+    });
+
+    // Luego, aplicar los tiers guardados
+    Object.keys(tierlistData).forEach(tierKey => {
+        if (tierKey === 'unclassified') {
+            // Para los no clasificados, asegurarse de que su tier sea null
+            tierlistData[tierKey].forEach(influencer => {
+                const masterInfluencer = findInfluencerById(influencer.id);
+                if (masterInfluencer) {
+                    masterInfluencer.tier = null;
+                }
+            });
+        } else {
+            // Para los clasificados, asignar su tier
+            tierlistData[tierKey].forEach(influencer => {
+                const masterInfluencer = findInfluencerById(influencer.id);
+                if (masterInfluencer) {
+                    masterInfluencer.tier = tierKey;
+                }
+            });
+        }
+    });
+}
         // Datos de los influencers principales - LISTA ACTUALIZADA CON CATEGORÍAS
     const mainInfluencersData = [
         { id: '1', name: 'OllieGamerZ', youtubeUrl: 'https://www.youtube.com/watch?v=62pWsLpR8so', videoId: '62pWsLpR8so', tier: null, categories: ['Minecraft', 'Españoles'] },
@@ -2309,32 +2544,33 @@ function clearCategoryFilter() {
         }
 
         // Función para manejar el clic en una tarjeta
-        function handleCardClick(influencer, card) {
-            // Si la tarjeta ya está revelada, solo abrir el modal
-            if (card.classList.contains('flipped')) {
-                openModal(influencer);
-                return;
-            }
-            
-            // Animar la tarjeta
-            card.classList.add('animating');
-            
-            // Después de la animación, voltear la tarjeta y abrir el modal
-            setTimeout(() => {
-                card.classList.remove('animating');
-                card.classList.add('flipped');
-                revealedCards.add(influencer.id);
-                card.classList.add('revealed');
-                
-                // Añadir a la lista de no clasificados si no tiene tier
-                if (!influencer.tier) {
-                    tierlistData.unclassified.push(influencer);
+            function handleCardClick(influencer, card) {
+                if (card.classList.contains('flipped')) {
+                    openModal(influencer);
+                    return;
                 }
+                
+                card.classList.add('animating');
+                
+                setTimeout(() => {
+                    card.classList.remove('animating');
+                    card.classList.add('flipped');
+                    revealedCards.add(influencer.id);
+                    card.classList.add('revealed');
+                    
+                    // Añadir a la lista de no clasificados si no tiene tier
+                    if (!influencer.tier) {
+                        tierlistData.unclassified.push(influencer);
+                    }
 
-                // Abrir el modal directamente
-                openModal(influencer);
-            }, 400);
-        }
+                    // GUARDAR: Guardar el estado de las tarjetas reveladas
+                    saveRevealedCardsToLocalStorage();
+                    // GUARDAR: Guardar la tierlist (por si se añade a sin clasificar)
+                    saveTierlistDataToLocalStorage();
+
+                    openModal(influencer);
+                }, 400);
+            }
 
         // Función para añadir al tierlist
         function addToTierlist(influencer) {
@@ -2468,6 +2704,9 @@ function clearCategoryFilter() {
         // Re-renderizar "Sin Clasificar" para asegurar que la UI esté sincronizada
         renderUnclassifiedTier();
         
+        // GUARDAR: Guardar la tierlist después de eliminar
+        saveTierlistDataToLocalStorage();
+
         // Actualizar estadísticas
         updateTierlistStats();
         
@@ -2554,6 +2793,9 @@ function clearCategoryFilter() {
         // Evitar duplicados en el nuevo tier
         tierlistData[newTier] = tierlistData[newTier].filter(item => item.id !== draggedInfluencer.id);
         tierlistData[newTier].push(draggedInfluencer);
+
+        // GUARDAR: Guardar la tierlist después de mover un elemento
+        saveTierlistDataToLocalStorage();
 
         // Actualizar estadísticas
         updateTierlistStats();
@@ -2725,6 +2967,9 @@ function closeModalFunc() {
             option.classList.add('selected');
         }
     });
+
+        // GUARDAR: Guardar la tierlist después de cada cambio
+    saveTierlistDataToLocalStorage();
     
     // Actualizar estadísticas
     updateTierlistStats();
@@ -2902,79 +3147,84 @@ function closeModalFunc() {
 
         // Función para añadir un nuevo influencer
         function addInfluencer(name, url) {
-            const videoId = getYouTubeId(url);
-            
-            const newInfluencer = {
-                id: nextId.toString(),
-                name: name,
-                youtubeUrl: url,
-                videoId: videoId,
-                tier: null
-            };
-            
-            mainInfluencers.push(newInfluencer);
-            nextId++;
-            
-            // Mostrar mensaje de éxito
-            const successMessage = document.getElementById('successMessage');
-            if (successMessage) successMessage.style.display = 'block';
-            
-            // Renderizar las tarjetas
-            renderCards();
-            
-            // Cerrar el modal después de 1.5 segundos
-            setTimeout(() => {
-                closeAddModal();
-            }, 1500);
-        }
+    const videoId = getYouTubeId(url);
+    
+    const newInfluencer = {
+        id: nextId.toString(),
+        name: name,
+        youtubeUrl: url,
+        videoId: videoId,
+        tier: null,
+        categories: []
+    };
+    
+    mainInfluencers.push(newInfluencer);
+    mainInfluencersData.push(newInfluencer);
+    nextId++;
+    
+    // Guardar ambos: la lista de influencers Y el siguiente ID
+    saveInfluencersDataToLocalStorage();
+    saveNextIdToLocalStorage(); // <-- AÑADE ESTA LÍNEA
+    
+    // Mostrar mensaje de éxito
+    const successMessage = document.getElementById('successMessage');
+    if (successMessage) successMessage.style.display = 'block';
+    
+    renderCards();
+    
+    setTimeout(() => {
+        closeAddModal();
+    }, 750);
+}
 
         // Reemplaza la función existente con esta versión actualizada
         function renderCards() {
-            const cardsGrid = document.getElementById('cardsGrid');
-            if (!cardsGrid) return;
-            
-            cardsGrid.innerHTML = '';
-            
-            let influencersToRender = [...mainInfluencersData];
+    const cardsGrid = document.getElementById('cardsGrid');
+    if (!cardsGrid) return;
+    
+    cardsGrid.innerHTML = '';
+    
+    // --- CORRECCIÓN CLAVE: Usar la lista actual en lugar de la original ---
+    let influencersToRender = [...mainInfluencers];
 
-            // Aplicar filtro de categorías si hay categorías seleccionadas
-            if (selectedCategories.size > 0) {
-                influencersToRender = influencersToRender.filter(influencer => 
-                    influencer.categories && influencer.categories.some(cat => selectedCategories.has(cat))
-                );
-            }
-            
-            // Aplicar filtro de búsqueda si hay texto
-            const searchInput = document.getElementById('searchInput');
-            if (searchInput && searchInput.value.trim() !== '') {
-                const searchTerm = searchInput.value.toLowerCase();
-                influencersToRender = influencersToRender.filter(influencer => 
-                    influencer.name.toLowerCase().includes(searchTerm)
-                );
-            }
+    // Aplicar filtro de categorías si hay categorías seleccionadas
+    if (selectedCategories.size > 0) {
+        influencersToRender = influencersToRender.filter(influencer => 
+            influencer.categories && influencer.categories.some(cat => selectedCategories.has(cat))
+        );
+    }
+    
+    // Aplicar filtro de búsqueda si hay texto
+    const searchInput = document.getElementById('searchInput');
+    if (searchInput && searchInput.value.trim() !== '') {
+        const searchTerm = searchInput.value.toLowerCase();
+        influencersToRender = influencersToRender.filter(influencer => 
+            influencer.name.toLowerCase().includes(searchTerm)
+        );
+    }
 
-            if (influencersToRender.length === 0) {
-                const noResults = document.getElementById('noResults');
-                if (noResults) noResults.style.display = 'block';
-                return;
+    if (influencersToRender.length === 0) {
+        const noResults = document.getElementById('noResults');
+        if (noResults) noResults.style.display = 'block';
+        return;
+    }
+    
+    const noResults = document.getElementById('noResults');
+    if (noResults) noResults.style.display = 'none';
+    
+    influencersToRender.forEach(influencer => {
+        const card = createCard(influencer);
+        cardsGrid.appendChild(card);
+        
+        if (revealedCards.has(influencer.id)) {
+            const cardElement = card.querySelector('.card');
+            if (cardElement) {
+                cardElement.classList.add('flipped');
+                cardElement.classList.add('revealed');
             }
-            
-            const noResults = document.getElementById('noResults');
-            if (noResults) noResults.style.display = 'none';
-            
-            influencersToRender.forEach(influencer => {
-                const card = createCard(influencer);
-                cardsGrid.appendChild(card);
-                
-                if (revealedCards.has(influencer.id)) {
-                    const cardElement = card.querySelector('.card');
-                    if (cardElement) {
-                        cardElement.classList.add('flipped');
-                        cardElement.classList.add('revealed');
-                    }
-                }
-            });
         }
+    });
+}
 
         // Función para renderizar las tarjetas de fans
         function renderFansCards() {
@@ -3061,9 +3311,10 @@ function closeModalFunc() {
                 notification.textContent = message;
                 notification.classList.add('show');
                 
+                // La notificación desaparecerá automáticamente después de 3 segundos
                 setTimeout(() => {
                     notification.classList.remove('show');
-                }, 3000);
+                }, 3000); 
             }
         }
 
@@ -3301,26 +3552,44 @@ function closeModalFunc() {
 
         // Inicialización
         document.addEventListener('DOMContentLoaded', function() {
-            console.log('Inicializando aplicación...');
-            
-            // Cargar nombres personalizados
-            loadCustomTierNames();
-            
-            // Configurar event listeners
-            setupEventListeners();
-            
-            // Renderizar tarjetas iniciales
-            renderCards();
-            
-            // Actualizar contador de fans
-            const fansCount = document.getElementById('fansCount');
-            if (fansCount) {
-                fansCount.textContent = `${fansInfluencersData.length} canciones disponibles`;
-            }
-            
-            console.log('Aplicación inicializada correctamente');
-        });
+    console.log('Inicializando aplicación...');
+    
+    // 1. Cargar nombres personalizados
+    loadCustomTierNames();
+    
+    // 2. CARGAR DATOS DESDE LOCALSTORAGE (en orden)
+    loadInfluencersDataFromLocalStorage(); // Carga la lista maestra
+    loadNextIdFromLocalStorage();           // Carga el siguiente ID
+    
+    // --- PASO CLAVE: Sincronizar la copia de trabajo con la lista maestra cargada ---
+    mainInfluencers = [...mainInfluencersData];
+    
+    // 3. Cargar el resto de los datos de estado
+    loadRevealedCardsFromLocalStorage();
+    loadTierlistDataFromLocalStorage();
+    syncInfluencerTiersFromLoadedData();
+    
+    // 4. Cargar el Easter Egg
+    loadEasterEgg();
+    
+    // 5. Configurar event listeners
+    setupEventListeners();
+    
+    // 6. Renderizar la UI con los datos cargados y sincronizados
+    renderCards();
+    
+    // Actualizar contador de fans
+    const fansCount = document.getElementById('fansCount');
+    if (fansCount) {
+        fansCount.textContent = `${fansInfluencersData.length} canciones disponibles`;
+    }
+    
+    console.log('Aplicación inicializada correctamente con datos guardados.');
+});
     </script>
+
+        <!-- Notificación -->
+        <div class="notification" id="notification">	
 
 </body>
 </html>
