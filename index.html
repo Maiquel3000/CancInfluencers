@@ -1376,6 +1376,28 @@
     opacity: 1;          /* Visible */
     transform: translateY(0); /* Posición final, en su lugar */
 }
+
+.reset-app-btn-icon {
+    background: #374151; /* Color gris sutil */
+    border: none;
+    border-radius: 50%; /* Lo hace circular */
+    width: 44px;
+    height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    color: #9ca3af; /* Color de icono grisáceo */
+    transition: all 0.2s ease;
+    flex-shrink: 0; /* Evita que el botón se encoja */
+    margin-top: 10px; /* Lo baja un poco para alinearlo visualmente con el título */
+}
+
+.reset-app-btn-icon:hover {
+    background: #ef4444; /* Se vuelve rojo al pasar el ratón (peligro) */
+    color: white;
+    transform: scale(1.1);
+}
     </style>
 </head>
 <body>
@@ -1388,6 +1410,12 @@
         </header>
 
         <div class="controls">
+                <button class="reset-app-btn-icon" id="resetAppBtn" title="Reiniciar Aplicación (borrará todos los datos)">
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="3 6 5 6 21 6"></polyline>
+            <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+        </svg>
+    </button>
             <input type="text" class="search-input" placeholder="Buscar influencer..." id="searchInput">
             <button class="btn shuffle-btn" id="shuffleBtn">
                 <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -3604,6 +3632,58 @@ function closeModalFunc() {
     }
     
     console.log('Aplicación inicializada correctamente con datos guardados.');
+
+function resetApp() {
+    // --- PRIMERA CONFIRMACIÓN (La detallada y alarmante) ---
+    const firstConfirm = confirm(
+        "⚠️ ADVERTENCIA: ESTA ACCION BORRARA TODO ⚠️\n\n" +
+        "Estas a punto de eliminar PERMANENTEMENTE:\n\n" +
+        "- Tu tierlist completa\n" +
+        "- Todos los influencers añadidos\n" +
+        "- El progreso de tarjetas reveladas\n" +
+        "- El Easter Egg descubierto\n\n" +
+        "Esta accion es IRREVERSIBLE.\n\n" +
+        "¿Confirmas que deseas reiniciar todo?"
+    );
+
+    if (firstConfirm) {
+        // --- SEGUNDA CONFIRMACIÓN (La final y directa) ---
+        const secondConfirm = confirm(
+            "¡ÚLTIMA OPORTUNIDAD!\n\n" +
+            "¿ESTÁS 100% SEGURO DE QUE QUIERES CONTINUAR?\n\n" +
+            "Presiona 'Aceptar' para BORRAR TODO.\n" +
+            "Presiona 'Cancelar' para guardar tus datos."
+        );
+
+        if (secondConfirm) {
+            // 1. Limpiar todo el localStorage
+            localStorage.clear();
+            
+            // 2. Mostrar notificación de que se ha reiniciado
+            showNotification('✅ Todos los datos han sido borrados. Recargando...');
+            
+            // 3. Recargar la página después de un breve retraso para que se vea la notificación
+            setTimeout(() => {
+                location.reload();
+            }, 1500);
+        } else {
+            // El usuario canceló en la segunda confirmación
+            showNotification('💅 Uf... Casi la lias. Tus datos están a salvo.');
+        }
+    }
+    // Si el usuario cancela en la primera confirmación, no pasa nada (el diálogo se cierra)
+}
+
+// Añadir el event listener en setupEventListeners (sin cambios)
+function setupEventListeners() {
+    // ... todos los listeners existentes ...
+    
+    // Añadir listener para el botón de reinicio
+    const resetAppBtn = document.getElementById('resetAppBtn');
+    if (resetAppBtn) {
+        resetAppBtn.addEventListener('click', resetApp);
+    }
+}
 });
     </script>
 
