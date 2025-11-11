@@ -3365,6 +3365,41 @@ function closeModalFunc() {
             }
         }
 
+// FUNCIÓN PARA REINICIAR LA APLICACIÓN
+// Debe estar en el ámbito global para que setupEventListeners pueda encontrarla
+function resetApp() {
+    // --- PRIMERA CONFIRMACIÓN (La detallada y alarmante) ---
+    const firstConfirm = confirm(
+        "⚠️ ADVERTENCIA: ESTA ACCION BORRARA TODO ⚠️\n\n" +
+        "Estas a punto de eliminar PERMANENTEMENTE:\n\n" +
+        "- Tu tierlist completa\n" +
+        "- Todos los influencers añadidos\n" +
+        "- El progreso de tarjetas reveladas\n" +
+        "- El Easter Egg descubierto\n\n" +
+        "Esta accion es IRREVERSIBLE.\n\n" +
+        "¿Confirmas que deseas reiniciar todo?"
+    );
+
+    if (firstConfirm) {
+        const secondConfirm = confirm(
+            "¡ÚLTIMA OPORTUNIDAD!\n\n" +
+            "¿ESTÁS 100% SEGURO DE QUE QUIERES CONTINUAR?\n\n" +
+            "Presiona 'Aceptar' para BORRAR TODO.\n" +
+            "Presiona 'Cancelar' para guardar tus datos."
+        );
+
+        if (secondConfirm) {
+            localStorage.clear();
+            showNotification('✅ Todos los datos han sido borrados. Recargando...');
+            setTimeout(() => {
+                location.reload();
+            }, 1500);
+        } else {
+            showNotification('💅 Uf... Casi lo logras. Tus datos están a salvo.');
+        }
+    }
+}
+
         // Variables para el tierlist
         let tierlistData = {
             unclassified: [], // NUEVA CATEGORÍA
@@ -3386,6 +3421,12 @@ function closeModalFunc() {
                 shuffleBtn.addEventListener('click', shuffleCards);
                 console.log('Listener añadido a shuffleBtn');
             }
+
+                const resetAppBtn = document.getElementById('resetAppBtn');
+    if (resetAppBtn) {
+        resetAppBtn.addEventListener('click', resetApp);
+        console.log('Listener añadido a resetAppBtn');
+    }
             
             // Listener para el botón de categorías
             const categoriesBtn = document.getElementById('categoriesBtn');
@@ -3425,6 +3466,8 @@ function closeModalFunc() {
                         closeCategoriesModal();
                     }
                 });
+            
+            
             }
             
             const addBtn = document.getElementById('addBtn');
@@ -3584,6 +3627,7 @@ function closeModalFunc() {
             }
             
             console.log('Todos los event listeners configurados');
+            
         }
 
         // Función para configurar drag and drop en la tierlist
@@ -3597,8 +3641,8 @@ function closeModalFunc() {
             });
         }
 
-        // Inicialización
-        document.addEventListener('DOMContentLoaded', function() {
+// Inicialización
+document.addEventListener('DOMContentLoaded', function() {
     console.log('Inicializando aplicación...');
     
     // 1. Cargar nombres personalizados
@@ -3619,7 +3663,7 @@ function closeModalFunc() {
     // 4. Cargar el Easter Egg
     loadEasterEgg();
     
-    // 5. Configurar event listeners
+    // 5. Configurar event listeners (ahora resetApp es global y accesible)
     setupEventListeners();
     
     // 6. Renderizar la UI con los datos cargados y sincronizados
@@ -3632,58 +3676,6 @@ function closeModalFunc() {
     }
     
     console.log('Aplicación inicializada correctamente con datos guardados.');
-
-function resetApp() {
-    // --- PRIMERA CONFIRMACIÓN (La detallada y alarmante) ---
-    const firstConfirm = confirm(
-        "⚠️ ADVERTENCIA: ESTA ACCION BORRARA TODO ⚠️\n\n" +
-        "Estas a punto de eliminar PERMANENTEMENTE:\n\n" +
-        "- Tu tierlist completa\n" +
-        "- Todos los influencers añadidos\n" +
-        "- El progreso de tarjetas reveladas\n" +
-        "- El Easter Egg descubierto\n\n" +
-        "Esta accion es IRREVERSIBLE.\n\n" +
-        "¿Confirmas que deseas reiniciar todo?"
-    );
-
-    if (firstConfirm) {
-        // --- SEGUNDA CONFIRMACIÓN (La final y directa) ---
-        const secondConfirm = confirm(
-            "¡ÚLTIMA OPORTUNIDAD!\n\n" +
-            "¿ESTÁS 100% SEGURO DE QUE QUIERES CONTINUAR?\n\n" +
-            "Presiona 'Aceptar' para BORRAR TODO.\n" +
-            "Presiona 'Cancelar' para guardar tus datos."
-        );
-
-        if (secondConfirm) {
-            // 1. Limpiar todo el localStorage
-            localStorage.clear();
-            
-            // 2. Mostrar notificación de que se ha reiniciado
-            showNotification('✅ Todos los datos han sido borrados. Recargando...');
-            
-            // 3. Recargar la página después de un breve retraso para que se vea la notificación
-            setTimeout(() => {
-                location.reload();
-            }, 1500);
-        } else {
-            // El usuario canceló en la segunda confirmación
-            showNotification('💅 Uf... Casi la lias. Tus datos están a salvo.');
-        }
-    }
-    // Si el usuario cancela en la primera confirmación, no pasa nada (el diálogo se cierra)
-}
-
-// Añadir el event listener en setupEventListeners (sin cambios)
-function setupEventListeners() {
-    // ... todos los listeners existentes ...
-    
-    // Añadir listener para el botón de reinicio
-    const resetAppBtn = document.getElementById('resetAppBtn');
-    if (resetAppBtn) {
-        resetAppBtn.addEventListener('click', resetApp);
-    }
-}
 });
     </script>
 
