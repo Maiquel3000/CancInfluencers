@@ -390,23 +390,31 @@
         .tier-options {
             display: flex;
             justify-content: center;
-            gap: 8px;
+            gap: 8px; /* Mantenemos el espacio entre botones */
             margin-bottom: 10px;
+            flex-wrap: wrap; /* Permite que los botones se envuelvan a la siguiente línea si no caben */
+            max-width: 100%; /* Asegura que no desborde el contenedor */
         }
 
-        .tier-option {
-            width: 40px;
-            height: 40px;
-            border-radius: 6px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: bold;
-            font-size: 1rem;
-            color: white;
-            cursor: pointer;
-            transition: transform 0.2s, box-shadow 0.2s;
-        }
+    .tier-option {
+        width: auto; /* Cambiado de 40px a auto para que se ajuste al contenido */
+        min-width: 50px; /* Ancho mínimo para que no sean demasiado pequeños */
+        max-width: 120px; /* Ancho máximo para evitar que sean demasiado grandes */
+        height: 40px; /* Mantenemos la altura fija */
+        padding: 0 12px; /* Añadimos padding horizontal para dar espacio al texto */
+        border-radius: 6px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: bold;
+        font-size: 1rem;
+        color: white;
+        cursor: pointer;
+        transition: transform 0.2s, box-shadow 0.2s;
+        white-space: nowrap; /* Evita que el texto se divida en múltiples líneas */
+        overflow: hidden; /* Oculta el texto que desborda */
+        text-overflow: ellipsis; /* Muestra "..." si el texto es demasiado largo */
+    }
 
         .tier-option:hover {
             transform: scale(1.05);
@@ -1667,68 +1675,74 @@
         </div>
     </div>
 
-    <!-- Modal para editar tiers -->
-    <div class="modal" id="editTiersModal">
-        <div class="edit-tiers-modal-content">
-            <div class="edit-tiers-header">
-                <h2 class="edit-tiers-title">Personalizar Nombres de Tiers</h2>
-                <p class="edit-tiers-subtitle">Edita los nombres de tus tiers para personalizar tu experiencia</p>
+<!-- Modal para editar tiers -->
+<div class="modal" id="editTiersModal">
+    <div class="edit-tiers-modal-content">
+        <div class="edit-tiers-header">
+            <h2 class="edit-tiers-title">Personalizar Nombres de Tiers</h2>
+            <p class="edit-tiers-subtitle">Edita los nombres de tus tiers para personalizar tu experiencia</p>
+        </div>
+        
+        <div class="tier-edit-group">
+            <div class="tier-edit-label">
+                <div class="tier-color-preview tier-s"></div>
+                <span>Nombre del Tier S:</span>
             </div>
-            
-            <div class="tier-edit-group">
-                <div class="tier-edit-label">
-                    <div class="tier-color-preview tier-s"></div>
-                    <span>Nombre del Tier S:</span>
-                </div>
-                <input type="text" class="tier-edit-input" id="tier-name-s" placeholder="Ej: Excelente, God Tier, S+">
+            <!-- CAMBIO AQUÍ: Añadido maxlength="15" -->
+            <input type="text" class="tier-edit-input" id="tier-name-s" placeholder="Ej: Excelente, God Tier, S+" maxlength="15">
+        </div>
+        
+        <div class="tier-edit-group">
+            <div class="tier-edit-label">
+                <div class="tier-color-preview tier-a"></div>
+                <span>Nombre del Tier A:</span>
             </div>
-            
-            <div class="tier-edit-group">
-                <div class="tier-edit-label">
-                    <div class="tier-color-preview tier-a"></div>
-                    <span>Nombre del Tier A:</span>
-                </div>
-                <input type="text" class="tier-edit-input" id="tier-name-a" placeholder="Ej: Muy Bueno, Great, A+">
+            <!-- CAMBIO AQUÍ: Añadido maxlength="15" -->
+            <input type="text" class="tier-edit-input" id="tier-name-a" placeholder="Ej: Muy Bueno, Great, A+" maxlength="15">
+        </div>
+        
+        <div class="tier-edit-group">
+            <div class="tier-edit-label">
+                <div class="tier-color-preview tier-b"></div>
+                <span>Nombre del Tier B:</span>
             </div>
-            
-            <div class="tier-edit-group">
-                <div class="tier-edit-label">
-                    <div class="tier-color-preview tier-b"></div>
-                    <span>Nombre del Tier B:</span>
-                </div>
-                <input type="text" class="tier-edit-input" id="tier-name-b" placeholder="Ej: Bueno, Average, B+">
+            <!-- CAMBIO AQUÍ: Añadido maxlength="15" -->
+            <input type="text" class="tier-edit-input" id="tier-name-b" placeholder="Ej: Bueno, Average, B+" maxlength="15">
+        </div>
+        
+        <div class="tier-edit-group">
+            <div class="tier-edit-label">
+                <div class="tier-color-preview tier-c"></div>
+                <span>Nombre del Tier C:</span>
             </div>
-            
-            <div class="tier-edit-group">
-                <div class="tier-edit-label">
-                    <div class="tier-color-preview tier-c"></div>
-                    <span>Nombre del Tier C:</span>
-                </div>
-                <input type="text" class="tier-edit-input" id="tier-name-c" placeholder="Ej: Regular, Average, C+">
+            <!-- CAMBIO AQUÍ: Añadido maxlength="15" -->
+            <input type="text" class="tier-edit-input" id="tier-name-c" placeholder="Ej: Regular, Average, C+" maxlength="15">
+        </div>
+        
+        <div class="tier-edit-group">
+            <div class="tier-edit-label">
+                <div class="tier-color-preview tier-d"></div>
+                <span>Nombre del Tier D:</span>
             </div>
-            
-            <div class="tier-edit-group">
-                <div class="tier-edit-label">
-                    <div class="tier-color-preview tier-d"></div>
-                    <span>Nombre del Tier D:</span>
-                </div>
-                <input type="text" class="tier-edit-input" id="tier-name-d" placeholder="Ej: Malo, Below Average, D+">
+            <!-- CAMBIO AQUÍ: Añadido maxlength="15" -->
+            <input type="text" class="tier-edit-input" id="tier-name-d" placeholder="Ej: Malo, Below Average, D+" maxlength="15">
+        </div>
+        
+        <div class="tier-edit-group">
+            <div class="tier-edit-label">
+                <div class="tier-color-preview tier-f"></div>
+                <span>Nombre del Tier F:</span>
             </div>
-            
-            <div class="tier-edit-group">
-                <div class="tier-edit-label">
-                    <div class="tier-color-preview tier-f"></div>
-                    <span>Nombre del Tier F:</span>
-                </div>
-                <input type="text" class="tier-edit-input" id="tier-name-f" placeholder="Ej: Terrible, Fail, F-">
-            </div>
-            
-            <div class="edit-tiers-buttons">
-                <button class="form-btn reset-tiers-btn" id="resetTiersBtn">Restablecer</button>
-                <button class="form-btn save-tiers-btn" id="saveTiersBtn">Guardar Cambios</button>
-            </div>
-        </div>		
-    </div>
+            <!-- CAMBIO AQUÍ: Añadido maxlength="15" -->
+            <input type="text" class="tier-edit-input" id="tier-name-f" placeholder="Ej: Terrible, Fail, F-" maxlength="15">
+        </div>
+        
+        <div class="edit-tiers-buttons">
+            <button class="form-btn reset-tiers-btn" id="resetTiersBtn">Restablecer</button>
+            <button class="form-btn save-tiers-btn" id="saveTiersBtn">Guardar Cambios</button>
+        </div>
+    </div>		
+</div>
 
 
     <script>
