@@ -1406,6 +1406,17 @@
     color: white;
     transform: scale(1.1);
 }
+
+/* Estilos para el botón de revelar todas las cartas */
+.reveal-all-btn {
+    background: linear-gradient(to right, #ec4899, #db2777);
+    color: white;
+}
+
+.reveal-all-btn:hover {
+    transform: scale(1.05);
+    box-shadow: 0 4px 12px rgba(236, 72, 153, 0.4);
+}
     </style>
 </head>
 <body>
@@ -1455,6 +1466,13 @@
                     <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
                 </svg>
                 Categorías
+            </button>
+            <button class="btn reveal-all-btn" id="revealAllBtn">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                    <circle cx="12" cy="12" r="3"></circle>
+                </svg>
+                Revelar Todas
             </button>
         </div>
 
@@ -2193,7 +2211,6 @@ function closeCategoriesModal() {
 
 // Función para renderizar las categorías en el modal - VERSIÓN CON SELECCIÓN MÚLTIPLE
 // Reemplaza la función renderCategories con esta versión actualizada
-// Reemplaza la función renderCategories con esta versión actualizada
 function renderCategories() {
     const container = document.getElementById('categoriesContainer');
     if (!container) return;
@@ -2202,12 +2219,23 @@ function renderCategories() {
     // Añadir botón "Todos" al principio
     const allButton = document.createElement('button');
     allButton.className = 'category-header-btn all-btn';
-    if (selectedCategories.size === 0 || selectedCategories.size === Object.keys(categoriesData).length) {
+    
+    // Verificar si todas las categorías están seleccionadas
+    const allCategoriesSelected = selectedCategories.size === Object.keys(categoriesData).length;
+    if (selectedCategories.size === 0 || allCategoriesSelected) {
         allButton.classList.add('selected');
     }
+    
     allButton.textContent = 'Todos';
     allButton.addEventListener('click', () => {
-        selectAllCategories();
+        if (allCategoriesSelected) {
+            // Si ya están todas seleccionadas, deseleccionar todas
+            selectedCategories.clear();
+        } else {
+            // Si no, seleccionar todas
+            selectAllCategories();
+        }
+        renderCategories();
     });
     container.appendChild(allButton);
 
@@ -2272,55 +2300,17 @@ function selectAllCategories() {
     renderCategories();
 }
 
-// Corrección para la función renderCategories
-function renderCategories() {
-    const container = document.getElementById('categoriesContainer');
-    if (!container) return;
-    container.innerHTML = '';
-
-    // Añadir botón "Todos" al principio
-    const allButton = document.createElement('button');
-    allButton.className = 'category-header-btn all-btn';
-    
-    // Verificar si todas las categorías están seleccionadas
-    const allCategoriesSelected = selectedCategories.size === Object.keys(categoriesData).length;
-    if (selectedCategories.size === 0 || allCategoriesSelected) {
-        allButton.classList.add('selected');
+// Función para toggle de categoría
+function toggleCategory(categoryName) {
+    if (selectedCategories.has(categoryName)) {
+        selectedCategories.delete(categoryName);
+    } else {
+        selectedCategories.add(categoryName);
     }
-    
-    allButton.textContent = 'Todos';
-    allButton.addEventListener('click', () => {
-        if (allCategoriesSelected) {
-            // Si ya están todas seleccionadas, deseleccionar todas
-            selectedCategories.clear();
-        } else {
-            // Si no, seleccionar todas
-            selectAllCategories();
-        }
-        renderCategories();
-    });
-    container.appendChild(allButton);
-
-    // Renderizar categorías existentes
-    Object.keys(categoriesData).forEach(categoryName => {
-        const categoryButton = document.createElement('button');
-        categoryButton.className = 'category-header-btn';
-        if (selectedCategories.has(categoryName)) {
-            categoryButton.classList.add('selected');
-        }
-        categoryButton.textContent = categoryName;
-        categoryButton.addEventListener('click', () => {
-            toggleCategory(categoryName);
-        });
-        container.appendChild(categoryButton);
-    });
-
-    // Actualizar contador de seleccionados y total de influencers
-    updateSelectedCount();
-    updateTotalInfluencersCount();
+    renderCategories();
 }
 
-// Corrección para la función updateSelectedCount
+// Función para actualizar el contador de categorías seleccionadas
 function updateSelectedCount() {
     const selectedCountEl = document.getElementById('selectedCount');
     if (selectedCountEl) {
@@ -2334,7 +2324,7 @@ function updateSelectedCount() {
     }
 }
 
-// Corrección para la función applyFilters
+// Función para aplicar filtros
 function applyFilters() {
     if (selectedCategories.size === 0 || selectedCategories.size === Object.keys(categoriesData).length) {
         mainInfluencers = [...mainInfluencersData];
@@ -2361,87 +2351,6 @@ function applyFilters() {
     closeCategoriesModal();
     
     if (selectedCategories.size > 0 && selectedCategories.size < Object.keys(categoriesData).length) {
-        showNotification(`Mostrando influencers de ${selectedCategories.size} categorías`);
-    } else {
-        showNotification('Mostrando todos los influencers');
-    }
-}
-
-// La función clearAllCategories permanece igual
-function clearAllCategories() {
-    selectedCategories.clear();
-    renderCategories();
-}
-
-// La función clearCategoryFilter permanece igual
-function clearCategoryFilter() {
-    selectedCategories.clear();
-    mainInfluencers = [...mainInfluencersData];
-    
-    // Ocultar UI del filtro activo
-    const activeCategoryInfo = document.getElementById('activeCategoryInfo');
-    if (activeCategoryInfo) {
-        activeCategoryInfo.style.display = 'none';
-    }
-    
-    // Limpiar búsqueda también
-    const searchInput = document.getElementById('searchInput');
-    if (searchInput) searchInput.value = '';
-
-    renderCards();
-    showNotification('Mostrando todos los influencers');
-}
-
-// Función para toggle de categoría
-function toggleCategory(categoryName) {
-    if (selectedCategories.has(categoryName)) {
-        selectedCategories.delete(categoryName);
-    } else {
-        selectedCategories.add(categoryName);
-    }
-    renderCategories();
-}
-
-// Función para actualizar el contador de categorías seleccionadas
-function updateSelectedCount() {
-    const selectedCountEl = document.getElementById('selectedCount');
-    if (selectedCountEl) {
-        if (selectedCategories.size > 0) {
-            selectedCountEl.style.display = 'block';
-            selectedCountEl.textContent = `${selectedCategories.size} categorías seleccionadas`;
-        } else {
-            selectedCountEl.style.display = 'none';
-        }
-    }
-}
-
-// Función para aplicar filtros
-function applyFilters() {
-    if (selectedCategories.size === 0) {
-        mainInfluencers = [...mainInfluencersData];
-    } else {
-        mainInfluencers = mainInfluencersData.filter(influencer => 
-            influencer.categories && influencer.categories.some(cat => selectedCategories.has(cat))
-        );
-    }
-    
-    // Actualizar UI del filtro activo
-    const activeCategoryInfo = document.getElementById('activeCategoryInfo');
-    const activeCategoryName = document.getElementById('activeCategoryName');
-    if (activeCategoryInfo && activeCategoryName) {
-        if (selectedCategories.size > 0) {
-            activeCategoryInfo.style.display = 'flex';
-            const categoriesList = Array.from(selectedCategories).join(', ');
-            activeCategoryName.textContent = `Filtrando por: ${categoriesList}`;
-        } else {
-            activeCategoryInfo.style.display = 'none';
-        }
-    }
-
-    renderCards();
-    closeCategoriesModal();
-    
-    if (selectedCategories.size > 0) {
         showNotification(`Mostrando influencers de ${selectedCategories.size} categorías`);
     } else {
         showNotification('Mostrando todos los influencers');
@@ -3379,8 +3288,50 @@ function closeModalFunc() {
             }
         }
 
+// FUNCIÓN PARA REVELAR TODAS LAS CARTAS
+function revealAllCards() {
+    const confirmReveal = confirm(
+        "👀 ¿Revelar TODAS las cartas?\n\n" +
+        "Esto mostrará el contenido de todas las tarjetas de influencers.\n\n" +
+        "¿Deseas continuar?"
+    );
+    
+    if (confirmReveal) {
+        // Revelar todas las cartas principales
+        mainInfluencersData.forEach(influencer => {
+            revealedCards.add(influencer.id);
+            // Añadir a sin clasificar si no tiene tier
+            if (!influencer.tier && !tierlistData.unclassified.find(i => i.id === influencer.id)) {
+                tierlistData.unclassified.push(influencer);
+            }
+        });
+        
+        // Revelar todas las cartas de fans
+        fansInfluencersData.forEach(influencer => {
+            revealedCards.add(influencer.id);
+            // Añadir a sin clasificar si no tiene tier
+            if (!influencer.tier && !tierlistData.unclassified.find(i => i.id === influencer.id)) {
+                tierlistData.unclassified.push(influencer);
+            }
+        });
+        
+        // Guardar en localStorage
+        saveRevealedCardsToLocalStorage();
+        saveTierlistDataToLocalStorage();
+        
+        // Re-renderizar las cartas
+        renderCards();
+        
+        // Si la sección de fans está activa, renderizar también
+        if (fansToggleActive) {
+            renderFansCards();
+        }
+        
+        showNotification('🎉 ¡Todas las cartas han sido reveladas!');
+    }
+}
+
 // FUNCIÓN PARA REINICIAR LA APLICACIÓN
-// Debe estar en el ámbito global para que setupEventListeners pueda encontrarla
 function resetApp() {
     // --- PRIMERA CONFIRMACIÓN (La detallada y alarmante) ---
     const firstConfirm = confirm(
@@ -3440,6 +3391,13 @@ function resetApp() {
     if (resetAppBtn) {
         resetAppBtn.addEventListener('click', resetApp);
         console.log('Listener añadido a resetAppBtn');
+    }
+    
+    // Listener para el botón de revelar todas
+    const revealAllBtn = document.getElementById('revealAllBtn');
+    if (revealAllBtn) {
+        revealAllBtn.addEventListener('click', revealAllCards);
+        console.log('Listener añadido a revealAllBtn');
     }
             
             // Listener para el botón de categorías
@@ -3592,7 +3550,7 @@ function resetApp() {
             
             const closeEditTiersModalBtn = document.getElementById('closeEditTiersModal');
             if (closeEditTiersModalBtn) {
-                closeEditTiersModalBtn.addEventListener('click', closeEditTiersModal);
+                closeEditTiersModal.addEventListener('click', closeEditTiersModal);
             }
             
             // Cerrar modales al hacer clic fuera
