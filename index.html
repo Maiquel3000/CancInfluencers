@@ -473,18 +473,26 @@
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
         }
 
+
         .add-modal-header {
+            display: flex;
+            align-items: center;
+            justify-content: center;
             margin-bottom: 25px;
-            text-align: center;
+            position: relative;
+            flex-shrink: 0; /* Evita que el botón se encoja */
         }
 
         .add-modal-title {
+            flex-grow: 1;
+            text-align: center;
             font-size: 1.5rem;
             font-weight: bold;
             background: linear-gradient(to right, #10b981, #059669);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
+            margin: 0;
         }
 
         .form-group {
@@ -1496,7 +1504,132 @@
              color: #10b981; /* Icon color for OR */
         }
 
+                /* Estilos para el botón de exportar imagen */
+        .export-image-btn {
+            background: linear-gradient(to right, #ec4899, #be185d);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            padding: 8px 16px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .export-image-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 4px 12px rgba(236, 72, 153, 0.4);
+        }
+
+                /* Estilos para el botón de compartir código */
+        .share-code-btn {
+            background: linear-gradient(to right, #3b82f6, #2563eb);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            padding: 8px 16px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .share-code-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.4);
+        }
+
+        /* Modal para compartir/importar código */
+        .share-modal-content {
+            width: 100%;
+            max-width: 500px;
+            background-color: #1f2937;
+            border-radius: 16px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+        }
+
+        .share-section {
+            margin-bottom: 25px;
+        }
+
+        .share-section-title {
+            font-size: 1.1rem;
+            font-weight: bold;
+            margin-bottom: 10px;
+            color: #d1d5db;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .share-textarea {
+            width: 100%;
+            height: 120px;
+            padding: 12px;
+            border-radius: 8px;
+            border: 1px solid #374151;
+            background-color: #111827;
+            color: white;
+            font-family: monospace;
+            font-size: 0.8rem;
+            resize: none;
+            margin-bottom: 10px;
+        }
+
+        .share-textarea:focus {
+            outline: none;
+            border-color: #3b82f6;
+        }
+
+        .share-buttons {
+            display: flex;
+            gap: 10px;
+        }
+
+        .copy-btn {
+            flex: 1;
+            padding: 10px;
+            background: linear-gradient(to right, #10b981, #059669);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: transform 0.2s;
+        }
+
+        .copy-btn:hover {
+            transform: scale(1.02);
+        }
+
+        .import-btn {
+            flex: 1;
+            padding: 10px;
+            background: linear-gradient(to right, #8b5cf6, #6366f1);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: transform 0.2s;
+        }
+
+        .import-btn:hover {
+            transform: scale(1.02);
+        }
+
+    
     </style>
+        <!-- LIBRERÍA NECESARIA PARA EXPORTAR IMAGEN -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 </head>
 <body>
     <div class="container">
@@ -1710,12 +1843,21 @@
     </div>
 </div>
 
-    <!-- Modal para ver tierlist -->
+        <!-- Modal para ver tierlist -->
     <div class="modal" id="tierlistModal">
         <div class="tierlist-modal-content">
+            <!-- HEADER CORREGIDO -->
             <div class="tierlist-header">
                 <h2 class="tierlist-title">MI TIERLIST</h2>
                 <div class="tierlist-actions">
+                    <button class="export-image-btn" id="exportImageBtn">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                            <circle cx="8.5" cy="8.5" r="1.5"></circle>
+                            <polyline points="21 15 16 10 5 21"></polyline>
+                        </svg>
+                        Exportar Imagen
+                    </button>
                     <button class="edit-tiers-btn" id="editTiersBtn">
                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                             <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
@@ -1723,10 +1865,20 @@
                         </svg>
                         Editar Nombres
                     </button>
+                        <button class="share-code-btn" id="shareCodeBtn">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="18" cy="5" r="3"></circle>
+                            <circle cx="6" cy="12" r="3"></circle>
+                            <circle cx="18" cy="19" r="3"></circle>
+                            <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line>
+                            <line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line>
+                        </svg>
+                        Compartir
+                    </button>
                     <button class="close-btn" id="closeTierlistModal">×</button>
                 </div>
-            </div>
-            
+            </div> <!-- Aquí termina el header correctamente -->
+
             <div class="tier-stats">
                 <div class="tier-stat">
                     <div class="tier-stat-number" id="totalRevealed">0</div>
@@ -1737,6 +1889,7 @@
                     <div class="tier-stat-label">Total Canciones</div>
                 </div>
             </div>
+            
             
             <div class="reorder-hint">💡 Arrastra y suelta los elementos para reordenar tu tierlist</div>
             
@@ -1847,6 +2000,34 @@
             <button class="form-btn save-tiers-btn" id="saveTiersBtn">Guardar Cambios</button>
         </div>
     </div>		
+</div>
+        <!-- Modal para compartir/importar código -->
+<div class="modal" id="shareCodeModal">
+    <div class="share-modal-content">
+        <div class="add-modal-header">
+            <h2 class="add-modal-title">Compartir / Importar Tierlist</h2>
+            <button class="close-btn" id="closeShareModal">×</button>
+        </div>
+        
+        <div class="share-section">
+            <div class="share-section-title">
+                📤 Tu Código de Tierlist
+            </div>
+            <textarea class="share-textarea" id="exportCodeArea" readonly placeholder="Genera tu código para compartir..."></textarea>
+            <div class="share-buttons">
+                <button class="copy-btn" id="generateExportBtn">Generar Código</button>
+                <button class="copy-btn" id="copyCodeBtn" style="display:none;">Copiar Código</button>
+            </div>
+        </div>
+        
+        <div class="share-section">
+            <div class="share-section-title">
+                📥 Importar Tierlist
+            </div>
+            <textarea class="share-textarea" id="importCodeArea" placeholder="Pega aquí el código de un amigo..."></textarea>
+            <button class="import-btn" id="importCodeBtn">Importar Código</button>
+        </div>
+    </div>
 </div>
 
 
@@ -3531,7 +3712,73 @@ function resetApp() {
         // Configurar event listeners - Versión simplificada y robusta
         function setupEventListeners() {
             console.log('Configurando event listeners...');
+                        // --- NUEVO: Listener para exportar imagen ---
+            const exportImageBtn = document.getElementById('exportImageBtn');
+            if (exportImageBtn) {
+                exportImageBtn.addEventListener('click', exportTierlistImage);
+            }
+            // --- NUEVA FUNCIÓN: Exportar Tierlist a Imagen ---
+        function exportTierlistImage() {
+            showNotification('Generando imagen...');
             
+            const modalContent = document.querySelector('.tierlist-modal-content');
+            const tierlistContainer = modalContent.querySelector('.tierlist-container');
+
+            // Crear un clon para manipularlo sin afectar la vista real
+            const clone = modalContent.cloneNode(true);
+            const cloneContainer = clone.querySelector('.tierlist-container');
+            const cloneActions = clone.querySelector('.tierlist-actions');
+            
+            // Eliminar botones de acción del clon para que no salgan en la foto
+            if (cloneActions) cloneActions.remove();
+            
+            // Estilos para el clon (asegurar que se vea completo)
+            clone.style.position = 'absolute';
+            clone.style.left = '-9999px';
+            clone.style.top = '0';
+            clone.style.width = '1200px'; // Ancho fijo para la imagen
+            clone.style.height = 'auto';
+            clone.style.maxHeight = 'none';
+            clone.style.overflow = 'visible';
+            clone.style.zIndex = '-1';
+            clone.style.borderRadius = '16px';
+            clone.style.padding = '20px';
+
+            // Asegurar que el contenedor interno no tenga scroll
+            cloneContainer.style.height = 'auto';
+            cloneContainer.style.maxHeight = 'none';
+            cloneContainer.style.overflow = 'visible';
+            cloneContainer.style.paddingRight = '0';
+            
+            // Ajustar filas para que se expandan naturalmente
+            clone.querySelectorAll('.tier-row').forEach(row => {
+                row.style.flexGrow = '0';
+                row.style.minHeight = '60px';
+            });
+
+            document.body.appendChild(clone);
+
+            html2canvas(clone, {
+                backgroundColor: '#1f2937',
+                scale: 2, // Mayor resolución
+                useCORS: true,
+                logging: false
+            }).then(canvas => {
+                document.body.removeChild(clone);
+                
+                // Descargar la imagen
+                const link = document.createElement('a');
+                link.download = 'mi-tierlist-cancinfluencers.png';
+                link.href = canvas.toDataURL('image/png');
+                link.click();
+                
+                showNotification('✅ ¡Imagen descargada!');
+            }).catch(err => {
+                document.body.removeChild(clone);
+                console.error(err);
+                showNotification('❌ Error al generar la imagen');
+            });
+        }
 
     // Botones principales
     const shuffleBtn = document.getElementById('shuffleBtn');
@@ -3754,6 +4001,42 @@ function resetApp() {
                 });
             }
             
+                        // --- LISTENERS PARA COMPARTIR/IMPORTAR (AÑADIR ESTO) ---
+            const shareCodeBtn = document.getElementById('shareCodeBtn');
+            if (shareCodeBtn) {
+                shareCodeBtn.addEventListener('click', openShareModal);
+            }
+            
+            const closeShareModalBtn = document.getElementById('closeShareModal');
+            if (closeShareModalBtn) {
+                closeShareModalBtn.addEventListener('click', closeShareModal);
+            }
+            
+            const generateExportBtn = document.getElementById('generateExportBtn');
+            if (generateExportBtn) {
+                generateExportBtn.addEventListener('click', generateShareCode);
+            }
+
+            const copyCodeBtn = document.getElementById('copyCodeBtn');
+            if (copyCodeBtn) {
+                copyCodeBtn.addEventListener('click', copyShareCode);
+            }
+
+            const importCodeBtn = document.getElementById('importCodeBtn');
+            if (importCodeBtn) {
+                importCodeBtn.addEventListener('click', importShareCode);
+            }
+
+            // Cerrar modal al hacer clic fuera
+            const shareCodeModal = document.getElementById('shareCodeModal');
+            if (shareCodeModal) {
+                shareCodeModal.addEventListener('click', function(e) {
+                    if (e.target === shareCodeModal) {
+                        closeShareModal();
+                    }
+                });
+            }
+
             console.log('Todos los event listeners configurados');
             
         }
@@ -3782,6 +4065,17 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // --- PASO CLAVE: Sincronizar la copia de trabajo con la lista maestra cargada ---
     mainInfluencers = [...mainInfluencersData];
+        // --- NUEVO: REORDENAR AUTOMÁTICAMENTE LA PRIMERA VEZ ---
+    // Verificamos si el usuario ya ha visitado la página antes
+    if (!localStorage.getItem('cancinfluencers_firstVisit')) {
+        // Si no tiene la marca, es la primera vez.
+        // Reordenamos el array principal aleatoriamente.
+        mainInfluencers.sort(() => Math.random() - 0.5);
+        
+        // Guardamos la marca en localStorage para que no vuelva a pasar
+        localStorage.setItem('cancinfluencers_firstVisit', 'true');
+    }
+    // -----------------------------------------------------
     
     // 3. Cargar el resto de los datos de estado
     loadRevealedCardsFromLocalStorage();
@@ -3796,6 +4090,7 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // 6. Renderizar la UI con los datos cargados y sincronizados
     renderCards();
+
     
     // Actualizar contador de fans
     const fansCount = document.getElementById('fansCount');
@@ -3805,6 +4100,166 @@ document.addEventListener('DOMContentLoaded', function() {
     
     console.log('Aplicación inicializada correctamente con datos guardados.');
 });
+
+        // --- FUNCIONES PARA COMPARTIR E IMPORTAR ---
+
+        function openShareModal() {
+            // 1. Limpiar el área de texto del código generado
+            const exportArea = document.getElementById('exportCodeArea');
+            if (exportArea) exportArea.value = '';
+
+            // 2. Restaurar botones a su estado inicial
+            const genBtn = document.getElementById('generateExportBtn');
+            const copyBtn = document.getElementById('copyCodeBtn');
+            if (genBtn) genBtn.style.display = 'block';
+            if (copyBtn) copyBtn.style.display = 'none';
+
+            // 3. Limpiar el área de importar
+            const importArea = document.getElementById('importCodeArea');
+            if (importArea) importArea.value = '';
+            // ---------------------------------------
+
+            const shareCodeModal = document.getElementById('shareCodeModal');
+            shareCodeModal.style.display = 'flex';
+            setTimeout(() => {
+                shareCodeModal.classList.add('active');
+            }, 10);
+        }
+
+        function closeShareModal() {
+            const shareCodeModal = document.getElementById('shareCodeModal');
+            shareCodeModal.classList.remove('active');
+            setTimeout(() => {
+                shareCodeModal.style.display = 'none';
+            }, 300);
+        }
+
+        function generateShareCode() {
+            try {
+                // Preparamos los datos: solo IDs y nombres personalizados
+                const dataToExport = {
+                    v: 1, // Versión por si cambias el formato en el futuro
+                    t: {
+                        s: tierlistData.s.map(i => i.id),
+                        a: tierlistData.a.map(i => i.id),
+                        b: tierlistData.b.map(i => i.id),
+                        c: tierlistData.c.map(i => i.id),
+                        d: tierlistData.d.map(i => i.id),
+                        f: tierlistData.f.map(i => i.id),
+                        unclassified: tierlistData.unclassified.map(i => i.id)
+                    },
+                    n: customTierNames
+                };
+
+                const jsonString = JSON.stringify(dataToExport);
+                // Codificación Base64 segura para Unicode (emojis, tildes)
+                const base64 = btoa(unescape(encodeURIComponent(jsonString)));
+                
+                const exportArea = document.getElementById('exportCodeArea');
+                const genBtn = document.getElementById('generateExportBtn');
+                const copyBtn = document.getElementById('copyCodeBtn');
+                
+                exportArea.value = base64;
+                genBtn.style.display = 'none';
+                copyBtn.style.display = 'block';
+                
+                showNotification('✅ ¡Código generado!');
+            } catch (e) {
+                console.error(e);
+                showNotification('❌ Error al generar el código');
+            }
+        }
+
+        function copyShareCode() {
+            const exportArea = document.getElementById('exportCodeArea');
+            if (!exportArea.value) {
+                showNotification('Primero genera un código');
+                return;
+            }
+            
+            navigator.clipboard.writeText(exportArea.value).then(() => {
+                showNotification('📋 ¡Código copiado al portapapeles!');
+            }).catch(err => {
+                console.error('Error al copiar:', err);
+                showNotification('Error al copiar');
+            });
+        }
+
+                function importShareCode() {
+            const importArea = document.getElementById('importCodeArea');
+            const code = importArea.value.trim();
+            
+            if (!code) {
+                showNotification('❌ Pega un código primero');
+                return;
+            }
+
+            try {
+                // Decodificación Base64 segura
+                const jsonString = decodeURIComponent(escape(atob(code)));
+                const importedData = JSON.parse(jsonString);
+
+                // Validación básica
+                if (!importedData.t || !importedData.n) {
+                    throw new Error('Formato inválido');
+                }
+
+                // Confirmación
+                const confirmImport = confirm("¿Estás seguro? Esto reemplazará tu tierlist actual con la del código importado.");
+                if (!confirmImport) return;
+
+                // 1. Resetear tiers en los datos maestros
+                [...mainInfluencersData, ...fansInfluencersData].forEach(inf => inf.tier = null);
+
+                // 2. Resetear estructura de datos
+                tierlistData = {
+                    s: [], a: [], b: [], c: [], d: [], f: [], unclassified: []
+                };
+
+                // Variable para guardar los IDs importados
+                const importedIds = new Set();
+
+                // 3. Asignar según el código
+                const tiers = ['s', 'a', 'b', 'c', 'd', 'f', 'unclassified'];
+                
+                tiers.forEach(tierKey => {
+                    if (importedData.t[tierKey]) {
+                        importedData.t[tierKey].forEach(id => {
+                            const influencer = findInfluencerById(id);
+                            if (influencer) {
+                                influencer.tier = tierKey;
+                                tierlistData[tierKey].push(influencer);
+                                importedIds.add(id); // Guardamos el ID
+                            }
+                        });
+                    }
+                });
+
+                // --- NUEVO: REVELAR CARTAS IMPORTADAS ---
+                // Marcamos todas las cartas importadas como reveladas
+                importedIds.forEach(id => revealedCards.add(id));
+                saveRevealedCardsToLocalStorage();
+                // ---------------------------------------
+
+                // 4. Aplicar nombres personalizados
+                customTierNames = importedData.n;
+                saveCustomTierNames();
+                updateTierNames();
+
+                // 5. Guardar y actualizar UI
+                saveTierlistDataToLocalStorage();
+                renderAllTiers(); // Re-renderizar los items en la tierlist
+                renderCards(); // <--- IMPORTANTE: Actualizar la cuadrícula principal para mostrarlas reveladas
+                updateTierlistStats();
+                
+                closeShareModal();
+                showNotification('🎉 ¡Tierlist importada correctamente!');
+
+            } catch (e) {
+                console.error(e);
+                showNotification('❌ Código inválido o corrupto');
+            }
+        }
     </script>
 
         <!-- Notificación -->
