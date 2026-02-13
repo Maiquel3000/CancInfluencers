@@ -1417,6 +1417,75 @@
     transform: scale(1.05);
     box-shadow: 0 4px 12px rgba(236, 72, 153, 0.4);
 }
+
+        /* Filter Logic Toggle Styles */
+        .filter-logic-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 20px;
+            background: rgba(0, 0, 0, 0.2);
+            padding: 15px;
+            border-radius: 12px;
+        }
+
+        .logic-label {
+            font-size: 0.95rem;
+            font-weight: bold;
+            color: #9ca3af;
+            transition: color 0.3s;
+        }
+
+        .logic-label.active {
+            color: #06b6d4;
+        }
+
+        .logic-switch {
+            position: relative;
+            width: 70px;
+            height: 34px;
+            background-color: #374151;
+            border-radius: 17px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            border: 2px solid #4b5563;
+        }
+
+        .logic-slider {
+            position: absolute;
+            top: 2px;
+            left: 2px;
+            width: 26px;
+            height: 26px;
+            background-color: white;
+            border-radius: 50%;
+            transition: transform 0.3s;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8rem;
+            font-weight: bold;
+            color: #374151;
+        }
+
+        /* State: AND is active (slider right) */
+        .logic-switch.and-active {
+            background-color: #06b6d4;
+            border-color: #06b6d4;
+        }
+
+        .logic-switch.and-active .logic-slider {
+            transform: translateX(36px);
+            color: #06b6d4; /* Icon color matches background */
+        }
+        
+        /* State: OR is active (slider left - default) */
+        .logic-switch.or-active .logic-slider {
+             color: #10b981; /* Icon color for OR */
+        }
+
     </style>
 </head>
 <body>
@@ -1604,6 +1673,14 @@
                 <div class="category-stat-number" id="totalInfluencers">130</div>
                 <div class="category-stat-label">Total Influencers</div>
             </div>
+        </div>
+                <!-- NUEVO: Toggle para cambiar lógica de filtro -->
+        <div class="filter-logic-container">
+            <span class="logic-label active" id="labelOr">🔓 (Pueden Tener)</span>
+            <div class="logic-switch or-active" id="logicSwitch">
+                <div class="logic-slider" id="logicSlider">⬅</div>
+            </div>
+            <span class="logic-label" id="labelAnd">🔒 (Deben Tener)</span>
         </div>
         
         <div class="filter-info">💡 Selecciona múltiples categorías para filtrar influencers</div>
@@ -2110,15 +2187,15 @@ function syncInfluencerTiersFromLoadedData() {
         { id: '127', name: 'Paula Gonu', youtubeUrl: 'https://youtu.be/_IX4pzXqDZU?si=jhOXXPQ2ySfnhf44', videoId: '_IX4pzXqDZU', tier: null, categories: ['Tiktokers', 'Españoles'] },
         { id: '128', name: 'Paul Ferrer', youtubeUrl: 'https://youtu.be/HzHKUCl4DMU?si=yxyU0UMCp9uWSGmc', videoId: 'HzHKUCl4DMU', tier: null, categories: ['Tiktokers', 'Españoles'] },
         { id: '129', name: 'La Xinni', youtubeUrl: 'https://youtu.be/8P1snc4Cbeg?si=fvOi9eNCotE6O214', videoId: '8P1snc4Cbeg', tier: null, categories: ['Tiktokers', 'Españoles'] },
-        { id: '130', name: 'Twin Melody', youtubeUrl: 'https://youtu.be/5zm0Nx8MpiU?si=ftMJNIyMAYqRKjRT', videoId: '5zm0Nx8MpiU', tier: null, categories: ['Tiktokers', 'Españoles'] }
-        { id: '131', name: 'Peereira7', youtubeUrl: 'https://youtu.be/w9GwwXX5FJs?si=8OhSPl3-sbwDgKdN', videoId: 'w9GwwXX5FJs', tier: null, categories: ['Mainstream', 'Españoles', 'Minecraft'] }
-        { id: '132', name: 'El Patica', youtubeUrl: 'https://youtu.be/ATQFtsgBQIA?si=SIWbWWQuu9vK14WG', videoId: 'ATQFtsgBQIA', tier: null, categories: ['Tiktokers', 'Españoles'] }
-        { id: '133', name: 'Zaira DLM', youtubeUrl: 'https://youtu.be/7I2nNlZFeAs?si=y9cydoYD5yA_2BMv', videoId: '7I2nNlZFeAs', tier: null, categories: ['Tiktokers', 'Españoles'] }
-        { id: '134', name: 'Labrador', youtubeUrl: 'https://youtu.be/Sh88Tj3F0hQ?si=-XuzDzkjNGrPF-Gb', videoId: 'Sh88Tj3F0hQ', tier: null, categories: ['Tiktokers', 'Españoles'] }
-        { id: '135', name: 'CeciArmy', youtubeUrl: 'https://youtu.be/T_UaR_kxWm8?si=R_MoQVhSMiBPrNtv', videoId: 'T_UaR_kxWm8', tier: null, categories: ['Tiktokers', 'Españoles'] }
-        { id: '136', name: 'Ian Lucas', youtubeUrl: 'https://youtu.be/v5JFACAK3ws?si=4subz8O71hs0qyyA', videoId: 'v5JFACAK3ws', tier: null, categories: ['Latinos'] }
-        { id: '137', name: 'Archie Ted', youtubeUrl: 'https://youtu.be/B7NdSrZdh8A?si=XRT4pFvm-qJdZbDE', videoId: 'B7NdSrZdh8A', tier: null, categories: ['Españoles'] }
-        { id: '138', name: 'xBuyer', youtubeUrl: 'https://youtu.be/5B6CSWVCG68?si=DCPcm-QVsxG1hgxc', videoId: '5B6CSWVCG68', tier: null, categories: ['Españoles'] }
+        { id: '130', name: 'Twin Melody', youtubeUrl: 'https://youtu.be/5zm0Nx8MpiU?si=ftMJNIyMAYqRKjRT', videoId: '5zm0Nx8MpiU', tier: null, categories: ['Tiktokers', 'Españoles'] },
+        { id: '131', name: 'Peereira7', youtubeUrl: 'https://youtu.be/w9GwwXX5FJs?si=8OhSPl3-sbwDgKdN', videoId: 'w9GwwXX5FJs', tier: null, categories: ['Mainstream', 'Españoles', 'Minecraft'] },
+        { id: '132', name: 'El Patica', youtubeUrl: 'https://youtu.be/ATQFtsgBQIA?si=SIWbWWQuu9vK14WG', videoId: 'ATQFtsgBQIA', tier: null, categories: ['Tiktokers', 'Españoles'] },
+        { id: '133', name: 'Zaira DLM', youtubeUrl: 'https://youtu.be/7I2nNlZFeAs?si=y9cydoYD5yA_2BMv', videoId: '7I2nNlZFeAs', tier: null, categories: ['Tiktokers', 'Españoles'] },
+        { id: '134', name: 'Labrador', youtubeUrl: 'https://youtu.be/Sh88Tj3F0hQ?si=-XuzDzkjNGrPF-Gb', videoId: 'Sh88Tj3F0hQ', tier: null, categories: ['Tiktokers', 'Españoles'] },
+        { id: '135', name: 'CeciArmy', youtubeUrl: 'https://youtu.be/T_UaR_kxWm8?si=R_MoQVhSMiBPrNtv', videoId: 'T_UaR_kxWm8', tier: null, categories: ['Tiktokers', 'Españoles'] },
+        { id: '136', name: 'Ian Lucas', youtubeUrl: 'https://youtu.be/v5JFACAK3ws?si=4subz8O71hs0qyyA', videoId: 'v5JFACAK3ws', tier: null, categories: ['Latinos'] },
+        { id: '137', name: 'Archie Ted', youtubeUrl: 'https://youtu.be/B7NdSrZdh8A?si=XRT4pFvm-qJdZbDE', videoId: 'B7NdSrZdh8A', tier: null, categories: ['Españoles'] },
+        { id: '138', name: 'xBuyer', youtubeUrl: 'https://youtu.be/5B6CSWVCG68?si=DCPcm-QVsxG1hgxc', videoId: '5B6CSWVCG68', tier: null, categories: ['Españoles'] },
         { id: '139', name: 'Lucia De La Puerta', youtubeUrl: 'https://youtu.be/4EgD9RtpKdg?si=MP_Mu6wjeXU3QYTC', videoId: '4EgD9RtpKdg', tier: null, categories: ['Españoles'] }
 
 
@@ -2126,18 +2203,18 @@ function syncInfluencerTiersFromLoadedData() {
 
         // Datos de las canciones de fans - LISTA ACTUALIZADA
         const fansInfluencersData = [
-            { id: '131', name: 'Aroyitt', youtubeUrl: 'https://youtu.be/8M7qoUtjixc?si=EU4KEjHiUfGijMCv', videoId: '8M7qoUtjixc', tier: null },
-            { id: '132', name: 'Aroyitt (Cover)', youtubeUrl: 'https://youtu.be/BW3BGT3YqjU?si=3p7bsvmlUkVMSVYZ', videoId: 'BW3BGT3YqjU', tier: null },
-            { id: '133', name: 'Vegetta777', youtubeUrl: 'https://youtu.be/s1cj9Htf-Mg?si=zegfPcCQpNYzKyoo', videoId: 's1cj9Htf-Mg', tier: null },
-            { id: '134', name: 'Rivers', youtubeUrl: 'https://youtu.be/a2VX-d1kezY?si=k-FAHtTljrvteKL8', videoId: 'a2VX-d1kezY', tier: null },
-            { id: '135', name: 'Luzu', youtubeUrl: 'https://youtu.be/De8cf9txw-M?si=LRo6KmtxidezXFOH', videoId: 'De8cf9txw-M', tier: null },
-            { id: '136', name: 'Axozer (cover bichota)', youtubeUrl: 'https://youtu.be/_XPC_1ENvqs?si=59jnOVwdR2sVMAzs', videoId: '_XPC_1ENvqs', tier: null },
-            { id: '137', name: 'AuronPlay', youtubeUrl: 'https://youtu.be/82bb3TZLj9g?si=NTzpk5CcGXgAKJps', videoId: '82bb3TZLj9g', tier: null },
-            { id: '138', name: 'Elisa Waves', youtubeUrl: 'https://youtu.be/IQfvNIscci8?si=n2B3TJLJ3971mpfP', videoId: 'IQfvNIscci8', tier: null },
-            { id: '139', name: 'Reborn', youtubeUrl: 'https://youtu.be/IgXqlS5QTfg?si=ADaP-J-k-l7t3jJt', videoId: 'IgXqlS5QTfg', tier: null },
-            { id: '140', name: 'Fernanfloo', youtubeUrl: 'https://youtu.be/uHjW3zxbyf4?si=aRUlqUQIPCSJKqhf', videoId: 'uHjW3zxbyf4', tier: null },
-            { id: '141', name: 'ElRichMC', youtubeUrl: 'https://youtu.be/CbAGFpjNGdM?si=EN5gv8GkZ8ndtOXP', videoId: 'CbAGFpjNGdM', tier: null },
-            { id: '142', name: 'RedstoneCanarias', youtubeUrl: 'https://youtu.be/cWJmkyfAqhA?si=DRXGzXqf5gFrVtYi', videoId: 'cWJmkyfAqhA', tier: null }
+            { id: '1000', name: 'Aroyitt', youtubeUrl: 'https://youtu.be/8M7qoUtjixc?si=EU4KEjHiUfGijMCv', videoId: '8M7qoUtjixc', tier: null },
+            { id: '1001', name: 'Aroyitt (Cover)', youtubeUrl: 'https://youtu.be/BW3BGT3YqjU?si=3p7bsvmlUkVMSVYZ', videoId: 'BW3BGT3YqjU', tier: null },
+            { id: '1002', name: 'Vegetta777', youtubeUrl: 'https://youtu.be/s1cj9Htf-Mg?si=zegfPcCQpNYzKyoo', videoId: 's1cj9Htf-Mg', tier: null },
+            { id: '1003', name: 'Rivers', youtubeUrl: 'https://youtu.be/a2VX-d1kezY?si=k-FAHtTljrvteKL8', videoId: 'a2VX-d1kezY', tier: null },
+            { id: '1004', name: 'Luzu', youtubeUrl: 'https://youtu.be/De8cf9txw-M?si=LRo6KmtxidezXFOH', videoId: 'De8cf9txw-M', tier: null },
+            { id: '1005', name: 'Axozer (cover bichota)', youtubeUrl: 'https://youtu.be/_XPC_1ENvqs?si=59jnOVwdR2sVMAzs', videoId: '_XPC_1ENvqs', tier: null },
+            { id: '1006', name: 'AuronPlay', youtubeUrl: 'https://youtu.be/82bb3TZLj9g?si=NTzpk5CcGXgAKJps', videoId: '82bb3TZLj9g', tier: null },
+            { id: '1007', name: 'Elisa Waves', youtubeUrl: 'https://youtu.be/IQfvNIscci8?si=n2B3TJLJ3971mpfP', videoId: 'IQfvNIscci8', tier: null },
+            { id: '1008', name: 'Reborn', youtubeUrl: 'https://youtu.be/IgXqlS5QTfg?si=ADaP-J-k-l7t3jJt', videoId: 'IgXqlS5QTfg', tier: null },
+            { id: '1009', name: 'Fernanfloo', youtubeUrl: 'https://youtu.be/uHjW3zxbyf4?si=aRUlqUQIPCSJKqhf', videoId: 'uHjW3zxbyf4', tier: null },
+            { id: '1010', name: 'ElRichMC', youtubeUrl: 'https://youtu.be/CbAGFpjNGdM?si=EN5gv8GkZ8ndtOXP', videoId: 'CbAGFpjNGdM', tier: null },
+            { id: '1011', name: 'RedstoneCanarias', youtubeUrl: 'https://youtu.be/cWJmkyfAqhA?si=DRXGzXqf5gFrVtYi', videoId: 'cWJmkyfAqhA', tier: null }
         ];
 
 
@@ -2154,6 +2231,7 @@ function syncInfluencerTiersFromLoadedData() {
         let draggedElement = null;
         let draggedInfluencer = null;
         let isTierlistModalOpen = false; // <-- AÑADE ESTA LÍNEA
+        let categoryFilterMode = 'or'; // 'or' o 'and'
 
         // Nombres personalizados de tiers
         let customTierNames = {
@@ -2271,31 +2349,24 @@ function renderCategories() {
 
 // Nueva función para contar influencers en categorías seleccionadas
 function updateTotalInfluencersCount() {
-    const totalInfluencersEl = document.getElementById('totalInfluencers');
-    if (!totalInfluencersEl) return;
+    const el = document.getElementById('totalInfluencers');
+    let unique = new Set();
+    const totalCats = Object.keys(categoriesData).length;
 
-    let count = 0;
-    let uniqueInfluencers = new Set();
-
-    if (selectedCategories.size === 0) {
-        // Si no hay categorías seleccionadas, mostrar el total
-        count = mainInfluencersData.length;
-    } else if (selectedCategories.size === Object.keys(categoriesData).length) {
-        // Si están todas las categorías seleccionadas, mostrar el total
-        count = mainInfluencersData.length;
+    if (selectedCategories.size === 0 || selectedCategories.size === totalCats) {
+        el.textContent = mainInfluencersData.length;
     } else {
-        // Contar influencers únicos en las categorías seleccionadas
-        selectedCategories.forEach(category => {
-            if (categoriesData[category]) {
-                categoriesData[category].forEach(influencer => {
-                    uniqueInfluencers.add(influencer.id);
-                });
+        // Filtrar según el modo actual
+            mainInfluencersData.filter(inf => {
+            if (!inf.categories) return false;
+            if (categoryFilterMode === 'and') {
+                return [...selectedCategories].every(c => inf.categories.includes(c));
+            } else {
+                return inf.categories.some(c => selectedCategories.has(c));
             }
-        });
-        count = uniqueInfluencers.size;
+        }).forEach(i => unique.add(i.id));
+        el.textContent = unique.size;
     }
-
-    totalInfluencersEl.textContent = count;
 }
 
 // Corrección para la función selectAllCategories
@@ -2321,6 +2392,30 @@ function toggleCategory(categoryName) {
     renderCategories();
 }
 
+function toggleFilterLogic() {
+    const switchEl = document.getElementById('logicSwitch');
+    const slider = document.getElementById('logicSlider');
+    const labelOr = document.getElementById('labelOr');
+    const labelAnd = document.getElementById('labelAnd');
+
+    if (categoryFilterMode === 'or') {
+        categoryFilterMode = 'and';
+        switchEl.classList.remove('or-active');
+        switchEl.classList.add('and-active');
+        slider.textContent = '➡';
+        labelOr.classList.remove('active');
+        labelAnd.classList.add('active');
+    } else {
+        categoryFilterMode = 'or';
+        switchEl.classList.remove('and-active');
+        switchEl.classList.add('or-active');
+        slider.textContent = '⬅';
+        labelAnd.classList.remove('active');
+        labelOr.classList.add('active');
+    }
+    updateTotalInfluencersCount(); // Recalcular contador
+}
+
 // Función para actualizar el contador de categorías seleccionadas
 function updateSelectedCount() {
     const selectedCountEl = document.getElementById('selectedCount');
@@ -2337,13 +2432,6 @@ function updateSelectedCount() {
 
 // Función para aplicar filtros
 function applyFilters() {
-    if (selectedCategories.size === 0 || selectedCategories.size === Object.keys(categoriesData).length) {
-        mainInfluencers = [...mainInfluencersData];
-    } else {
-        mainInfluencers = mainInfluencersData.filter(influencer => 
-            influencer.categories && influencer.categories.some(cat => selectedCategories.has(cat))
-        );
-    }
     
     // Actualizar UI del filtro activo
     const activeCategoryInfo = document.getElementById('activeCategoryInfo');
@@ -3169,10 +3257,18 @@ function closeModalFunc() {
     let influencersToRender = [...mainInfluencers];
 
     // Aplicar filtro de categorías si hay categorías seleccionadas
-    if (selectedCategories.size > 0) {
-        influencersToRender = influencersToRender.filter(influencer => 
-            influencer.categories && influencer.categories.some(cat => selectedCategories.has(cat))
-        );
+    if (selectedCategories.size > 0 && selectedCategories.size < Object.keys(categoriesData).length) {
+        influencersToRender = influencersToRender.filter(influencer => {
+            if (!influencer.categories) return false;
+            
+            if (categoryFilterMode === 'and') {
+                // Lógica Y: Debe tener TODAS las seleccionadas
+                return [...selectedCategories].every(cat => influencer.categories.includes(cat));
+            } else {
+                // Lógica O: Debe tener ALGUNA de las seleccionadas
+                return influencer.categories.some(cat => selectedCategories.has(cat));
+            }
+        });
     }
     
     // Aplicar filtro de búsqueda si hay texto
@@ -3391,12 +3487,13 @@ function resetApp() {
         function setupEventListeners() {
             console.log('Configurando event listeners...');
             
-            // Botones principales
-            const shuffleBtn = document.getElementById('shuffleBtn');
-            if (shuffleBtn) {
-                shuffleBtn.addEventListener('click', shuffleCards);
-                console.log('Listener añadido a shuffleBtn');
-            }
+
+    // Botones principales
+    const shuffleBtn = document.getElementById('shuffleBtn');
+    if (shuffleBtn) {
+        shuffleBtn.addEventListener('click', shuffleCards);
+        console.log('Listener añadido a shuffleBtn');
+    }
 
                 const resetAppBtn = document.getElementById('resetAppBtn');
     if (resetAppBtn) {
@@ -3404,6 +3501,9 @@ function resetApp() {
         console.log('Listener añadido a resetAppBtn');
     }
     
+    // Listener para el toggle de lógica ---
+    document.getElementById('logicSwitch').addEventListener('click', toggleFilterLogic);
+
     // Listener para el botón de revelar todas
     const revealAllBtn = document.getElementById('revealAllBtn');
     if (revealAllBtn) {
