@@ -239,6 +239,16 @@
             text-overflow: ellipsis;
         }
 
+        .influencer-feat {
+            font-size: 0.75rem;
+            color: rgba(255, 255, 255, 0.8); /* Blanco un poco transparente */
+            font-weight: normal;
+            margin-top: -2px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
         .video-container {
             flex-grow: 1;
             position: relative;
@@ -2061,7 +2071,7 @@ function syncInfluencerTiersFromLoadedData() {
         { id: '1', name: 'OllieGamerZ', youtubeUrl: 'https://www.youtube.com/watch?v=62pWsLpR8so', videoId: '62pWsLpR8so', tier: null, categories: ['Minecraft', 'Españoles'] },
         { id: '2', name: 'DalasReview', youtubeUrl: 'https://youtu.be/oMGHCWXNBOU?si=LuSrD52-_GmyEG1q', videoId: 'oMGHCWXNBOU', tier: null, categories: ['Mainstream', 'Españoles'] },
         { id: '3', name: 'ElRubiusOMG', youtubeUrl: 'https://www.youtube.com/watch?v=VZzSBv6tXMw', videoId: 'VZzSBv6tXMw', tier: null, categories: ['Mainstream', 'Españoles'] },
-        { id: '4', name: 'ElRubius', youtubeUrl: 'https://youtu.be/OkFOETs00QA?si=oX9m0GMS6CI3KfaA', videoId: 'OkFOETs00QA', tier: null, categories: ['Mainstream', 'Españoles'] },
+        { id: '4', name: 'ElRubius', youtubeUrl: 'https://youtu.be/OkFOETs00QA?si=oX9m0GMS6CI3KfaA', videoId: 'OkFOETs00QA', tier: null, categories: ['Mainstream', 'Españoles'], featuring: ['Kidd Keo'] },
         { id: '5', name: 'Ibai', youtubeUrl: 'https://www.youtube.com/watch?v=n66zQBqwI9A', videoId: 'n66zQBqwI9A', tier: null, categories: ['Mainstream', 'Españoles'] },
         { id: '6', name: 'Robleis', youtubeUrl: 'https://youtu.be/GpFoGiscj7k?si=y_jc2UR1T4uAhzOT', videoId: 'GpFoGiscj7k', tier: null, categories: ['Mainstream', 'Latinos'] },
         { id: '7', name: 'Agustin51', youtubeUrl: 'https://youtu.be/YNwg-tWMyyY?si=UtRJSu8xqDksTig_', videoId: 'YNwg-tWMyyY', tier: null, categories: ['Mainstream', 'Españoles'] },
@@ -2074,26 +2084,26 @@ function syncInfluencerTiersFromLoadedData() {
         { id: '14', name: 'Fede', youtubeUrl: 'https://youtu.be/CHeEEyi8Y-g?si=Qko7o2ii8PDm_QiP', videoId: 'CHeEEyi8Y-g', tier: null, categories: ['Niños', 'Latinos'] },
         { id: '15', name: 'Salva (DualCoC)', youtubeUrl: 'https://youtu.be/XJaLFrYe6mk?si=_lCu3wxi7h2ZNNRl', videoId: 'XJaLFrYe6mk', tier: null, categories: ['Viejas Reliquias', 'Españoles'] },
         { id: '16', name: 'Nil Ojeda', youtubeUrl: 'https://youtu.be/9DhPBgrSIaA?si=hZ5amS1ePWWjRAWp', videoId: '9DhPBgrSIaA', tier: null, categories: ['Mainstream', 'Españoles'] },
-        { id: '17', name: 'Goorgo', youtubeUrl: 'https://youtu.be/-zeayRzldyI?si=KRUk_-L5UDA6e02L', videoId: '-zeayRzldyI', tier: null, categories: ['Viejas Reliquias', 'Españoles'] },
+        { id: '17', name: 'Goorgo', youtubeUrl: 'https://youtu.be/-zeayRzldyI?si=KRUk_-L5UDA6e02L', videoId: '-zeayRzldyI', tier: null, categories: ['Viejas Reliquias', 'Españoles'], featuring: ['TheShooterCoC'] },
         { id: '18', name: 'Willyrex', youtubeUrl: 'https://youtu.be/CW9uky3MZXM?si=0h8nlM-VDBJ1VwU6', videoId: 'CW9uky3MZXM', tier: null, categories: ['Mainstream', 'Minecraft', 'Españoles'] },
         { id: '19', name: 'WhiteZunder', youtubeUrl: 'https://youtu.be/rN7mwzCICn0?si=ob-Gm5K1DaEeEXWT', videoId: 'rN7mwzCICn0', tier: null, categories: ['Minecraft', 'Españoles'] },
         { id: '20', name: 'MissaSinfonia', youtubeUrl: 'https://youtu.be/iuQoT2hUVjk?si=LGj6HQ5_aFpjPFc3', videoId: 'iuQoT2hUVjk', tier: null, categories: ['Mainstream', 'Latinos'] },
         { id: '21', name: 'YellowMellow', youtubeUrl: 'https://youtu.be/Bnip21mbOD0?si=wdIeziNpbaafhPR_', videoId: 'Bnip21mbOD0', tier: null, categories: ['Viejas Reliquias', 'Españoles'] },
         { id: '22', name: 'Spreen', youtubeUrl: 'https://youtu.be/5rjCRPG3mkw?si=Ndpw-VX17K-KScZ1', videoId: '5rjCRPG3mkw', tier: null, categories: ['Mainstream', 'Minecraft', 'Latinos'] },
-        { id: '23', name: 'Carreraa', youtubeUrl: 'https://youtu.be/oE2rfyhIsuk?si=F067GpyMxTXkTSNw', videoId: 'oE2rfyhIsuk', tier: null, categories: ['Mainstream', 'Latinos'] },
+        { id: '23', name: 'Carreraa', youtubeUrl: 'https://youtu.be/oE2rfyhIsuk?si=F067GpyMxTXkTSNw', videoId: 'oE2rfyhIsuk', tier: null, categories: ['Mainstream', 'Latinos'], featuring: ['Spreen'] },
         { id: '24', name: 'JuanGuarnizo', youtubeUrl: 'https://youtu.be/VoN4x3R0TCQ?si=OrIQXpTTTNYoqQbu', videoId: 'VoN4x3R0TCQ', tier: null, categories: ['Mainstream', 'Latinos'] },
         { id: '25', name: 'AriGameplays', youtubeUrl: 'https://youtu.be/aHYvmY3nV5U?si=5uOMvcyJPG3KiMaC', videoId: 'aHYvmY3nV5U', tier: null, categories: ['Mainstream', 'Latinos'] },
         { id: '26', name: 'Fernanfloo', youtubeUrl: 'https://youtu.be/3oY5qoqo7Mg?si=dV-6B72Wrewrk85g', videoId: '3oY5qoqo7Mg', tier: null, categories: ['Mainstream', 'Viejas Reliquias', 'Latinos'] },
         { id: '27', name: 'German Garmendia', youtubeUrl: 'https://youtu.be/9EmXVhPsJQQ?si=lup3rdjHQENE5dF2', videoId: '9EmXVhPsJQQ', tier: null, categories: ['Mainstream', 'Viejas Reliquias', 'Latinos'] },
-        { id: '28', name: 'rojuu', youtubeUrl: 'https://youtu.be/wxKBvF2pS_A?si=avaObdkacZ-OAnzH', videoId: 'wxKBvF2pS_A', tier: null, categories: ['Mainstream', 'Españoles'] },
+        { id: '28', name: 'rojuu', youtubeUrl: 'https://youtu.be/wxKBvF2pS_A?si=avaObdkacZ-OAnzH', videoId: 'wxKBvF2pS_A', tier: null, categories: ['Mainstream', 'Españoles'], featuring: ['Orslok'] },
         { id: '29', name: 'Orslok', youtubeUrl: 'https://youtu.be/xMAmnQgV6ss?si=oeXwqY5Tmsh91oq4', videoId: 'xMAmnQgV6ss', tier: null, categories: ['Mainstream', 'Españoles'] },
         { id: '30', name: 'Oscu', youtubeUrl: 'https://youtu.be/TXu9N_zhSZE?si=m7StAyOjApZ_dZWR', videoId: 'TXu9N_zhSZE', tier: null, categories: ['Españoles'] },
         { id: '31', name: 'Angie Velasco', youtubeUrl: 'https://youtu.be/1C1awEClK84?si=yCXeBmoS4xPcsbYk', videoId: '1C1awEClK84', tier: null, categories: ['Latinos'] },
         { id: '32', name: 'Alondrissa', youtubeUrl: 'https://youtu.be/yU1_NmePLFg?si=GNIZBYj8HzxpImvI', videoId: 'yU1_NmePLFg', tier: null, categories: ['Latinos'] },
         { id: '33', name: 'Coscu', youtubeUrl: 'https://youtu.be/87y1ZCFFYqc?si=cLCot9mK3ocPXVmv', videoId: '87y1ZCFFYqc', tier: null, categories: ['Mainstream', 'Latinos'] },
         { id: '34', name: 'RobertoCein', youtubeUrl: 'https://youtu.be/LSXw8cketoc?si=yJE8Ie3UettzDjjZ', videoId: 'LSXw8cketoc', tier: null, categories: ['Mainstream', 'Latinos'] },
-        { id: '35', name: 'Rodezel', youtubeUrl: 'https://youtu.be/ZXpk7tv47kc?si=PM_58WfB2_HtdcnU', videoId: 'ZXpk7tv47kc', tier: null, categories: ['Mainstream', 'Latinos'] },
-        { id: '36', name: 'Nuvia', youtubeUrl: 'https://youtu.be/S2eQjr_MXIE?si=QVD8_kx8oZJxcbzw', videoId: 'S2eQjr_MXIE', tier: null, categories: ['Latinos'] },
+        { id: '35', name: 'Rodezel', youtubeUrl: 'https://youtu.be/ZXpk7tv47kc?si=PM_58WfB2_HtdcnU', videoId: 'ZXpk7tv47kc', tier: null, categories: ['Mainstream', 'Latinos'], featuring: ['Barcagamer', 'Hasvik'] },
+        { id: '36', name: 'Nuvia', youtubeUrl: 'https://youtu.be/S2eQjr_MXIE?si=QVD8_kx8oZJxcbzw', videoId: 'S2eQjr_MXIE', tier: null, categories: ['Latinos'], featuring: ['Rodezel'] },
         { id: '37', name: 'ElMariana', youtubeUrl: 'https://youtu.be/vcdxMNgHTrc?si=aTppOKFNuN2zCbRe', videoId: 'vcdxMNgHTrc', tier: null, categories: ['Mainstream', 'Latinos'] },
         { id: '38', name: 'Komanche', youtubeUrl: 'https://youtu.be/gSTwJTgYm3I?si=i_b-F8xxuj-pFnWC', videoId: 'gSTwJTgYm3I', tier: null, categories: ['Mainstream', 'Latinos'] },
         { id: '39', name: 'Lyna Vallejos', youtubeUrl: 'https://youtu.be/zFJAX23KIh8?si=mK2BUoC3r39n1tmy', videoId: 'zFJAX23KIh8', tier: null, categories: ['Niños', 'Latinos'] },
@@ -2102,7 +2112,7 @@ function syncInfluencerTiersFromLoadedData() {
         { id: '42', name: 'Jordi Wild', youtubeUrl: 'https://youtu.be/IHD4zT8a4Lg?si=pqXBJiSNl3gYqOnZ', videoId: 'IHD4zT8a4Lg', tier: null, categories: ['Mainstream', 'Españoles'] },
         { id: '43', name: 'Momo', youtubeUrl: 'https://youtu.be/5EouEAo9wy0?si=U_AuI-TGIdDT0yqB', videoId: '5EouEAo9wy0', tier: null, categories: ['Latinos'] },
         { id: '44', name: 'Jägger', youtubeUrl: 'https://youtu.be/gLsMfF5m08Y?si=_WzBUhccKEkMecL0', videoId: 'gLsMfF5m08Y', tier: null, categories: ['Mainstream', 'Españoles'] },
-        { id: '45', name: 'Maximus', youtubeUrl: 'https://youtu.be/1LnTBgw-aGU?si=r9QeEt4ol_mjx27_', videoId: '1LnTBgw-aGU', tier: null, categories: ['Mainstream', 'Españoles'] },
+        { id: '45', name: 'Maximus', youtubeUrl: 'https://youtu.be/1LnTBgw-aGU?si=r9QeEt4ol_mjx27_', videoId: '1LnTBgw-aGU', tier: null, categories: ['Mainstream', 'Españoles'], featuring: ['Orslok'] },
         { id: '46', name: 'Zorman', youtubeUrl: 'https://youtu.be/h6k5qbt72Os?si=Ajt_Qi0eREYWAXse', videoId: 'h6k5qbt72Os', tier: null, categories: ['Mainstream', 'Españoles'] },
         { id: '47', name: 'Jaime Altozano', youtubeUrl: 'https://youtu.be/ziJuNQcJn24?si=iR34OM4NZZWAw2-C', videoId: 'ziJuNQcJn24', tier: null, categories: ['Mainstream', 'Españoles'] },
         { id: '48', name: 'Corxea (Spaceronin7)', youtubeUrl: 'https://youtu.be/DMXdutHKJls?si=n-XHphP-3TuGBLPK', videoId: 'DMXdutHKJls', tier: null, categories: ['Viejas Reliquias', 'Latinos'] },
@@ -2111,7 +2121,7 @@ function syncInfluencerTiersFromLoadedData() {
         { id: '51', name: 'Wescol2', youtubeUrl: 'https://youtu.be/o2eqeodAHj8?si=w70M-xaDCQTsiWZj', videoId: 'o2eqeodAHj8', tier: null, categories: ['Mainstream', 'Latinos'] },
         { id: '52', name: 'DaniRep 2017', youtubeUrl: 'https://youtu.be/Wq6qp5ZsduY?si=nRyC-_HG88Zc2BZG', videoId: 'Wq6qp5ZsduY', tier: null, categories: ['Viejas Reliquias', 'Españoles'] },
         { id: '53', name: 'DaniRep Actual', youtubeUrl: 'https://youtu.be/ZgkkEcx03Xw?si=KysF_254s-3L42aB', videoId: 'ZgkkEcx03Xw', tier: null, categories: ['Mainstream', 'Viejas Reliquias', 'Españoles'] },
-        { id: '54', name: 'MAAU,️‍PUVLO,LATE,URIEL- ONE COIN', youtubeUrl: 'https://youtu.be/vPN4WNZxxxE?si=LEF5lXNaUAJUJ-CX', videoId: 'vPN4WNZxxxE', tier: null, categories: ['Latinos'] },
+        { id: '54', name: 'ONE COIN', youtubeUrl: 'https://youtu.be/vPN4WNZxxxE?si=LEF5lXNaUAJUJ-CX', videoId: 'vPN4WNZxxxE', tier: null, categories: ['Latinos'], featuring: ['MAAU', 'PUVLO', 'LATE', 'URIEL'] },
         { id: '55', name: 'LATE', youtubeUrl: 'https://youtu.be/zKO2FJEEVsw?si=vGiMHXz0ZUyoDZD8', videoId: 'zKO2FJEEVsw', tier: null, categories: ['Latinos'] },
         { id: '56', name: 'Cry', youtubeUrl: 'https://youtu.be/rsfosxNojKc?si=AgwS8OncESvkmSAS', videoId: 'rsfosxNojKc', tier: null, categories: ['Mainstream', 'Españoles'] },
         { id: '57', name: 'Capitán Gato', youtubeUrl: 'https://youtu.be/XG3_pbsUcCA?si=LjKx3Wg6RuuOA3h5', videoId: 'XG3_pbsUcCA', tier: null, categories: ['Latinos'] },
@@ -2119,10 +2129,10 @@ function syncInfluencerTiersFromLoadedData() {
         { id: '59', name: 'Naim Darrechi', youtubeUrl: 'https://youtu.be/zFch_ru4eaI?si=iT8RliEeiaowSlkX', videoId: 'zFch_ru4eaI', tier: null, categories: ['Viejas Reliquias', 'Tiktokers', 'Españoles'] },
         { id: '60', name: 'Quackity', youtubeUrl: 'https://youtu.be/shniqa1sH_o?si=M4AbxTSYJnk7yN2m', videoId: 'shniqa1sH_o', tier: null, categories: ['Mainstream', 'Latinos'] },
         { id: '61', name: 'Alana (participación corta)', youtubeUrl: 'https://youtu.be/UGTCE1W81jg?si=Q5wuEi1WYPhxwCz6', videoId: 'UGTCE1W81jg', tier: null, categories: ['Mainstream', 'Latinos'] },
-        { id: '62', name: 'Alana', youtubeUrl: 'https://youtu.be/Ue8dX791o18?si=HmXcxYqADFCYcxxm', videoId: 'Ue8dX791o18', tier: null, categories: ['Mainstream', 'Latinos'] },
+        { id: '62', name: 'Alana', youtubeUrl: 'https://youtu.be/Ue8dX791o18?si=HmXcxYqADFCYcxxm', videoId: 'Ue8dX791o18', tier: null, categories: ['Mainstream', 'Latinos'], featuring: ['Barcagamer'] },
         { id: '63', name: 'Yuya', youtubeUrl: 'https://youtu.be/SNa5Z8W-70I?si=P1rZtF_cSw8Vq-xL', videoId: 'SNa5Z8W-70I', tier: null, categories: ['Viejas Reliquias', 'Latinos'] },
         { id: '64', name: 'Masi', youtubeUrl: 'https://youtu.be/GoMGw4BkhfM?si=O3AhXZrpktcvTYv5', videoId: 'GoMGw4BkhfM', tier: null, categories: ['Mainstream', 'Españoles'] },
-        { id: '65', name: 'Guanyar,Misho Amoli,Nil Ojeda', youtubeUrl: 'https://youtu.be/5BYBDd_udCk?si=7aft3sem3RLMnuy0', videoId: '5BYBDd_udCk', tier: null, categories: ['Mainstream', 'Españoles'] },
+        { id: '65', name: 'Guanyar', youtubeUrl: 'https://youtu.be/5BYBDd_udCk?si=7aft3sem3RLMnuy0', videoId: '5BYBDd_udCk', tier: null, categories: ['Mainstream', 'Españoles'], featuring: ['Misho Amoli','Nil Ojeda'] },
         { id: '66', name: 'Cristinini', youtubeUrl: 'https://youtu.be/RP4gxh-yqLs?si=fLNzyotoujEFxHCY', videoId: 'RP4gxh-yqLs', tier: null, categories: ['Mainstream', 'Españoles'] },
         { id: '67', name: 'clersssss', youtubeUrl: 'https://youtu.be/cUydAxe0CYM?si=MEf_6LZELWQ-YUC_', videoId: 'cUydAxe0CYM', tier: null, categories: ['Mainstream', 'Tiktokers', 'Españoles'] },
         { id: '68', name: 'caprimint', youtubeUrl: 'https://youtu.be/2BZ3g0CaMQQ?si=4Wjag-tOXaxotUoA', videoId: '2BZ3g0CaMQQ', tier: null, categories: ['Latinos'] },
@@ -2136,67 +2146,68 @@ function syncInfluencerTiersFromLoadedData() {
         { id: '76', name: 'Susy Mouriz', youtubeUrl: 'https://youtu.be/K-zVyV0yuZU?si=v5ACXZV1oap98jow', videoId: 'K-zVyV0yuZU', tier: null, categories: ['Niños', 'Latinos'] },
         { id: '77', name: 'ChuyMine', youtubeUrl: 'https://youtu.be/bpCEZ49hQMU?si=-3dxMVktwaev3aFC', videoId: 'bpCEZ49hQMU', tier: null, categories: ['Minecraft', 'Niños', 'Españoles'] },
         { id: '78', name: 'xTurbo', youtubeUrl: 'https://youtu.be/cedhJXxVayE?si=8GNMg8DL0KBDPUlJ', videoId: 'cedhJXxVayE', tier: null, categories: ['Minecraft', 'Niños', 'Españoles'] },
-        { id: '79', name: 'Awita', youtubeUrl: 'https://youtu.be/GEgHoQtCWto?si=zlIG97iXBewHWv1O', videoId: 'GEgHoQtCWto', tier: null, categories: ['Minecraft', 'Niños', 'Españoles'] },
-        { id: '80', name: 'Jardred', youtubeUrl: 'https://youtu.be/JBJYfWHSMY4?si=rXSVwT3RdAu4ioJg', videoId: 'JBJYfWHSMY4', tier: null, categories: ['Minecraft', 'Niños', 'Españoles'] },
-        { id: '81', name: 'Elo YT', youtubeUrl: 'https://youtu.be/V5mMG7EdHGg?si=bEwYwQs6CbHRqDbZ', videoId: 'V5mMG7EdHGg', tier: null, categories: ['Minecraft', 'Niños', 'Españoles'] },
-        { id: '82', name: 'Arsel', youtubeUrl: 'https://youtu.be/EVDvU4ejh3M?si=KBZgxCldNXgXItTA', videoId: 'EVDvU4ejh3M', tier: null, categories: ['Minecraft', 'Niños', 'Españoles'] },
+        { id: '79', name: 'Awita', youtubeUrl: 'https://youtu.be/GEgHoQtCWto?si=zlIG97iXBewHWv1O', videoId: 'GEgHoQtCWto', tier: null, categories: ['Minecraft', 'Niños', 'Españoles'], featuring: ['Jardred'] },
+        { id: '80', name: 'Jardred', youtubeUrl: 'https://youtu.be/JBJYfWHSMY4?si=rXSVwT3RdAu4ioJg', videoId: 'JBJYfWHSMY4', tier: null, categories: ['Minecraft', 'Niños', 'Españoles'], featuring: ['Elo YT'] },
+        { id: '81', name: 'Elo YT', youtubeUrl: 'https://youtu.be/V5mMG7EdHGg?si=bEwYwQs6CbHRqDbZ', videoId: 'V5mMG7EdHGg', tier: null, categories: ['Minecraft', 'Niños', 'Españoles'], featuring: ['Jardred','Kara'] },
+        { id: '82', name: 'Arsel', youtubeUrl: 'https://youtu.be/EVDvU4ejh3M?si=KBZgxCldNXgXItTA', videoId: 'EVDvU4ejh3M', tier: null, categories: ['Minecraft', 'Niños', 'Españoles'], featuring: ['Arsel'] },
         { id: '83', name: 'iTownGamePlay', youtubeUrl: 'https://youtu.be/-0xzODfv9aw?si=7K3gRO3I9Z0Q26pT', videoId: '-0xzODfv9aw', tier: null, categories: ['Viejas Reliquias', 'Minecraft', 'Españoles'] },
         { id: '84', name: 'KillerCreeper55', youtubeUrl: 'https://youtu.be/T843uWKiW4g?si=4in1cW-DK-pUHIXx', videoId: 'T843uWKiW4g', tier: null, categories: ['Minecraft', 'Españoles'] },
         { id: '85', name: 'Farfadox', youtubeUrl: 'https://youtu.be/7SO1uxxzqa8?si=MFp41IasWmDr5WeN', videoId: '7SO1uxxzqa8', tier: null, categories: ['Minecraft', 'Latinos'] },
-        { id: '86', name: 'iLeoVlogs', youtubeUrl: 'https://youtu.be/6SeJxBXKnj4?si=CUeANi9t81KC0nS1', videoId: '6SeJxBXKnj4', tier: null, categories: ['Viejas Reliquias', 'Españoles'] },
-        { id: '87', name: 'iLeoVlogs (Parodia)', youtubeUrl: 'https://youtu.be/Hi6QsZTpbg4?si=A5ooIPHeDo7-ZgYe', videoId: 'Hi6QsZTpbg4', tier: null, categories: ['Viejas Reliquias', 'Españoles'] },
+        { id: '86', name: 'iLeoVlogs', youtubeUrl: 'https://youtu.be/6SeJxBXKnj4?si=CUeANi9t81KC0nS1', videoId: '6SeJxBXKnj4', tier: null, categories: ['Viejas Reliquias', 'Españoles'], featuring: ['Agapito'] },
+        { id: '87', name: 'iLeoVlogs (Parodia)', youtubeUrl: 'https://youtu.be/Hi6QsZTpbg4?si=A5ooIPHeDo7-ZgYe', videoId: 'Hi6QsZTpbg4', tier: null, categories: ['Viejas Reliquias', 'Españoles'], featuring: ['Carla Laubaló'] },
         { id: '88', name: 'Agapito', youtubeUrl: 'https://youtu.be/KOpiio8fWxk?si=Iq6xpIzXYY66r16I', videoId: 'KOpiio8fWxk', tier: null, categories: ['Minecraft', 'Niños', 'Españoles'] },
         { id: '89', name: 'Exi', youtubeUrl: 'https://youtu.be/UXjC9CdRumg?si=YKZhmTnCsICcFBQm', videoId: 'UXjC9CdRumg', tier: null, categories: ['Mainstream', 'Minecraft', 'Niños', 'Tiktokers', 'Españoles'] },
-        { id: '90', name: 'Joaquinpa', youtubeUrl: 'https://youtu.be/sZyT29vwxXU?si=4UeYQo8PA4hzj8aG', videoId: 'sZyT29vwxXU', tier: null, categories: ['Mainstream', 'Viejas Reliquias', 'Españoles'] },
-        { id: '91', name: 'Jokki', youtubeUrl: 'https://youtu.be/RYrSxuaend4?si=4pvCBxMKhuPNoE-m', videoId: 'RYrSxuaend4', tier: null, categories: ['Mainstream', 'Viejas Reliquias', 'Españoles'] },
+        { id: '90', name: 'Joaquinpa \'Jokki\'', youtubeUrl: 'https://youtu.be/sZyT29vwxXU?si=4UeYQo8PA4hzj8aG', videoId: 'sZyT29vwxXU', tier: null, categories: ['Mainstream', 'Viejas Reliquias', 'Españoles'] },
+        { id: '91', name: 'Jokki \'Joaquinpa\'', youtubeUrl: 'https://youtu.be/RYrSxuaend4?si=4pvCBxMKhuPNoE-m', videoId: 'RYrSxuaend4', tier: null, categories: ['Mainstream', 'Viejas Reliquias', 'Españoles'] },
         { id: '92', name: 'RoEnLaRed', youtubeUrl: 'https://youtu.be/u_jaF3BhGW0?si=HY2pAYbe9GsiguMa', videoId: 'u_jaF3BhGW0', tier: null, categories: ['Viejas Reliquias', 'Españoles'] },
         { id: '93', name: 'TheDaarick28', youtubeUrl: 'https://youtu.be/P2RIdVV1tdM?si=q2E6LIriBMwBTDxf', videoId: 'P2RIdVV1tdM', tier: null, categories: ['Viejas Reliquias', 'Minecraft', 'Latinos'] },
         { id: '94', name: 'Celopan', youtubeUrl: 'https://youtu.be/7xOOOn27kOQ?si=Y3GjyEvFXfTWAFBB', videoId: '7xOOOn27kOQ', tier: null, categories: ['Viejas Reliquias', 'Minecraft', 'Españoles'] },
         { id: '95', name: 'WindyGirk', youtubeUrl: 'https://youtu.be/Vs0EaVF11hE?si=Vmn2tB7zZ3ZygalZ', videoId: 'Vs0EaVF11hE', tier: null, categories: ['Viejas Reliquias', 'Latinos'] },
-        { id: '96', name: 'Kajal Napalm', youtubeUrl: 'https://youtu.be/KCHIZjiq7xE?si=2sjBnFR2TaZBvHbm', videoId: 'KCHIZjiq7xE', tier: null, categories: ['Viejas Reliquias', 'Españoles'] },
+        { id: '96', name: 'Kajal Napalm', youtubeUrl: 'https://youtu.be/KCHIZjiq7xE?si=2sjBnFR2TaZBvHbm', videoId: 'KCHIZjiq7xE', tier: null, categories: ['Viejas Reliquias', 'Españoles'], featuring: ['Joaquinpa','Carla Laubaló'] },
         { id: '97', name: 'Angie Corine', youtubeUrl: 'https://youtu.be/MaOTXphstBg?si=OfkLPmXSILnKP7-d', videoId: 'MaOTXphstBg', tier: null, categories: ['Mainstream', 'Tiktokers', 'Españoles'] },
-        { id: '98', name: 'Carla Laubalo', youtubeUrl: 'https://youtu.be/RpBy2THK-PM?si=yKiVuYebNbAHkyfm', videoId: 'RpBy2THK-PM', tier: null, categories: ['Españoles'] },
+        { id: '98', name: 'Carla Laubalo', youtubeUrl: 'https://youtu.be/RpBy2THK-PM?si=yKiVuYebNbAHkyfm', videoId: 'RpBy2THK-PM', tier: null, categories: ['Españoles'], featuring: ['iLeoVlogs'] },
         { id: '99', name: 'Epidemic77', youtubeUrl: 'https://youtu.be/uuoL1k_gaeA?si=elNc8BLbq9R9R8uM', videoId: 'uuoL1k_gaeA', tier: null, categories: ['Latinos'] },
         { id: '100', name: 'Manucraft (Parodia)', youtubeUrl: 'https://youtu.be/TIasEF9dfes?si=2QdupINBZOzhzRLx', videoId: 'TIasEF9dfes', tier: null, categories: ['Minecraft', 'Niños', 'Españoles'] },
         { id: '101', name: 'Manucraft', youtubeUrl: 'https://youtu.be/g41QnkH1YhQ?si=-dldElbvDXL0ytS6', videoId: 'g41QnkH1YhQ', tier: null, categories: ['Minecraft', 'Niños', 'Españoles'] },
         { id: '102', name: 'Tatito Tales', youtubeUrl: 'https://youtu.be/ySw9EG4dmRk?si=gC9cF-NMWNcodMB1', videoId: 'ySw9EG4dmRk', tier: null, categories: ['Minecraft', 'Latinos'] },
         { id: '103', name: 'invictor', youtubeUrl: 'https://youtu.be/e57xlonP88A?si=6xzONAlZWAqXSKUv', videoId: 'e57xlonP88A', tier: null, categories: ['Minecraft', 'Niños', 'Latinos'] },
         { id: '104', name: 'Timba Vk', youtubeUrl: 'https://youtu.be/s20ZdAFqCn0?si=2FYXt8kk_fIhdvxS', videoId: 's20ZdAFqCn0', tier: null, categories: ['Minecraft', 'Niños', 'Latinos'] },
-        { id: '105', name: 'RaptorGamer', youtubeUrl: 'https://youtu.be/KXmHxcsBuG4?si=9skJma9aQrc-iYbc', videoId: 'KXmHxcsBuG4', tier: null, categories: ['Minecraft', 'Niños', 'Españoles'] },
+        { id: '105', name: 'RaptorGamer', youtubeUrl: 'https://youtu.be/KXmHxcsBuG4?si=9skJma9aQrc-iYbc', videoId: 'KXmHxcsBuG4', tier: null, categories: ['Minecraft', 'Niños', 'Españoles'], featuring: ['ilonqueen'] },
         { id: '106', name: 'Alexy', youtubeUrl: 'https://youtu.be/3ttJD7jeTH0?si=ovvw7YFHWD-dCk3L', videoId: '3ttJD7jeTH0', tier: null, categories: ['Minecraft', 'Niños', 'Españoles'] },
-        { id: '107', name: 'ElTrollino', youtubeUrl: 'https://youtu.be/6NpTJleajBs?si=loRFm64a2-Lcv2b3', videoId: '6NpTJleajBs', tier: null, categories: ['Minecraft', 'Niños', 'Latinos'] },
-        { id: '108', name: 'Apixelados', youtubeUrl: 'https://youtu.be/oh_35zaKOoA?si=rzvZrQPTkckAoR_W', videoId: 'oh_35zaKOoA', tier: null, categories: ['Minecraft', 'Niños', 'Españoles'] },
+        { id: '107', name: 'ElTrollino', youtubeUrl: 'https://youtu.be/6NpTJleajBs?si=loRFm64a2-Lcv2b3', videoId: '6NpTJleajBs', tier: null, categories: ['Minecraft', 'Niños', 'Latinos'], featuring: ['Mikecrack', 'Timba Vk'] },
+        { id: '108', name: 'Apixelados', youtubeUrl: 'https://youtu.be/oh_35zaKOoA?si=rzvZrQPTkckAoR_W', videoId: 'oh_35zaKOoA', tier: null, categories: ['Minecraft', 'Niños', 'Españoles'], featuring: ['Dagar'] },
         { id: '109', name: 'Bobicraft', youtubeUrl: 'https://youtu.be/GjS4lAc2Yjc?si=Uk-qGZj-O1qtOTEA', videoId: 'GjS4lAc2Yjc', tier: null, categories: ['Minecraft', 'Niños', 'Latinos'] },
         { id: '110', name: 'Tina Sánchez', youtubeUrl: 'https://youtu.be/woZCjjamUFM?si=CtEH8S8Gbm0dqAo1', videoId: 'woZCjjamUFM', tier: null, categories: ['Españoles'] },
-        { id: '111', name: 'BPancri', youtubeUrl: 'https://youtu.be/Kvx-jVZDzxc?si=xRNPnag8FRUaOhrP', videoId: 'Kvx-jVZDzxc', tier: null, categories: ['Minecraft', 'Niños', 'Españoles'] },
-        { id: '112', name: 'Jacky (CooLifeGame)', youtubeUrl: 'https://youtu.be/LmSNELQ6Tuc?si=sqYsxvtNaEnk1mgT', videoId: 'LmSNELQ6Tuc', tier: null, categories: ['Mainstream', 'Españoles'] },
+        { id: '111', name: 'BPancri', youtubeUrl: 'https://youtu.be/cNi6ULhyjq8?si=ekZrc0MnwMYSixVs', videoId: 'Kvx-cNi6ULhyjq8', tier: null, categories: ['Minecraft', 'Niños', 'Españoles'] },
+        { id: '112', name: 'Jacky (CooLifeGame)', youtubeUrl: 'https://youtu.be/LmSNELQ6Tuc?si=sqYsxvtNaEnk1mgT', videoId: 'LmSNELQ6Tuc', tier: null, categories: ['Mainstream', 'Españoles'], featuring: ['Zarcort', 'Cyclo', 'Keyblade'] },
         { id: '113', name: 'byViruZz', youtubeUrl: 'https://youtu.be/11YP9CA3tLk?si=rsN-zLG4Vmhnqmz6', videoId: '11YP9CA3tLk', tier: null, categories: ['Mainstream', 'Españoles'] },
         { id: '114', name: 'Brunenger', youtubeUrl: 'https://youtu.be/WmXAqa8KwIQ?si=BC_EqNpqluaYUpFo', videoId: 'WmXAqa8KwIQ', tier: null, categories: ['Mainstream', 'Latinos'] },
-        { id: '115', name: 'Folagor03', youtubeUrl: 'https://youtu.be/p7mpr5qyB3o?si=UY2fzewp_kOBBM13', videoId: 'p7mpr5qyB3o', tier: null, categories: ['Mainstream', 'Españoles'] },
+        { id: '115', name: 'Folagor03', youtubeUrl: 'https://youtu.be/p7mpr5qyB3o?si=UY2fzewp_kOBBM13', videoId: 'p7mpr5qyB3o', tier: null, categories: ['Mainstream', 'Españoles'], featuring: ['Sinapsis'] },
         { id: '116', name: 'Amouranth', youtubeUrl: 'https://youtu.be/3w597wLFSxg?si=e3wBpNajaoHGsFCL', videoId: '3w597wLFSxg', tier: null, categories: ['Mainstream'] },
         { id: '117', name: 'Papi Gavi', youtubeUrl: 'https://youtu.be/5MTiv9UGAhQ?si=fSxqIzFgBYwZNH6I', videoId: '5MTiv9UGAhQ', tier: null, categories: ['Mainstream', 'Españoles'] },
-        { id: '118', name: 'Ampeterby7', youtubeUrl: 'https://youtu.be/5rlEM7-nazc?si=5SiPxUNDSAoi8aSV', videoId: '5rlEM7-nazc', tier: null, categories: ['Mainstream', 'Españoles'] },
+        { id: '118', name: 'Ampeterby7', youtubeUrl: 'https://youtu.be/5rlEM7-nazc?si=5SiPxUNDSAoi8aSV', videoId: '5rlEM7-nazc', tier: null, categories: ['Mainstream', 'Españoles'], featuring: ['Sinapsis'] },
         { id: '119', name: 'TheGrefg', youtubeUrl: 'https://youtu.be/JG1-ciVWqIA?si=ZNaqBrWSe2QWIxNc', videoId: 'JG1-ciVWqIA', tier: null, categories: ['Mainstream', 'Españoles'] },
         { id: '120', name: 'JHdelacruz777', youtubeUrl: 'https://youtu.be/jlskG_ett5M?si=8V6jF9BeMH56OdBo', videoId: 'jlskG_ett5M', tier: null, categories: ['Tiktokers', 'Latinos'] },
         { id: '121', name: 'Lolito Fdez', youtubeUrl: 'https://youtu.be/aLgEOEXitLI?si=gKRJuAIbR7BokT2v', videoId: 'aLgEOEXitLI', tier: null, categories: ['Mainstream', 'Españoles'] },
-        { id: '122', name: 'Erra,Juan Beato', youtubeUrl: 'https://youtu.be/WqH9c5Z8EBQ?si=3Q98p8reM6LCvMw8', videoId: 'WqH9c5Z8EBQ', tier: null, categories: ['Mainstream', 'Tiktokers', 'Españoles'] },
+        { id: '122', name: 'Erra', youtubeUrl: 'https://youtu.be/WqH9c5Z8EBQ?si=3Q98p8reM6LCvMw8', videoId: 'WqH9c5Z8EBQ', tier: null, categories: ['Mainstream', 'Tiktokers', 'Españoles'], featuring: ['Juan Beato', 'Plex', 'Jopa', 'Adri', 'Borja'] },
         { id: '123', name: 'El Cejas', youtubeUrl: 'https://youtu.be/okf2nQC2R1E?si=f65BJ0MMvoAv9BW0', videoId: 'okf2nQC2R1E', tier: null, categories: ['Tiktokers', 'Españoles'] },
-        { id: '124', name: 'Hamza Zaidi', youtubeUrl: 'https://youtu.be/4VEW-sHCvU4?si=uBmfUZ9oAP2eSecs', videoId: '4VEW-sHCvU4', tier: null, categories: ['Tiktokers', 'Españoles'] },
+        { id: '124', name: 'Hamza Zaidi', youtubeUrl: 'https://youtu.be/4VEW-sHCvU4?si=uBmfUZ9oAP2eSecs', videoId: '4VEW-sHCvU4', tier: null, categories: ['Tiktokers', 'Españoles'], featuring: ['El Cejas', 'Omar Montes'] },
         { id: '125', name: 'Dudu', youtubeUrl: 'https://youtu.be/xhI3DA2SXg8?si=dYyjcLhdIH39m8wm', videoId: 'xhI3DA2SXg8', tier: null, categories: ['Españoles'] },
         { id: '126', name: 'Mar Lucas', youtubeUrl: 'https://youtu.be/dLiOguzsKOo?si=Hd1Z33X_NglUNMoK', videoId: 'dLiOguzsKOo', tier: null, categories: ['Tiktokers', 'Españoles'] },
-        { id: '127', name: 'Paula Gonu', youtubeUrl: 'https://youtu.be/_IX4pzXqDZU?si=jhOXXPQ2ySfnhf44', videoId: '_IX4pzXqDZU', tier: null, categories: ['Tiktokers', 'Españoles'] },
+        { id: '127', name: 'Paula Gonu', youtubeUrl: 'https://youtu.be/_IX4pzXqDZU?si=jhOXXPQ2ySfnhf44', videoId: '_IX4pzXqDZU', tier: null, categories: ['Tiktokers', 'Españoles'], featuring: ['Zarcort', 'Piter G', 'Cyclo'] },
         { id: '128', name: 'Paul Ferrer', youtubeUrl: 'https://youtu.be/HzHKUCl4DMU?si=yxyU0UMCp9uWSGmc', videoId: 'HzHKUCl4DMU', tier: null, categories: ['Tiktokers', 'Españoles'] },
         { id: '129', name: 'La Xinni', youtubeUrl: 'https://youtu.be/8P1snc4Cbeg?si=fvOi9eNCotE6O214', videoId: '8P1snc4Cbeg', tier: null, categories: ['Tiktokers', 'Españoles'] },
         { id: '130', name: 'Twin Melody', youtubeUrl: 'https://youtu.be/5zm0Nx8MpiU?si=ftMJNIyMAYqRKjRT', videoId: '5zm0Nx8MpiU', tier: null, categories: ['Tiktokers', 'Latinos'] },
-        { id: '131', name: 'Peereira7', youtubeUrl: 'https://youtu.be/w9GwwXX5FJs?si=8OhSPl3-sbwDgKdN', videoId: 'w9GwwXX5FJs', tier: null, categories: ['Mainstream', 'Españoles', 'Minecraft'] },
-        { id: '132', name: 'El Patica', youtubeUrl: 'https://youtu.be/ATQFtsgBQIA?si=SIWbWWQuu9vK14WG', videoId: 'ATQFtsgBQIA', tier: null, categories: ['Tiktokers', 'Españoles'] },
+        { id: '131', name: 'Peereira7', youtubeUrl: 'https://youtu.be/w9GwwXX5FJs?si=8OhSPl3-sbwDgKdN', videoId: 'w9GwwXX5FJs', tier: null, categories: ['Mainstream', 'Españoles', 'Minecraft'], featuring: ['Agustin51'] },
+        { id: '132', name: 'El Patica', youtubeUrl: 'https://youtu.be/ATQFtsgBQIA?si=SIWbWWQuu9vK14WG', videoId: 'ATQFtsgBQIA', tier: null, categories: ['Tiktokers', 'Españoles'], featuring: ['Polifacetico'] },
         { id: '133', name: 'Zaira DLM', youtubeUrl: 'https://youtu.be/7I2nNlZFeAs?si=y9cydoYD5yA_2BMv', videoId: '7I2nNlZFeAs', tier: null, categories: ['Tiktokers', 'Españoles'] },
         { id: '134', name: 'Labrador', youtubeUrl: 'https://youtu.be/Sh88Tj3F0hQ?si=-XuzDzkjNGrPF-Gb', videoId: 'Sh88Tj3F0hQ', tier: null, categories: ['Tiktokers', 'Españoles'] },
-        { id: '135', name: 'CeciArmy', youtubeUrl: 'https://youtu.be/T_UaR_kxWm8?si=R_MoQVhSMiBPrNtv', videoId: 'T_UaR_kxWm8', tier: null, categories: ['Tiktokers', 'Españoles'] },
+        { id: '135', name: 'CeciArmy', youtubeUrl: 'https://youtu.be/T_UaR_kxWm8?si=R_MoQVhSMiBPrNtv', videoId: 'T_UaR_kxWm8', tier: null, categories: ['Tiktokers', 'Españoles'], featuring: ['Hamza Zaidi', 'Nil Ojeda'] },
         { id: '136', name: 'Ian Lucas', youtubeUrl: 'https://youtu.be/v5JFACAK3ws?si=4subz8O71hs0qyyA', videoId: 'v5JFACAK3ws', tier: null, categories: ['Latinos'] },
         { id: '137', name: 'Archie Ted', youtubeUrl: 'https://youtu.be/B7NdSrZdh8A?si=XRT4pFvm-qJdZbDE', videoId: 'B7NdSrZdh8A', tier: null, categories: ['Españoles'] },
         { id: '138', name: 'xBuyer', youtubeUrl: 'https://youtu.be/5B6CSWVCG68?si=DCPcm-QVsxG1hgxc', videoId: '5B6CSWVCG68', tier: null, categories: ['Españoles'] },
-        { id: '139', name: 'Lucia De La Puerta', youtubeUrl: 'https://youtu.be/4EgD9RtpKdg?si=MP_Mu6wjeXU3QYTC', videoId: '4EgD9RtpKdg', tier: null, categories: ['Españoles'] }
+        { id: '139', name: 'Lucia De La Puerta', youtubeUrl: 'https://youtu.be/4EgD9RtpKdg?si=MP_Mu6wjeXU3QYTC', videoId: '4EgD9RtpKdg', tier: null, categories: ['Españoles'] },
+        { id: '140', name: 'ilonqueen', youtubeUrl: 'https://youtu.be/FaVb-N7KfEo?si=Pw2JiXcJc44hKAqK', videoId: 'FaVb-N7KfEo', tier: null, categories: ['Latinos'] }
 
 
     ];
@@ -2549,6 +2560,19 @@ function clearCategoryFilter() {
             influencerName.textContent = influencer.name;
             
             influencerHeader.appendChild(influencerName);
+
+            // --- NUEVO: Añadir "feat" si existe en los datos ---
+            if (influencer.featuring && influencer.featuring.length > 0) {
+                const featElement = document.createElement('div');
+                featElement.className = 'influencer-feat';
+                // Formato: "ft. Nombre1, Nombre2"
+                featElement.textContent = 'ft. ' + influencer.featuring.join(', ');
+                influencerHeader.appendChild(featElement);
+            }
+            // ---------------------------------------------------
+
+            cardBack.appendChild(influencerHeader);
+            
             
             const videoContainer = document.createElement('div');
             videoContainer.className = 'video-container';
@@ -2909,7 +2933,6 @@ function clearCategoryFilter() {
         }
 
         // Función para abrir el modal
-        // FUNCIÓN CORREGIDA: openModal
 function openModal(influencer) {
     if (isModalOpen) return;
     
@@ -2921,7 +2944,13 @@ function openModal(influencer) {
     const tierSelectionStatus = document.getElementById('tierSelectionStatus');
     const tierOptions = document.querySelectorAll('.tier-option');
     
-    modalTitle.textContent = influencer.name;
+// --- MODIFICACIÓN: Añadir feat al título del modal ---
+let titleText = influencer.name;
+if (influencer.featuring && influencer.featuring.length > 0) {
+    titleText += ' ft. ' + influencer.featuring.join(', ');
+}
+modalTitle.textContent = titleText;
+// --------------------------------------------------- //
     modalVideo.src = `https://www.youtube.com/embed/${influencer.videoId}?rel=0&showinfo=0&modestbranding=1&autoplay=1`;
     
     // --- PASO 1: Resetear SIEMPRE la UI a su estado por defecto ---
@@ -3275,9 +3304,17 @@ function closeModalFunc() {
     const searchInput = document.getElementById('searchInput');
     if (searchInput && searchInput.value.trim() !== '') {
         const searchTerm = searchInput.value.toLowerCase();
-        influencersToRender = influencersToRender.filter(influencer => 
-            influencer.name.toLowerCase().includes(searchTerm)
-        );
+        influencersToRender = influencersToRender.filter(influencer => {
+            // Buscar en el nombre principal
+            const nameMatch = influencer.name.toLowerCase().includes(searchTerm);
+            
+            // Buscar en featuring
+            const featMatch = influencer.featuring && influencer.featuring.some(name => 
+                name.toLowerCase().includes(searchTerm)
+            );
+            
+            return nameMatch || featMatch;
+        });
     }
 
     if (influencersToRender.length === 0) {
@@ -3335,9 +3372,17 @@ function closeModalFunc() {
             if (searchTerm === '') {
                 mainInfluencers = [...mainInfluencersData];
             } else {
-                mainInfluencers = mainInfluencersData.filter(influencer => 
-                    influencer.name.toLowerCase().includes(searchTerm)
-                );
+                mainInfluencers = mainInfluencersData.filter(influencer => {
+                    // Buscar en el nombre principal
+                    const nameMatch = influencer.name.toLowerCase().includes(searchTerm);
+                    
+                    // Buscar en la lista de featuring (si existe)
+                    const featMatch = influencer.featuring && influencer.featuring.some(name => 
+                        name.toLowerCase().includes(searchTerm)
+                    );
+                    
+                    return nameMatch || featMatch;
+                });
             }
             
             renderCards();
