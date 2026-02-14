@@ -1626,6 +1626,173 @@
             transform: scale(1.02);
         }
 
+                /* --- ESTILOS PACK OPENING (CONFETI Y ANIMACIÓN) --- */
+        
+        /* Canvas para el confeti (pantalla completa) */
+        #confetti-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 9999;
+        }
+
+        /* Animación de volteo rápido para pack opening */
+        .card.pack-flip {
+            animation: packFlip 0.6s ease-out forwards;
+        }
+
+        @keyframes packFlip {
+            0% { transform: rotateY(0deg) scale(1); }
+            50% { transform: rotateY(90deg) scale(1.2); }
+            100% { transform: rotateY(180deg) scale(1); }
+        }
+
+        /* Partículas de explosión detrás de la carta */
+        .particle {
+            position: absolute;
+            pointer-events: none;
+            border-radius: 50%;
+            animation: particleFade 0.8s ease-out forwards;
+        }
+
+        @keyframes particleFade {
+            0% {
+                opacity: 1;
+                transform: translate(0, 0) scale(1);
+            }
+            100% {
+                opacity: 0;
+                transform: translate(var(--tx), var(--ty)) scale(0);
+            }
+        }
+
+        /* Efecto de "Brillo" momentáneo en la carta al revelarse */
+        .card.pack-flash::after {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: radial-gradient(circle, rgba(255,255,255,0.8) 0%, rgba(255,255,255,0) 70%);
+            opacity: 0;
+            animation: flashEffect 0.5s ease-out;
+            pointer-events: none;
+            z-index: 10;
+        }
+
+        @keyframes flashEffect {
+            0% { opacity: 1; transform: scale(0.5); }
+            100% { opacity: 0; transform: scale(1.5); }
+        }
+                /* Estilos para Calculadora de Match */
+        .match-btn {
+            width: 100%;
+            padding: 10px;
+            background: linear-gradient(to right, #ec4899, #be185d); /* Rosa para el amor ❤️ */
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: transform 0.2s;
+            margin-top: 5px;
+        }
+
+        .match-btn:hover {
+            transform: scale(1.02);
+        }
+
+        .match-result {
+            margin-top: 15px;
+            text-align: center;
+            background: rgba(236, 72, 153, 0.1);
+            border: 1px solid rgba(236, 72, 153, 0.3);
+            border-radius: 8px;
+            padding: 15px;
+        }
+
+        .match-percentage {
+            font-size: 2.5rem;
+            font-weight: bold;
+            background: linear-gradient(to right, #ec4899, #f43f5e);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 5px;
+        }
+
+        .match-details {
+            font-size: 0.9rem;
+            color: #d1d5db;
+        }
+
+                /* --- BOTÓN FLOTANTE DE SUGERENCIAS --- */
+        .suggestion-btn {
+            position: fixed;
+            bottom: 30px;
+            left: 30px;
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, #3b82f6, #1d4ed8); /* Azul distintivo */
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-decoration: none; /* Es un enlace */
+            font-size: 1.8rem;
+            box-shadow: 0 4px 15px rgba(59, 130, 246, 0.5);
+            z-index: 999; /* Debajo de modales pero encima de todo */
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            border: 2px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .suggestion-btn:hover {
+            transform: scale(1.15) rotate(-5deg);
+            box-shadow: 0 6px 20px rgba(59, 130, 246, 0.6);
+        }
+
+        /* Tooltip (texto que aparece al pasar el ratón) */
+        .suggestion-tooltip {
+            position: absolute;
+            left: 75px;
+            background: #1f2937;
+            color: white;
+            padding: 8px 12px;
+            border-radius: 8px;
+            font-size: 0.85rem;
+            font-weight: bold;
+            white-space: nowrap;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s, transform 0.3s;
+            transform: translateX(-10px);
+            box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .suggestion-btn:hover .suggestion-tooltip {
+            opacity: 1;
+            transform: translateX(0);
+        }
+
+        /* Responsivo: Ajustar posición en móvil */
+        @media (max-width: 600px) {
+            .suggestion-btn {
+                bottom: 20px;
+                left: 20px;
+                width: 50px;
+                height: 50px;
+                font-size: 1.5rem;
+            }
+            .suggestion-tooltip {
+                display: none; /* En móvil ocultamos el texto para no molestar */
+            }
+        }
+
+        
+
     
     </style>
         <!-- LIBRERÍA NECESARIA PARA EXPORTAR IMAGEN -->
@@ -2027,6 +2194,22 @@
             <textarea class="share-textarea" id="importCodeArea" placeholder="Pega aquí el código de un amigo..."></textarea>
             <button class="import-btn" id="importCodeBtn">Importar Código</button>
         </div>
+
+        <!-- NUEVA SECCIÓN: CALCULADORA DE MATCH -->
+        <div class="share-section">
+            <div class="share-section-title">
+                ❤️ Calculadora de Match
+            </div>
+            <textarea class="share-textarea" id="matchCodeArea" placeholder="Pega aquí el código de tu amigo para comparar..." style="height: 80px;"></textarea>
+            <button class="match-btn" id="calculateMatchBtn">Calcular Compatibilidad</button>
+            
+            <div class="match-result" id="matchResult" style="display: none;">
+                <div class="match-percentage" id="matchPercentage">0%</div>
+                <div class="match-details" id="matchDetails">Detalles aquí...</div>
+            </div>
+        </div>
+        <!-- FIN NUEVA SECCIÓN -->
+
     </div>
 </div>
 
@@ -2359,7 +2542,7 @@ function syncInfluencerTiersFromLoadedData() {
         { id: '108', name: 'Apixelados', youtubeUrl: 'https://youtu.be/oh_35zaKOoA?si=rzvZrQPTkckAoR_W', videoId: 'oh_35zaKOoA', tier: null, categories: ['Minecraft', 'Niños', 'Españoles'], featuring: ['Dagar'] },
         { id: '109', name: 'Bobicraft', youtubeUrl: 'https://youtu.be/GjS4lAc2Yjc?si=Uk-qGZj-O1qtOTEA', videoId: 'GjS4lAc2Yjc', tier: null, categories: ['Minecraft', 'Niños', 'Latinos'] },
         { id: '110', name: 'Tina Sánchez', youtubeUrl: 'https://youtu.be/woZCjjamUFM?si=CtEH8S8Gbm0dqAo1', videoId: 'woZCjjamUFM', tier: null, categories: ['Españoles'] },
-        { id: '111', name: 'BPancri', youtubeUrl: 'https://youtu.be/cNi6ULhyjq8?si=ekZrc0MnwMYSixVs', videoId: 'Kvx-cNi6ULhyjq8', tier: null, categories: ['Minecraft', 'Niños', 'Españoles'] },
+        { id: '111', name: 'BPancri', youtubeUrl: 'https://youtu.be/cNi6ULhyjq8?si=ekZrc0MnwMYSixVs', videoId: 'cNi6ULhyjq8', tier: null, categories: ['Minecraft', 'Niños', 'Españoles'] },
         { id: '112', name: 'Jacky (CooLifeGame)', youtubeUrl: 'https://youtu.be/LmSNELQ6Tuc?si=sqYsxvtNaEnk1mgT', videoId: 'LmSNELQ6Tuc', tier: null, categories: ['Mainstream', 'Españoles'], featuring: ['Zarcort', 'Cyclo', 'Keyblade'] },
         { id: '113', name: 'byViruZz', youtubeUrl: 'https://youtu.be/11YP9CA3tLk?si=rsN-zLG4Vmhnqmz6', videoId: '11YP9CA3tLk', tier: null, categories: ['Mainstream', 'Españoles'] },
         { id: '114', name: 'Brunenger', youtubeUrl: 'https://youtu.be/WmXAqa8KwIQ?si=BC_EqNpqluaYUpFo', videoId: 'WmXAqa8KwIQ', tier: null, categories: ['Mainstream', 'Latinos'] },
@@ -3569,16 +3752,24 @@ function closeModalFunc() {
             renderCards();
         }
 
-        // Función para reordenar las tarjetas
-        function shuffleCards() {
-            mainInfluencers = [...mainInfluencers].sort(() => Math.random() - 0.5);
-            renderCards();
-            
-            if (fansToggleActive) {
-                fansInfluencers = [...fansInfluencers].sort(() => Math.random() - 0.5);
-                renderFansCards();
-            }
-        }
+// Función para reordenar las tarjetas
+function shuffleCards() {
+    // 1. Mezclamos los datos maestros (para que se guarde el nuevo orden)
+    mainInfluencersData.sort(() => Math.random() - 0.5);
+    
+    // 2. Sincronizamos la copia de trabajo
+    mainInfluencers = [...mainInfluencersData];
+    
+    // 3. GUARDAMOS el nuevo orden en LocalStorage
+    saveInfluencersDataToLocalStorage();
+    
+    renderCards();
+    
+    if (fansToggleActive) {
+        fansInfluencers = [...fansInfluencers].sort(() => Math.random() - 0.5);
+        renderFansCards();
+    }
+}
 
         // Función para toggle de fans
         function toggleFans() {
@@ -3621,79 +3812,136 @@ function closeModalFunc() {
             }
         }
 
-// FUNCIÓN PARA REVELAR TODAS LAS CARTAS
+// FUNCIÓN PARA REVELAR TODAS LAS CARTAS (VERSIÓN PACK OPENING)
+// FUNCIÓN PARA REVELAR TODAS LAS CARTAS (VELOCIDAD VARIABLE)
 function revealAllCards() {
     const confirmReveal = confirm(
         "👀 ¿Revelar TODAS las cartas?\n\n" +
-        "Esto mostrará el contenido de todas las tarjetas de influencers.\n\n" +
+        "Esto mostrará el contenido de todas las tarjetas con un efecto especial.\n\n" +
         "¿Deseas continuar?"
     );
     
     if (confirmReveal) {
-        // Revelar todas las cartas principales
+        // 1. Actualizar datos internos
         mainInfluencersData.forEach(influencer => {
             revealedCards.add(influencer.id);
-            // Añadir a sin clasificar si no tiene tier
             if (!influencer.tier && !tierlistData.unclassified.find(i => i.id === influencer.id)) {
                 tierlistData.unclassified.push(influencer);
             }
         });
         
-        // Revelar todas las cartas de fans
         fansInfluencersData.forEach(influencer => {
             revealedCards.add(influencer.id);
-            // Añadir a sin clasificar si no tiene tier
             if (!influencer.tier && !tierlistData.unclassified.find(i => i.id === influencer.id)) {
                 tierlistData.unclassified.push(influencer);
             }
         });
         
-        // Guardar en localStorage
         saveRevealedCardsToLocalStorage();
         saveTierlistDataToLocalStorage();
         
-        // Re-renderizar las cartas
-        renderCards();
+        // 2. Animación
+        const cards = document.querySelectorAll('.card:not(.flipped)');
+        const cardsArray = Array.from(cards); // Mantenemos el orden actual
         
-        // Si la sección de fans está activa, renderizar también
-        if (fansToggleActive) {
-            renderFansCards();
+        if (cardsArray.length === 0) {
+            showNotification('✅ ¡Todas las cartas ya estaban reveladas!');
+            return;
+        }
+
+        let index = 0;
+        function flipNextCard() {
+            if (index < cardsArray.length) {
+                const card = cardsArray[index];
+                
+                // Añadir animaciones
+                card.classList.add('pack-flip', 'flipped', 'revealed');
+                card.classList.add('pack-flash');
+                
+                // Partículas (opcional: podrías quitarlas para el bloque rápido si consume muchos recursos)
+                createCardExplosion(card);
+                
+                index++;
+                
+                // --- LÓGICA DE VELOCIDAD VARIABLE ---
+                let delay;
+                if (index < 16) {
+                    // Primeras 16 cartas: Velocidad normal (60ms)
+                    delay = 60;
+                } else {
+                    // Resto de cartas: Velocidad rápida (15ms)
+                    delay = 1;
+                }
+                // -----------------------------------
+
+                setTimeout(flipNextCard, delay);
+            } else {
+                // Al terminar
+                launchBigConfetti();
+                if (fansToggleActive) {
+                    renderFansCards();
+                }
+                showNotification('🎉 ¡Pack Opening Completado!');
+            }
         }
         
-        showNotification('🎉 ¡Todas las cartas han sido reveladas!');
+        flipNextCard();
     }
 }
 
-// FUNCIÓN PARA REINICIAR LA APLICACIÓN
+// FUNCIÓN PARA REINICIAR LA APLICACIÓN (VERSIÓN INTELIGENTE)
 function resetApp() {
-    // --- PRIMERA CONFIRMACIÓN (La detallada y alarmante) ---
     const firstConfirm = confirm(
-        "⚠️ ADVERTENCIA: ESTA ACCION BORRARA TODO ⚠️\n\n" +
-        "Estas a punto de eliminar PERMANENTEMENTE:\n\n" +
+        "⚠️ ADVERTENCIA: ESTA ACCION BORRARA TU PROGRESO ⚠️\n\n" +
+        "Se borrará:\n" +
         "- Tu tierlist completa\n" +
-        "- Todos los influencers añadidos\n" +
-        "- El progreso de tarjetas reveladas\n" +
-        "- El Easter Egg descubierto\n\n" +
-        "Esta accion es IRREVERSIBLE.\n\n" +
-        "¿Confirmas que deseas reiniciar todo?"
+        "- Influencers añadidos manualmente\n" +
+        "- Cartas reveladas\n\n" +
+        "Se MANTENDRÁ:\n" +
+        "- El orden actual de las cartas.\n\n" +
+        "¿Continuar?"
     );
 
     if (firstConfirm) {
-        const secondConfirm = confirm(
-            "¡ÚLTIMA OPORTUNIDAD!\n\n" +
-            "¿ESTÁS 100% SEGURO DE QUE QUIERES CONTINUAR?\n\n" +
-            "Presiona 'Aceptar' para BORRAR TODO.\n" +
-            "Presiona 'Cancelar' para guardar tus datos."
-        );
+        const secondConfirm = confirm("¡ÚLTIMA OPORTUNIDAD!\n\n¿Seguro que quieres reiniciar tu progreso?");
 
         if (secondConfirm) {
-            localStorage.clear();
-            showNotification('✅ Todos los datos han sido borrados. Recargando...');
-            setTimeout(() => {
-                location.reload();
-            }, 1500);
-        } else {
-            showNotification('💅 Uf... Casi lo logras. Tus datos están a salvo.');
+            // 1. Recuperar el orden actual para no perderlo
+            const savedData = localStorage.getItem('cancinfluencers_mainInfluencersData');
+            let orderedList = [];
+
+            if (savedData) {
+                try {
+                    const fullList = JSON.parse(savedData);
+                    // Filtrar: solo cartas originales (ID 1-140), borra los añadidos manualmente
+                    orderedList = fullList.filter(inf => parseInt(inf.id) <= 140);
+                } catch (e) {
+                    console.error("Error al recuperar lista para reset", e);
+                }
+            }
+
+            // 2. Borrar SOLO datos de progreso
+            localStorage.removeItem('cancinfluencers_revealedCards');
+            localStorage.removeItem('cancinfluencers_tierlistData');
+            localStorage.removeItem('cancinfluencers_nextId');
+            localStorage.removeItem('cancinfluencers_easterEggActivated');
+            localStorage.removeItem('customTierNames');
+            
+            // 3. Borrar lista vieja
+            localStorage.removeItem('cancinfluencers_mainInfluencersData');
+
+            // 4. Guardar la lista filtrada (conservando el orden)
+            if (orderedList.length > 0) {
+                localStorage.setItem('cancinfluencers_mainInfluencersData', JSON.stringify(orderedList));
+                localStorage.setItem('cancinfluencers_firstVisit', 'true');
+            } else {
+                // Fallback si algo falla
+                localStorage.clear();
+                localStorage.setItem('cancinfluencers_firstVisit', 'true');
+            }
+
+            showNotification('✅ Progreso reiniciado. Orden conservado.');
+            setTimeout(() => location.reload(), 1500);
         }
     }
 }
@@ -3717,6 +3965,41 @@ function resetApp() {
             if (exportImageBtn) {
                 exportImageBtn.addEventListener('click', exportTierlistImage);
             }
+
+            const calculateMatchBtn = document.getElementById('calculateMatchBtn');
+            if (calculateMatchBtn) {
+                calculateMatchBtn.addEventListener('click', calculateMatch);
+            }
+
+                        // --- LISTENERS PARA MODAL DE SUGERENCIAS ---
+            const openSuggestionBtn = document.getElementById('openSuggestionBtn');
+            const suggestionModal = document.getElementById('suggestionModal');
+            const closeSuggestionModalBtn = document.getElementById('closeSuggestionModal');
+
+            if (openSuggestionBtn) {
+                openSuggestionBtn.addEventListener('click', () => {
+                    suggestionModal.style.display = 'flex';
+                    setTimeout(() => suggestionModal.classList.add('active'), 10);
+                });
+            }
+
+            if (closeSuggestionModalBtn) {
+                closeSuggestionModalBtn.addEventListener('click', () => {
+                    suggestionModal.classList.remove('active');
+                    setTimeout(() => suggestionModal.style.display = 'none', 300);
+                });
+            }
+            
+            // Cerrar clic fuera
+            if (suggestionModal) {
+                suggestionModal.addEventListener('click', (e) => {
+                    if (e.target === suggestionModal) {
+                        suggestionModal.classList.remove('active');
+                        setTimeout(() => suggestionModal.style.display = 'none', 300);
+                    }
+                });
+            }
+
             // --- NUEVA FUNCIÓN: Exportar Tierlist a Imagen ---
         function exportTierlistImage() {
             showNotification('Generando imagen...');
@@ -3778,6 +4061,7 @@ function resetApp() {
                 console.error(err);
                 showNotification('❌ Error al generar la imagen');
             });
+
         }
 
     // Botones principales
@@ -4059,51 +4343,55 @@ document.addEventListener('DOMContentLoaded', function() {
     // 1. Cargar nombres personalizados
     loadCustomTierNames();
     
-    // 2. CARGAR DATOS DESDE LOCALSTORAGE (en orden)
-    loadInfluencersDataFromLocalStorage(); // Carga la lista maestra
-    loadNextIdFromLocalStorage();           // Carga el siguiente ID
+    // 2. CARGAR DATOS DESDE LOCALSTORAGE
+    loadInfluencersDataFromLocalStorage(); 
+    loadNextIdFromLocalStorage();          
     
-    // --- PASO CLAVE: Sincronizar la copia de trabajo con la lista maestra cargada ---
-    mainInfluencers = [...mainInfluencersData];
-        // --- NUEVO: REORDENAR AUTOMÁTICAMENTE LA PRIMERA VEZ ---
-    // Verificamos si el usuario ya ha visitado la página antes
-    if (!localStorage.getItem('cancinfluencers_firstVisit')) {
-        // Si no tiene la marca, es la primera vez.
-        // Reordenamos el array principal aleatoriamente.
-        mainInfluencers.sort(() => Math.random() - 0.5);
-        
-        // Guardamos la marca en localStorage para que no vuelva a pasar
-        localStorage.setItem('cancinfluencers_firstVisit', 'true');
+    // --- LÓGICA: PRIMERA VISITA VS RECARGA ---
+    
+    // Si NO hay datos guardados...
+    if (!localStorage.getItem('cancinfluencers_mainInfluencersData')) {
+        // ...verificamos si es la primera vez histórica
+        if (!localStorage.getItem('cancinfluencers_firstVisit')) {
+            // CASO 1: PRIMERA VISITA
+            mainInfluencersData.sort(() => Math.random() - 0.5);
+            saveInfluencersDataToLocalStorage(); // GUARDAMOS EL ORDEN INICIAL
+            localStorage.setItem('cancinfluencers_firstVisit', 'true');
+        }
+        // CASO 2: RESET (datos borrados pero marca existe)
+        // No hacemos nada, usa el orden por defecto del código
     }
-    // -----------------------------------------------------
+    // CASO 3: RECARGA (F5) o EXISTEN DATOS
+    // loadInfluencersDataFromLocalStorage() ya cargó el orden guardado arriba.
     
-    // 3. Cargar el resto de los datos de estado
+    // Sincronizar copia de trabajo
+    mainInfluencers = [...mainInfluencersData];
+    
+    // 3. Cargar resto de datos
     loadRevealedCardsFromLocalStorage();
     loadTierlistDataFromLocalStorage();
     syncInfluencerTiersFromLoadedData();
     
-    // 4. Cargar el Easter Egg
+    // 4. Cargar Easter Egg
     loadEasterEgg();
     
-    // 5. Configurar event listeners (ahora resetApp es global y accesible)
+    // 5. Configurar listeners
     setupEventListeners();
     
-    // 6. Renderizar la UI con los datos cargados y sincronizados
+    // 6. Renderizar UI
     renderCards();
 
-    
-    // Actualizar contador de fans
     const fansCount = document.getElementById('fansCount');
     if (fansCount) {
         fansCount.textContent = `${fansInfluencersData.length} canciones disponibles`;
     }
     
-    console.log('Aplicación inicializada correctamente con datos guardados.');
+    console.log('Aplicación inicializada.');
 });
 
         // --- FUNCIONES PARA COMPARTIR E IMPORTAR ---
 
-        function openShareModal() {
+                function openShareModal() {
             // 1. Limpiar el área de texto del código generado
             const exportArea = document.getElementById('exportCodeArea');
             if (exportArea) exportArea.value = '';
@@ -4117,6 +4405,13 @@ document.addEventListener('DOMContentLoaded', function() {
             // 3. Limpiar el área de importar
             const importArea = document.getElementById('importCodeArea');
             if (importArea) importArea.value = '';
+
+            // 4. Limpiar área de Match y ocultar resultado
+            const matchArea = document.getElementById('matchCodeArea');
+            if (matchArea) matchArea.value = '';
+            
+            const matchResult = document.getElementById('matchResult');
+            if (matchResult) matchResult.style.display = 'none';
             // ---------------------------------------
 
             const shareCodeModal = document.getElementById('shareCodeModal');
@@ -4260,10 +4555,215 @@ document.addEventListener('DOMContentLoaded', function() {
                 showNotification('❌ Código inválido o corrupto');
             }
         }
+
+                // --- FUNCIÓN CALCULADORA DE MATCH ---
+        function calculateMatch() {
+            const code = document.getElementById('matchCodeArea').value.trim();
+            
+            if (!code) {
+                showNotification('❌ Pega un código para comparar');
+                return;
+            }
+
+            try {
+                // 1. Decodificar código externo
+                const jsonString = decodeURIComponent(escape(atob(code)));
+                const externalData = JSON.parse(jsonString);
+
+                if (!externalData.t) {
+                    throw new Error('Formato inválido');
+                }
+
+                // 2. Preparar mapas de datos (ID -> Tier)
+                // Mapa local (tu tierlist actual)
+                const localMap = {};
+                const tiers = ['s', 'a', 'b', 'c', 'd', 'f'];
+                
+                tiers.forEach(t => {
+                    if (tierlistData[t]) {
+                        tierlistData[t].forEach(item => {
+                            localMap[item.id] = t;
+                        });
+                    }
+                });
+
+                // Mapa externo (el del amigo)
+                const externalMap = {};
+                tiers.forEach(t => {
+                    if (externalData.t[t]) {
+                        externalData.t[t].forEach(id => {
+                            externalMap[id] = t;
+                        });
+                    }
+                });
+
+                // 3. Calcular coincidencias
+                let totalCommon = 0;
+                let matches = 0;
+                
+                // Unimos todos los IDs presentes en ambos mapas
+                const allIds = new Set([...Object.keys(localMap), ...Object.keys(externalMap)]);
+
+                allIds.forEach(id => {
+                    // Solo comparamos si AMBOS tienen la canción clasificada (ignora 'unclassified')
+                    if (localMap[id] && externalMap[id]) {
+                        totalCommon++;
+                        if (localMap[id] === externalMap[id]) {
+                            matches++;
+                        }
+                    }
+                });
+
+                // 4. Mostrar resultado
+                const resultDiv = document.getElementById('matchResult');
+                const percentageDiv = document.getElementById('matchPercentage');
+                const detailsDiv = document.getElementById('matchDetails');
+                
+                if (totalCommon === 0) {
+                    percentageDiv.textContent = "0%";
+                    detailsDiv.textContent = "No tienen canciones en común clasificadas.";
+                } else {
+                    const percentage = Math.round((matches / totalCommon) * 100);
+                    percentageDiv.textContent = percentage + "%";
+                    
+                    let emoji = "🤝";
+                    if (percentage > 90) emoji = "💕 Almas Gemelas";
+                    else if (percentage > 70) emoji = "❤️ Gran compatibilidad";
+                    else if (percentage > 50) emoji = "😊 Buena onda";
+                    else if (percentage > 30) emoji = "🤔 Interesante...";
+                    else emoji = "😂 Polos opuestos";
+
+                    detailsDiv.textContent = `${emoji} ¡Teneis ${matches} coincidencias de ${totalCommon} canciones en común!`;
+                }
+
+                resultDiv.style.display = 'block';
+
+            } catch (e) {
+                console.error(e);
+                showNotification('❌ Código inválido para comparar');
+            }
+        }
+
+                // --- FUNCIONES AUXILIARES PARA EFECTOS VISUALES ---
+
+        // 1. Crear Canvas de Confeti Global
+        const confettiCanvas = document.createElement('canvas');
+        confettiCanvas.id = 'confetti-canvas';
+        document.body.appendChild(confettiCanvas);
+        const ctx = confettiCanvas.getContext('2d');
+        let confettiParticles = [];
+
+        function resizeConfettiCanvas() {
+            confettiCanvas.width = window.innerWidth;
+            confettiCanvas.height = window.innerHeight;
+        }
+        window.addEventListener('resize', resizeConfettiCanvas);
+        resizeConfettiCanvas();
+
+        // 2. Lógica de Confeti
+        function createConfettiParticle() {
+            const colors = ['#ff0', '#f0f', '#0ff', '#f00', '#0f0', '#00f', '#ff7f7f', '#ffff7f'];
+            return {
+                x: Math.random() * confettiCanvas.width,
+                y: Math.random() * confettiCanvas.height - confettiCanvas.height,
+                size: Math.random() * 10 + 5,
+                color: colors[Math.floor(Math.random() * colors.length)],
+                speedY: Math.random() * 3 + 2,
+                speedX: Math.random() * 4 - 2,
+                rotation: Math.random() * 360,
+                rotationSpeed: Math.random() * 10 - 5
+            };
+        }
+
+        function animateConfetti() {
+            ctx.clearRect(0, 0, confettiCanvas.width, confettiCanvas.height);
+            
+            confettiParticles.forEach((p, index) => {
+                p.y += p.speedY;
+                p.x += p.speedX;
+                p.rotation += p.rotationSpeed;
+                
+                ctx.save();
+                ctx.translate(p.x, p.y);
+                ctx.rotate(p.rotation * Math.PI / 180);
+                ctx.fillStyle = p.color;
+                ctx.fillRect(-p.size / 2, -p.size / 2, p.size, p.size / 2);
+                ctx.restore();
+
+                if (p.y > confettiCanvas.height) {
+                    confettiParticles.splice(index, 1);
+                }
+            });
+
+            if (confettiParticles.length > 0) {
+                requestAnimationFrame(animateConfetti);
+            }
+        }
+
+        function launchBigConfetti() {
+            for (let i = 0; i < 150; i++) {
+                confettiParticles.push(createConfettiParticle());
+            }
+            animateConfetti();
+        }
+
+        // 3. Explosión de partículas en una carta específica
+        function createCardExplosion(cardElement) {
+            const rect = cardElement.getBoundingClientRect();
+            const centerX = rect.left + rect.width / 2;
+            const centerY = rect.top + rect.height / 2;
+            const colors = ['#FFD700', '#FF4500', '#00FFFF', '#FF69B4', '#7FFF00'];
+
+            for (let i = 0; i < 15; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                
+                const size = Math.random() * 8 + 4;
+                const color = colors[Math.floor(Math.random() * colors.length)];
+                const angle = Math.random() * Math.PI * 2;
+                const velocity = Math.random() * 80 + 40; // Distancia
+                
+                const tx = Math.cos(angle) * velocity;
+                const ty = Math.sin(angle) * velocity;
+
+                particle.style.width = `${size}px`;
+                particle.style.height = `${size}px`;
+                particle.style.backgroundColor = color;
+                particle.style.left = `${centerX}px`;
+                particle.style.top = `${centerY}px`;
+                particle.style.setProperty('--tx', `${tx}px`);
+                particle.style.setProperty('--ty', `${ty}px`);
+                
+                document.body.appendChild(particle);
+
+                setTimeout(() => particle.remove(), 800);
+            }
+        }
     </script>
 
+            <!-- Modal para Sugerencias (Integrado) -->
+        <div class="modal" id="suggestionModal">
+            <div class="modal-content" style="max-width: 800px; height: 85vh; display: flex; flex-direction: column;">
+                <div class="modal-header">
+                    <h3 class="modal-title">📬 Sugerir Nuevo Influencer</h3>
+                    <button class="close-btn" id="closeSuggestionModal">×</button>
+                </div>
+                <div class="modal-body" style="flex-grow: 1; padding: 0; position: relative; background: white;">
+                    <!-- Si el formulario no carga, cambia el src por el enlace largo de "Incrustar" de Google Forms -->
+                    <iframe src="https://forms.gle/x2Prr3KbxupZsFJo8" width="100%" height="100%" frameborder="0" marginheight="0" marginwidth="0" style="border: none;">Cargando formulario…</iframe>
+                </div>
+            </div>
+        </div>
+
         <!-- Notificación -->
-        <div class="notification" id="notification">	
+        <div class="notification" id="notification"></div>
+
+        <!-- Botón flotante de Sugerencias (FUERA de la notificación) -->
+        <!-- Botón flotante de Sugerencias (Ahora abre modal) -->
+        <button class="suggestion-btn" id="openSuggestionBtn" title="Sugerir un influencer nuevo">
+            ✉️
+            <span class="suggestion-tooltip">Sugerir influencer</span>
+        </button>
 
 </body>
 </html>
