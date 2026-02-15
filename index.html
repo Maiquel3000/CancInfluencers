@@ -178,6 +178,7 @@
             border-radius: 12px;
             overflow: hidden;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            user-select: none;
         }
 
         .card-front {
@@ -188,6 +189,7 @@
             align-items: center;
             padding: 20px;
             text-align: center;
+            user-select: none;
         }
 
         .card-front:hover {
@@ -2002,6 +2004,7 @@
             background: rgba(255, 255, 255, 0.1);
             border-radius: 10px;
             flex-shrink: 0;
+            user-select: none;
         }
 
         .achievement-card.unlocked .achievement-icon {
@@ -5382,16 +5385,19 @@ document.addEventListener('DOMContentLoaded', function() {
     // 6. Configurar listeners
     setupEventListeners();
     
-    // 7. Renderizar UI
-    renderCards();
+    // 7. Limpiar buscador y Renderizar UI
+        const searchInput = document.getElementById('searchInput');
+        if (searchInput) searchInput.value = ''; // <-- ESTA LÍNEA BORRA EL BUSCADOR AL CARGAR
+        
+        renderCards();
 
-    const fansCount = document.getElementById('fansCount');
-    if (fansCount) {
-        fansCount.textContent = `${fansInfluencersData.length} canciones disponibles`;
-    }
+        const fansCount = document.getElementById('fansCount');
+        if (fansCount) {
+            fansCount.textContent = `${fansInfluencersData.length} canciones disponibles`;
+         }
     
     console.log('Aplicación inicializada.');
-});
+    });
 
         // --- FUNCIONES PARA COMPARTIR E IMPORTAR ---
 
