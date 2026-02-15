@@ -1194,6 +1194,7 @@
     position: relative;
 }
 
+
 .categories-header {
     display: flex;
     justify-content: space-between;
@@ -1212,13 +1213,17 @@
     background-clip: text;
 }
 
+/* Estilos para el contenedor de categorías - VERSIÓN GRID */
 .categories-container {
     flex-grow: 1;
-    display: flex;
-    flex-direction: column;
-    gap: 15px;
+    display: grid;
+    place-items: center;
+    justify-items: start;
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); /* Columnas automáticas de mínimo 150px */
+    gap: 12px; /* Espacio entre botones */
     overflow-y: auto;
     padding-right: 10px;
+    align-content: start; /* Alinea el contenido arriba */
 }
 
 .categories-container::-webkit-scrollbar {
@@ -1241,20 +1246,39 @@
 
 .category-header-btn {
     width: 100%;
-    padding: 20px;
+    
+    /* CAMBIO CLAVE: Usamos padding fijo en píxeles, NO porcentaje.
+       El porcentaje (25%) hacía el botón gigante y desproporcionado. */
+    padding: 44px 10px; 
     display: flex;
-    align-items: center;
-    justify-content: center;
+    flex-direction: column; /* Hace que el título y el contador se apilen verticalmente */
+    align-items: center;     /* Centra horizontalmente ambas líneas */
+    justify-content: center; /* Centra verticalmente el contenido en el botón */
+    text-align: center;      /* Asegura que si el texto es largo, se centre línea por línea */
     background: linear-gradient(to right, #374151, #4b5563);
     color: white;
     font-weight: bold;
-    font-size: 1.2rem;
+    font-size: 1rem;
     cursor: pointer;
     border: none;
     border-radius: 12px;
     transition: all 0.3s ease;
     position: relative;
     overflow: hidden;
+    min-height: 70px; /* Altura mínima para que quepan dos líneas cómodas */
+}
+
+/* Aseguramos que los spans internos hereden bien la alineación */
+.category-name {
+    line-height: 1.2;
+    margin-bottom: 4px; /* Pequeño espacio entre título y número */
+}
+
+.category-count {
+    display: block;
+    font-size: 0.75rem;
+    font-weight: normal;
+    color: rgba(255, 255, 255, 0.7);
 }
 
 .category-header-btn:hover {
@@ -1912,9 +1936,12 @@
 
         /* Modal de logros */
         .achievements-modal-content {
-            max-width: 600px;
-            background-color: #1f2937;
-        }
+        max-width: 600px;
+        height: 85vh; /* Altura grande: 85% de la pantalla */
+        background-color: #1f2937;
+        display: flex;       /* Necesario para el layout interno */
+        flex-direction: column; /* Apila header y body verticalmente */
+       }   
 
         .achievements-header {
             text-align: center;
@@ -1938,8 +1965,9 @@
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
             gap: 15px;
-            max-height: 60vh;
-            overflow-y: auto;
+            flex-grow: 1;      /* Hace que el grid llene el resto del modal */
+            overflow-y: auto;  /* Activa el scroll interno si hay muchos logros */
+            min-height: 0;     /* Corrección técnica para flexbox */
             padding-right: 5px;
         }
 
@@ -2077,6 +2105,48 @@
             box-shadow: 0 4px 12px rgba(139, 92, 246, 0.4);
         }
 
+        /* --- UNIFICAR ESTILO DE HEADER: LOGROS (VERSIÓN CON EMOJI CORRECTO) --- */
+        #achievementsModal .modal-header {
+            background: transparent; /* Fondo limpio */
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1); /* Línea separadora */
+            margin-bottom: 20px; 
+            padding-bottom: 15px;
+        }
+
+        #achievementsModal .modal-title {
+            font-size: 1.5rem;
+            font-weight: bold;
+            display: flex; /* Alinea emoji y texto */
+            align-items: center;
+            gap: 10px; /* Espacio entre emoji y texto */
+        }
+
+        /* Aplicamos el degradado SOLO al texto, no al emoji */
+        #achievementsModal .modal-title .text-gradient {
+            background: linear-gradient(to right, #f59e0b, #d97706);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+                /* Estilos para el botón de eliminar influencer */
+        .delete-influencer-btn {
+            width: 100%;
+            margin-top: 15px;
+            padding: 10px;
+            background: linear-gradient(to right, #ef4444, #dc2626);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: transform 0.2s, opacity 0.2s;
+        }
+
+        .delete-influencer-btn:hover {
+            transform: scale(1.02);
+            opacity: 0.9;
+        }
     
     </style>
         <!-- LIBRERÍA NECESARIA PARA EXPORTAR IMAGEN -->
@@ -2211,6 +2281,11 @@
                         <button class="tier-option tier-f" data-tier="f" aria-pressed="false">F</button>
                     </div>
                     
+                    <!-- NUEVO: Botón para eliminar carta personalizada -->
+                    <button class="delete-influencer-btn" id="deleteInfluencerBtn" style="display: none;">
+                        🗑️ Eliminar esta carta
+                    </button>
+
                     <!-- Añadido aria-live para que lea los cambios -->
                     <div class="tier-selection-status" id="tierSelectionStatus" aria-live="polite">Haz clic en un tier para clasificar esta canción</div>
                 </div>
@@ -2333,11 +2408,15 @@
             <div class="tier-stats">
                 <div class="tier-stat">
                     <div class="tier-stat-number" id="totalRevealed">0</div>
-                    <div class="tier-stat-label">Canciones Reveladas</div>
+                    <div class="tier-stat-label">Reveladas</div>
+                </div>
+                <div class="tier-stat">
+                    <div class="tier-stat-number" id="totalClassified">0</div>
+                    <div class="tier-stat-label">Clasificadas</div>
                 </div>
                 <div class="tier-stat">
                     <div class="tier-stat-number" id="totalSongs">0</div>
-                    <div class="tier-stat-label">Total Canciones</div>
+                    <div class="tier-stat-label">Total</div>
                 </div>
             </div>
             
@@ -2895,6 +2974,9 @@ function syncInfluencerTiersFromLoadedData() {
 
         // --- SISTEMA DE LOGROS ---
         let shuffleCount = parseInt(localStorage.getItem('cancinfluencers_shuffleCount') || '0');
+        let modalOpenTimestamp = null; // Para medir tiempo del video
+        let logoClickCount = 0;        // Para contar clics en el logo
+        let logoClickTimeout = null;   // Para resetear el contador
 
         const defaultAchievements = [
             { id: 'first_reveal', name: 'Primera Canción', description: 'Revela tu primera carta', icon: '🎵', unlocked: false, progress: 0, maxProgress: 1 },
@@ -2903,13 +2985,21 @@ function syncInfluencerTiersFromLoadedData() {
             { id: 'critic_10', name: 'Crítico Novato', description: 'Clasifica 10 canciones', icon: '⭐', unlocked: false, progress: 0, maxProgress: 10 },
             { id: 'critic_50', name: 'Crítico Experto', description: 'Clasifica 50 canciones', icon: '🌟', unlocked: false, progress: 0, maxProgress: 50 },
             { id: 'critic_100', name: 'Crítico Maestro', description: 'Clasifica 100 canciones', icon: '👑', unlocked: false, progress: 0, maxProgress: 100 },
-            { id: 'tier_s_5', name: 'Excelente Gusto', description: 'Pon 5 canciones en Tier S', icon: '💎', unlocked: false, progress: 0, maxProgress: 5 },
-            { id: 'tier_s_20', name: 'El Conocedor', description: 'Pon 20 canciones en Tier S', icon: '🎪', unlocked: false, progress: 0, maxProgress: 20 },
-            { id: 'tier_f_10', name: 'Juez Severo', description: 'Pon 10 canciones en Tier F', icon: '💀', unlocked: false, progress: 0, maxProgress: 10 },
-            { id: 'pack_opening', name: 'Pack Opening', description: 'Usa la función "Revelar Todas"', icon: '🎉', unlocked: false, progress: 0, maxProgress: 1 },
-            { id: 'shuffle_master', name: 'Mezclador', description: 'Reordena las cartas 5 veces', icon: '🔀', unlocked: false, progress: 0, maxProgress: 5 },
             { id: 'konami', name: 'Easter Egg', description: 'Descubre el secreto oculto', icon: '🥚', unlocked: false, progress: 0, maxProgress: 1 },
-        ];
+            { id: 'tinder', name: 'Tinder', description: 'Usa la calculadora de compatibilidad', icon: '❤️', unlocked: false, progress: 0, maxProgress: 1 },
+            { id: 'exporter', name: 'El Exportador', description: 'Genera tu primer código para compartir', icon: '📤', unlocked: false, progress: 0, maxProgress: 1 },
+            { id: 'customizer', name: 'Personalizador', description: 'Cambia el nombre de un tier por uno personalizado', icon: '🎨', unlocked: false, progress: 0, maxProgress: 1 },
+            { id: 'intro_hater', name: 'Intro Hater', description: 'Cierra el video en menos de 5 segundos', icon: '⏩', unlocked: false, progress: 0, maxProgress: 1, hidden: true },
+            { id: 'exorcist', name: 'El Exorcista', description: 'Intenta arrastrar una carta fuera de la tierlist', icon: '👻', unlocked: false, progress: 0, maxProgress: 1, hidden: true },
+            { id: 'logo_clicker', name: 'Clicker Oculto', description: 'Haz clic 5 veces en el logo', icon: '🖱️', unlocked: false, progress: 0, maxProgress: 5, hidden: true },
+            { id: 'detective', name: 'El Detective', description: 'Busca al creador de la web', icon: '🕵️', unlocked: false, progress: 0, maxProgress: 1, hidden: true },
+            { id: 'no_results', name: 'Sin Resultados', description: 'Busca algo imposible de encontrar', icon: '🔭', unlocked: false, progress: 0, maxProgress: 1, hidden: true },
+            { id: 'archaeologist', name: 'Arqueólogo', description: 'Revela todas las "Viejas Reliquias" primero', icon: '🦴', unlocked: false, progress: 0, maxProgress: 1, hidden: true },
+            { id: 'team_minecraft', name: 'Team Minecraft', description: 'Clasifica a todos los influencers de Minecraft', icon: '⛏️', unlocked: false, progress: 0, maxProgress: 1, hidden: true },
+            { id: 'the_climb', name: 'El Ascenso', description: 'Mueve una carta directamente del Tier F al S', icon: '🚀', unlocked: false, progress: 0, maxProgress: 1, hidden: true },
+            { id: 'fresh_start', name: 'Borrón y Cuenta Nueva', description: 'Reinicia tu progreso usando el botón de reinicio', icon: '💣', unlocked: false, progress: 0, maxProgress: 1, hidden: true },
+];
+
 
         let achievements = JSON.parse(JSON.stringify(defaultAchievements));
 
@@ -2978,8 +3068,7 @@ function closeCategoriesModal() {
     }, 300);
 }
 
-// Función para renderizar las categorías en el modal - VERSIÓN CON SELECCIÓN MÚLTIPLE
-// Reemplaza la función renderCategories con esta versión actualizada
+// Función para renderizar las categorías en el modal - VERSIÓN CON CONTADOR
 function renderCategories() {
     const container = document.getElementById('categoriesContainer');
     if (!container) return;
@@ -2990,18 +3079,23 @@ function renderCategories() {
     allButton.className = 'category-header-btn all-btn';
     
     // Verificar si todas las categorías están seleccionadas
-    const allCategoriesSelected = selectedCategories.size === Object.keys(categoriesData).length;
+    const totalCats = Object.keys(categoriesData).length;
+    const allCategoriesSelected = selectedCategories.size === totalCats;
+    
     if (selectedCategories.size === 0 || allCategoriesSelected) {
         allButton.classList.add('selected');
     }
     
-    allButton.textContent = 'Todos';
+    // --- NUEVO: HTML con span para el contador ---
+    allButton.innerHTML = `
+        <span class="category-name">Todos</span>
+        <span class="category-count">${mainInfluencersData.length} totales</span>
+    `;
+    
     allButton.addEventListener('click', () => {
         if (allCategoriesSelected) {
-            // Si ya están todas seleccionadas, deseleccionar todas
             selectedCategories.clear();
         } else {
-            // Si no, seleccionar todas
             selectAllCategories();
         }
         renderCategories();
@@ -3012,10 +3106,19 @@ function renderCategories() {
     Object.keys(categoriesData).forEach(categoryName => {
         const categoryButton = document.createElement('button');
         categoryButton.className = 'category-header-btn';
+        
         if (selectedCategories.has(categoryName)) {
             categoryButton.classList.add('selected');
         }
-        categoryButton.textContent = categoryName;
+        
+        const count = categoriesData[categoryName].length;
+
+        // --- NUEVO: HTML con span para el contador ---
+        categoryButton.innerHTML = `
+            <span class="category-name">${categoryName}</span>
+            <span class="category-count">${count} influencers</span>
+        `;
+
         categoryButton.addEventListener('click', () => {
             toggleCategory(categoryName);
         });
@@ -3176,6 +3279,11 @@ function clearCategoryFilter() {
 
         // Función para obtener el nombre del tier
         function getTierName(tier) {
+            // Caso especial para "Sin Clasificar"
+            if (tier === 'unclassified') {
+                return 'Sin Clasificar';
+            }
+            // Para el resto, usa nombres personalizados o mayúsculas
             return customTierNames[tier] || tier.toUpperCase();
         }
 
@@ -3302,6 +3410,29 @@ function clearCategoryFilter() {
                 card.classList.remove('animating');
                 card.classList.add('flipped');
                 revealedCards.add(influencer.id);
+                // --- LOGRO: ARQUEÓLOGO ---
+// Verificar si la carta revelada es una "Vieja Reliquia"
+const isRelic = influencer.categories && influencer.categories.includes('Viejas Reliquias');
+
+if (isRelic) {
+    // Contar cuántas reliquias hay en total en los datos
+    const totalRelics = mainInfluencersData.filter(inf => 
+        inf.categories && inf.categories.includes('Viejas Reliquias')
+    ).length;
+
+    // Contar cuántas reliquias hemos revelado hasta ahora
+    const revealedRelicsCount = mainInfluencersData.filter(inf => 
+        inf.categories && inf.categories.includes('Viejas Reliquias') && revealedCards.has(inf.id)
+    ).length;
+
+    // Verificar condición: 
+    // 1. Hemos revelado todas las reliquias.
+    // 2. El número total de cartas reveladas es IGUAL al número de reliquias reveladas 
+    //    (significa que no hemos revelado nada más que reliquias).
+    if (revealedRelicsCount === totalRelics && revealedCards.size === revealedRelicsCount) {
+        updateAchievement('archaeologist', 1);
+    }
+}
                 card.classList.add('revealed');
                 
                 // Añadir a la lista de no clasificados si no tiene tier
@@ -3507,65 +3638,79 @@ function clearCategoryFilter() {
         }
 
         function handleDrop(e) {
-    if (e.stopPropagation) {
-        e.stopPropagation();
-    }
-    e.preventDefault();
-    
-    const newTier = this.closest('.tier-row').dataset.tier;
-    
-    if (draggedInfluencer && draggedElement && newTier !== draggedInfluencer.tier) {
-        // --- CORRECCIÓN CLAVE: Obtener el tier de origen desde el DOM ---
-        const oldTierRow = draggedElement.closest('.tier-row');
-        const oldTier = oldTierRow ? oldTierRow.dataset.tier : null;
+            if (e.stopPropagation) {
+                e.stopPropagation();
+            }
+            e.preventDefault();
+            
+            const newTier = this.closest('.tier-row').dataset.tier;
+            
+                if (draggedInfluencer && draggedElement && newTier !== draggedInfluencer.tier) {
+                    const oldTierRow = draggedElement.closest('.tier-row');
+                    const oldTier = oldTierRow ? oldTierRow.dataset.tier : null;
 
-        // Mover el elemento en el DOM
-        this.appendChild(draggedElement);
-        
-        // Actualizar el tier del influencer en los datos maestros
-        draggedInfluencer.tier = newTier;
-        
-        // Eliminar de los datos del tier anterior
-        if (oldTier && tierlistData[oldTier]) {
-            tierlistData[oldTier] = tierlistData[oldTier].filter(item => item.id !== draggedInfluencer.id);
+                    // --- LOGRO: EL ASCENSO ---
+                    if (oldTier === 'f' && newTier === 's') {
+                        updateAchievement('the_climb', 1);
+                 }
+
+                this.appendChild(draggedElement);
+                
+                draggedInfluencer.tier = newTier;
+                
+                if (oldTier && tierlistData[oldTier]) {
+                    tierlistData[oldTier] = tierlistData[oldTier].filter(item => item.id !== draggedInfluencer.id);
+                }
+
+                if (!tierlistData[newTier]) {
+                    tierlistData[newTier] = [];
+                }
+                
+                tierlistData[newTier] = tierlistData[newTier].filter(item => item.id !== draggedInfluencer.id);
+                tierlistData[newTier].push(draggedInfluencer);
+
+                updateTierlistStats();
+                saveTierlistDataToLocalStorage();
+                
+                // --- CAMBIO AQUÍ: Lógica para el mensaje ---
+                let mensaje = '';
+                if (newTier === 'unclassified') {
+                    mensaje = `${draggedInfluencer.name} movido a Sin Clasificar`;
+                } else {
+                    mensaje = `${draggedInfluencer.name} movido a tier ${getTierName(newTier)}`;
+                }
+                showNotification(mensaje);
+                // -------------------------------------------
+            }
+            
+            document.querySelectorAll('.tier-row').forEach(row => {
+                row.classList.remove('drag-over');
+            });
+            
+            return false;
         }
-
-        // Añadir a los datos del nuevo tier
-        if (!tierlistData[newTier]) {
-            tierlistData[newTier] = [];
-        }
-        
-        // Evitar duplicados en el nuevo tier
-        tierlistData[newTier] = tierlistData[newTier].filter(item => item.id !== draggedInfluencer.id);
-        tierlistData[newTier].push(draggedInfluencer);
-
-        // Actualizar estadísticas
-        updateTierlistStats();
-        
-        // Guardar el estado correcto en localStorage
-        saveTierlistDataToLocalStorage();
-        
-        // Mostrar notificación
-        showNotification(`${draggedInfluencer.name} movido a tier ${getTierName(newTier)}`);
-    }
-    
-    // Limpiar clases visuales
-    document.querySelectorAll('.tier-row').forEach(row => {
-        row.classList.remove('drag-over');
-    });
-    
-    return false;
-}
 
         // Función para actualizar estadísticas del tierlist
         function updateTierlistStats() {
             const totalRevealed = revealedCards.size;
             const totalSongs = mainInfluencersData.length + fansInfluencersData.length;
             
+            // --- NUEVO: Calcular canciones clasificadas (S, A, B, C, D, F) ---
+            let classifiedCount = 0;
+            const tiers = ['s', 'a', 'b', 'c', 'd', 'f'];
+            tiers.forEach(tier => {
+                if (tierlistData[tier]) {
+                    classifiedCount += tierlistData[tier].length;
+                }
+            });
+            // ---------------------------------------------------------------
+
             const totalRevealedEl = document.getElementById('totalRevealed');
+            const totalClassifiedEl = document.getElementById('totalClassified'); // Nuevo elemento
             const totalSongsEl = document.getElementById('totalSongs');
             
             if (totalRevealedEl) totalRevealedEl.textContent = totalRevealed;
+            if (totalClassifiedEl) totalClassifiedEl.textContent = classifiedCount; // Actualizar contador
             if (totalSongsEl) totalSongsEl.textContent = totalSongs;
         }
 
@@ -3610,6 +3755,7 @@ function openModal(influencer) {
     currentInfluencer = influencer;
     isModalOpen = true;
     
+    modalOpenTimestamp = Date.now(); // Guardar hora de apertura
     const modalTitle = document.getElementById('modalTitle');
     const modalVideo = document.getElementById('modalVideo');
     const tierSelectionStatus = document.getElementById('tierSelectionStatus');
@@ -3653,6 +3799,19 @@ modalTitle.textContent = titleText;
     } else {
         videoModal.classList.remove('on-top-of-tierlist');
     }
+
+                // --- NUEVO: LÓGICA PARA MOSTRAR BOTÓN DE ELIMINAR ---
+            const deleteBtn = document.getElementById('deleteInfluencerBtn');
+            
+            // Mostrar solo si es una carta personalizada (ID >= 143) y no es de fans
+            if (parseInt(influencer.id) >= 143 && parseInt(influencer.id) < 1000) {
+                deleteBtn.style.display = 'block';
+                // Asignamos el evento de click
+                deleteBtn.onclick = function() { deleteInfluencer(influencer.id); };
+            } else {
+                deleteBtn.style.display = 'none';
+            }
+            // ----------------------------------------------------
     
     // Mostrar modal con animación
     videoModal.style.display = 'flex';
@@ -3663,6 +3822,14 @@ modalTitle.textContent = titleText;
 
         // Función para cerrar el modal
 function closeModalFunc() {
+    // --- LOGRO: INTRO HATER ---
+if (modalOpenTimestamp) {
+    const elapsed = Date.now() - modalOpenTimestamp;
+    if (elapsed < 5000) { // Menos de 5 segundos
+        updateAchievement('intro_hater', 1);
+    }
+    modalOpenTimestamp = null; // Resetear
+}
     // Limpiar el video inmediatamente para detener la reproducción
     const modalVideo = document.getElementById('modalVideo');
     modalVideo.src = '';
@@ -3677,6 +3844,52 @@ function closeModalFunc() {
         videoModal.style.display = 'none';
     }, 300);
 }
+
+        // Función para eliminar un influencer personalizado
+        function deleteInfluencer(id) {
+            const influencer = findInfluencerById(id);
+            if (!influencer) return;
+
+            // Confirmación
+            const confirmDelete = confirm(`¿Seguro que quieres eliminar a "${influencer.name}"?\n\nEsta acción no se puede deshacer.`);
+            if (!confirmDelete) return;
+
+            // 1. Eliminar de la lista de datos principal
+            const indexData = mainInfluencersData.findIndex(i => i.id === id);
+            if (indexData > -1) {
+                mainInfluencersData.splice(indexData, 1);
+            }
+
+            // 2. Eliminar de la lista de visualización actual
+            const indexView = mainInfluencers.findIndex(i => i.id === id);
+            if (indexView > -1) {
+                mainInfluencers.splice(indexView, 1);
+            }
+
+            // 3. Eliminar de las cartas reveladas
+            revealedCards.delete(id);
+
+            // 4. Eliminar de la tierlist si está clasificado
+            Object.keys(tierlistData).forEach(tierKey => {
+                tierlistData[tierKey] = tierlistData[tierKey].filter(item => item.id !== id);
+            });
+
+            // 5. Guardar cambios en LocalStorage
+            saveInfluencersDataToLocalStorage();
+            saveRevealedCardsToLocalStorage();
+            saveTierlistDataToLocalStorage();
+
+            // 6. Actualizar UI
+            closeModalFunc();
+            renderCards();
+            // Si el modal de tierlist está abierto, actualizarlo también
+            if (isTierlistModalOpen) {
+                renderAllTiers();
+                updateTierlistStats();
+            }
+            
+            showNotification('🗑️ Influencer eliminado correctamente');
+        }
 
         // Función para manejar la selección de tier
         function handleTierSelection(tier) {
@@ -3714,7 +3927,12 @@ function closeModalFunc() {
     
     // Asignar el nuevo tier
     currentInfluencer.tier = tier;
-    
+
+    // --- LOGRO: EL ASCENSO (Botones) ---
+    if (oldTier === 'f' && tier === 's') {
+        updateAchievement('the_climb', 1);
+    }
+
     // Añadir al nuevo tier
     addToTierlist(currentInfluencer);
     
@@ -3875,6 +4093,8 @@ function closeModalFunc() {
                 saveCustomTierNames();
                 updateTierNames();
                 showNotification('Nombres de tiers actualizados correctamente');
+                        // --- LOGRO: PERSONALIZADOR ---
+                updateAchievement('customizer', 1);
             }
             
             closeEditTiersModal();
@@ -4061,8 +4281,21 @@ function closeModalFunc() {
             }
             
             renderCards();
+            
+            // --- LOGRO: EL DETECTIVE ---
+const searchTermRaw = searchInput.value.toLowerCase();
+if (searchTermRaw.includes('maiquel3000') || searchTermRaw.includes('maiquel3k') || searchTermRaw === 'maiquel') {
+    updateAchievement('detective', 1);
+}
+
+// --- LOGRO: SIN RESULTADOS ---
+// Si no hay resultados y la búsqueda tiene más de 4 caracteres (para evitar búsquedas vacías o de 1 letra)
+if (mainInfluencers.length === 0 && searchTermRaw.length >= 5) {
+    updateAchievement('no_results', 1);
+}
         }
 
+// Función para reordenar las tarjetas
 // Función para reordenar las tarjetas
 function shuffleCards() {
     // 1. Mezclamos los datos maestros (para que se guarde el nuevo orden)
@@ -4080,9 +4313,7 @@ function shuffleCards() {
         fansInfluencers = [...fansInfluencers].sort(() => Math.random() - 0.5);
         renderFansCards();
     }
-    shuffleCount++;
-localStorage.setItem('cancinfluencers_shuffleCount', shuffleCount);
-updateAchievement('shuffle_master', shuffleCount);
+    // Eliminado: contador de mezclas y logro 'shuffle_master'
 }
 
         // Función para toggle de fans
@@ -4155,25 +4386,58 @@ updateAchievement('shuffle_master', shuffleCount);
             if(!grid) return;
             grid.innerHTML = '';
 
+            let hasHiddenLocked = false;
+
             achievements.forEach(achievement => {
+                const isHiddenSecret = achievement.hidden && !achievement.unlocked;
+                
+                // Si es secreto y está bloqueado, NO lo renderizamos todavía
+                if (isHiddenSecret) {
+                    hasHiddenLocked = true;
+                    return; // Saltamos al siguiente logro
+                }
+
+                // Renderizamos los logros visibles (bloqueados o desbloqueados) y los secretos ya desbloqueados
+                const card = document.createElement('div');
                 const progressPercent = achievement.maxProgress > 0 ? (achievement.progress / achievement.maxProgress) * 100 : 0;
                 
-                // Usamos template literals para coincidir con el HTML del snippet
-                const cardHTML = `
-                    <div class="achievement-card ${achievement.unlocked ? 'unlocked' : ''}">
-                        <div class="achievement-icon">${achievement.unlocked ? achievement.icon : '🔒'}</div>
-                        <div class="achievement-info">
-                            <div class="achievement-name">${achievement.name}</div>
-                            <div class="achievement-description">${achievement.description}</div>
-                            <div class="achievement-progress-bar">
-                                <div class="progress-fill" style="width: ${progressPercent}%"></div>
-                            </div>
-                            <div class="achievement-progress-text">${achievement.progress} / ${achievement.maxProgress}</div>
+                // Si está desbloqueado mostramos su icono, si no, un candado
+                const displayIcon = achievement.unlocked ? achievement.icon : '🔒';
+                
+                card.className = `achievement-card ${achievement.unlocked ? 'unlocked' : ''}`;
+                
+                card.innerHTML = `
+                    <div class="achievement-icon">${displayIcon}</div>
+                    <div class="achievement-info">
+                        <div class="achievement-name">${achievement.name}</div>
+                        <div class="achievement-description">${achievement.description}</div>
+                        <div class="achievement-progress-bar">
+                            <div class="achievement-progress-fill" style="width: ${progressPercent}%"></div>
                         </div>
+                        <div class="achievement-progress-text">${achievement.progress} / ${achievement.maxProgress}</div>
                     </div>
                 `;
-                grid.innerHTML += cardHTML;
+                grid.appendChild(card);
             });
+
+            // Si encontramos al menos un logro secreto bloqueado, añadimos UNA sola tarjeta misteriosa
+            if (hasHiddenLocked) {
+                const hiddenCard = document.createElement('div');
+                hiddenCard.className = 'achievement-card';
+                hiddenCard.innerHTML = `
+                    <div class="achievement-icon">❓</div>
+                    <div class="achievement-info">
+                        <div class="achievement-name">???</div>
+                        <div class="achievement-description">Sigue jugando para descubrir logros ocultos</div>
+                        <div class="achievement-progress-bar">
+                            <div class="achievement-progress-fill" style="width: 0%"></div>
+                        </div>
+                        <div class="achievement-progress-text">? / ?</div>
+                    </div>
+                `;
+                grid.appendChild(hiddenCard);
+            }
+
             updateAchievementsCount();
         }
 
@@ -4181,7 +4445,14 @@ updateAchievement('shuffle_master', shuffleCount);
             const el = document.getElementById('achievementsCount');
             if(el) {
                 const unlocked = achievements.filter(a => a.unlocked).length;
-                el.textContent = `${unlocked} / ${achievements.length}`;
+                
+                // El total mostrado será: Logros visibles + Secretos desbloqueados
+                // Así nunca sabemos cuántos secretos faltan por descubrir
+                const visibleTotal = achievements.filter(a => !a.hidden).length;
+                const unlockedSecrets = achievements.filter(a => a.hidden && a.unlocked).length;
+                const displayTotal = visibleTotal + unlockedSecrets;
+                
+                el.textContent = `${unlocked} / ${displayTotal}`;
             }
         }
 
@@ -4241,11 +4512,9 @@ updateAchievement('shuffle_master', shuffleCount);
                     delay = 1;
                 }
                 // -------------------------------------
-
                 await new Promise(r => setTimeout(r, delay));
             }
 
-            updateAchievement('pack_opening', 1);
             updateAchievement('collector_50', revealedCards.size);
             checkAllAchievements();
             
@@ -4374,6 +4643,7 @@ function resetApp() {
         }
 
         // Esta función calcula los conteos y actualiza los logros
+                // Esta función calcula los conteos y actualiza los logros
         function checkAllAchievements() {
             const revealedCount = revealedCards.size;
             
@@ -4382,48 +4652,23 @@ function resetApp() {
                 if (key !== 'unclassified') return acc + tierlistData[key].length;
                 return acc;
             }, 0);
-            
-            const tierSCount = tierlistData.s.length;
-            const tierFCount = tierlistData.f.length;
 
-            // Actualizamos progreso
+            // Actualizamos progreso (Quitados los logros de tiers S/F y Pack Opening)
             updateAchievement('first_reveal', revealedCount >= 1 ? 1 : 0);
             updateAchievement('collector_50', revealedCount);
             updateAchievement('collector_all', revealedCount);
             updateAchievement('critic_10', classifiedCount);
             updateAchievement('critic_50', classifiedCount);
             updateAchievement('critic_100', classifiedCount);
-            updateAchievement('tier_s_5', tierSCount);
-            updateAchievement('tier_s_20', tierSCount);
-            updateAchievement('tier_f_10', tierFCount);
-        }
+                // --- LOGRO: TEAM MINECRAFT ---
+    const minecraftInfluencers = mainInfluencersData.filter(inf => inf.categories && inf.categories.includes('Minecraft'));
+    // Verificamos que haya al menos uno y que TODOS tengan un tier asignado (no null y no unclassified)
+    const allMinecraftClassified = minecraftInfluencers.length > 0 && minecraftInfluencers.every(inf => inf.tier && inf.tier !== 'unclassified');
+    
+    if (allMinecraftClassified) {
+        updateAchievement('team_minecraft', 1);
+    }
 
-        function renderAchievements() {
-            const grid = document.getElementById('achievementsGrid');
-            if(!grid) return;
-            grid.innerHTML = '';
-
-            achievements.forEach(achievement => {
-                const card = document.createElement('div');
-                card.className = `achievement-card ${achievement.unlocked ? 'unlocked' : ''}`;
-                
-                // Evitar división por cero
-                const progressPercent = achievement.maxProgress > 0 ? (achievement.progress / achievement.maxProgress) * 100 : 0;
-                
-                card.innerHTML = `
-                    <div class="achievement-icon">${achievement.unlocked ? achievement.icon : '🔒'}</div>
-                    <div class="achievement-info">
-                        <div class="achievement-name">${achievement.name}</div>
-                        <div class="achievement-description">${achievement.description}</div>
-                        <div class="achievement-progress-bar">
-                            <div class="achievement-progress-fill" style="width: ${progressPercent}%"></div>
-                        </div>
-                        <div class="achievement-progress-text">${achievement.progress} / ${achievement.maxProgress}</div>
-                    </div>
-                `;
-                grid.appendChild(card);
-            });
-            updateAchievementsCount();
         }
 
         function updateAchievementsCount() {
@@ -4628,7 +4873,21 @@ function resetApp() {
                         searchInput.select();
                     }
                 }
-            });
+            }); // <--- Se cierra aquí el evento de teclado
+
+            // --- LOGRO: CLICKER OCULTO ---
+            const headerLogo = document.querySelector('.header-logo');
+            if (headerLogo) {
+                headerLogo.style.cursor = 'pointer';
+                headerLogo.addEventListener('click', () => {
+                    logoClickCount++;
+                    updateAchievement('logo_clicker', logoClickCount);
+                    clearTimeout(logoClickTimeout);
+                    logoClickTimeout = setTimeout(() => {
+                        logoClickCount = 0;
+                    }, 500);
+                });
+            }
 
             // --- NUEVA FUNCIÓN: Exportar Tierlist a Imagen ---
         function exportTierlistImage() {
@@ -4964,6 +5223,31 @@ function resetApp() {
                 tier.addEventListener('drop', handleDrop);
                 tier.addEventListener('dragleave', handleDragLeave);
             });
+
+            // --- LOGRO: EL EXORCISTA (VERSIÓN MEJORADA) ---
+            const tierlistModal = document.getElementById('tierlistModal');
+            
+            if (tierlistModal) {
+                // Permitimos soltar en el fondo oscuro del modal
+                tierlistModal.addEventListener('dragover', (e) => {
+                    e.preventDefault(); // Necesario para permitir el drop
+                    // Opcional: Añadir una clase para indicar visualmente que estás "fuera"
+                    tierlistModal.classList.add('drag-outside'); 
+                });
+
+                tierlistModal.addEventListener('dragleave', (e) => {
+                    tierlistModal.classList.remove('drag-outside');
+                });
+
+                tierlistModal.addEventListener('drop', (e) => {
+                    // Si soltamos el elemento directamente en el fondo oscuro del modal
+                    // (y no dentro de la caja blanca '.tierlist-modal-content')
+                    if (e.target === tierlistModal) {
+                        updateAchievement('exorcist', 1);
+                    }
+                    tierlistModal.classList.remove('drag-outside');
+                });
+            }
         }
 
 // Inicialización
@@ -5092,6 +5376,8 @@ document.addEventListener('DOMContentLoaded', function() {
                 copyBtn.style.display = 'block';
                 
                 showNotification('✅ ¡Código generado!');
+                        // --- LOGRO: EL EXPORTADOR ---
+                        updateAchievement('exporter', 1);
             } catch (e) {
                 console.error(e);
                 showNotification('❌ Error al generar el código');
@@ -5199,6 +5485,8 @@ document.addEventListener('DOMContentLoaded', function() {
             }
 
             try {
+                // --- LOGRO: TINDER ---
+                updateAchievement('tinder', 1);
                 // 1. Decodificar código externo
                 const jsonString = decodeURIComponent(escape(atob(code)));
                 const externalData = JSON.parse(jsonString);
@@ -5399,8 +5687,8 @@ document.addEventListener('DOMContentLoaded', function() {
     <div class="modal" id="achievementsModal" role="dialog" aria-modal="true">
         <div class="modal-content achievements-modal-content">
             <div class="modal-header">
-                <h2 class="modal-title">🏆 Logros</h2>
-                <button class="close-btn" id="closeAchievementsModal" aria-label="Cerrar">×</button>
+            <h2 class="modal-title">🏆 <span class="text-gradient">Logros</span></h2>
+            <button class="close-btn" id="closeAchievementsModal" aria-label="Cerrar">×</button>
             </div>
             <div class="modal-body">
                 <div style="text-align:center;margin-bottom:20px">
@@ -5409,18 +5697,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 </div>
                 <div class="achievements-grid" id="achievementsGrid"></div>
             </div>
-        </div>
-    </div>
-
-    <!-- Progress Overlay -->
-    <div class="progress-overlay" id="progressOverlay">
-        <div class="progress-container">
-            <div class="progress-icon">🎴</div>
-            <h2>Pack Opening</h2>
-            <div class="progress-bar">
-                <div class="progress-fill" id="progressFill"></div>
-            </div>
-            <p id="progressText">0 de 0 cartas reveladas</p>
         </div>
     </div>
 
