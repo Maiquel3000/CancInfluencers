@@ -2747,25 +2747,56 @@ function saveInfluencersDataToLocalStorage() {
     }
 }
 
-// Cargar la lista completa de influencers principales
+// Cargar la lista completa de influencers principales (VERSIÓN MEJORADA)
 function loadInfluencersDataFromLocalStorage() {
     try {
         const saved = localStorage.getItem('cancinfluencers_mainInfluencersData');
         if (saved) {
             const loadedInfluencers = JSON.parse(saved);
-            // Reemplazar el array original con el cargado
-            mainInfluencersData.length = 0; // Vaciar el array original
-            mainInfluencersData.push(...loadedInfluencers); // Añadir los elementos cargados
+            
+            // 1. Identificar los IDs que ya tenemos guardados
+            const savedIds = new Set(loadedInfluencers.map(inf => inf.id));
+            
+            // 2. Buscar en el código duro (mainInfluencersData original) cartas que falten
+            // Usamos una copia temporal de los datos originales si es necesario, 
+            // pero como mainInfluencersData se define arriba, comparamos con lo que debería tener.
+            
+            // Como mainInfluencersData ya fue definido arriba en el script, 
+            // "sabemos" que las cartas por defecto son los IDs 1 al 142 (y 1000s para fans).
+            // Vamos a asegurarnos de que si falta la 141 o 142, se añadan.
+            
+            const defaultIds = new Set(mainInfluencersData.map(inf => inf.id));
+            let needsUpdate = false;
+            
+            // Verificar si falta algún ID por defecto
+            defaultIds.forEach(id => {
+                if (!savedIds.has(id)) {
+                    // Si falta, buscamos la carta en los datos originales (que tenemos arriba en el script)
+                    // Nota: mainInfluencersData todavía tiene los datos del código hasta que los sobrescribamos.
+                    const missingCard = mainInfluencersData.find(inf => inf.id === id);
+                    if (missingCard) {
+                        loadedInfluencers.push(missingCard); // La añadimos a la lista cargada
+                        needsUpdate = true;
+                    }
+                }
+            });
+
+            // 3. Aplicar la lista combinada
+            mainInfluencersData.length = 0;
+            mainInfluencersData.push(...loadedInfluencers);
+            
+            // 4. Si añadimos algo nuevo, guardamos la versión actualizada
+            if (needsUpdate) {
+                console.log("Actualizando lista con nuevas cartas del sistema...");
+                saveInfluencersDataToLocalStorage();
+            }
         }
     } catch (e) {
         console.error('Error al cargar la lista de influencers:', e);
-        // Si hay un error, se seguirá usando la lista por defecto
     }
 }
 
 // Sincronizar los tiers de los influencers con los datos cargados
-// ¡Esta es la función más importante!
-// FUNCIÓN DEFINITIVA: syncInfluencerTiersFromLoadedData
 function syncInfluencerTiersFromLoadedData() {
     // 1. Resetear todos los tiers en los datos maestros a null
     [...mainInfluencersData, ...fansInfluencersData].forEach(influencer => {
@@ -2799,7 +2830,7 @@ function syncInfluencerTiersFromLoadedData() {
         { id: '1', name: 'OllieGamerZ', youtubeUrl: 'https://www.youtube.com/watch?v=62pWsLpR8so', videoId: '62pWsLpR8so', tier: null, categories: ['Minecraft', 'Españoles'] },
         { id: '2', name: 'DalasReview', youtubeUrl: 'https://youtu.be/oMGHCWXNBOU?si=LuSrD52-_GmyEG1q', videoId: 'oMGHCWXNBOU', tier: null, categories: ['Mainstream', 'Españoles'] },
         { id: '3', name: 'ElRubiusOMG', youtubeUrl: 'https://www.youtube.com/watch?v=VZzSBv6tXMw', videoId: 'VZzSBv6tXMw', tier: null, categories: ['Mainstream', 'Españoles'] },
-        { id: '4', name: 'ElRubius', youtubeUrl: 'https://youtu.be/OkFOETs00QA?si=oX9m0GMS6CI3KfaA', videoId: 'OkFOETs00QA', tier: null, categories: ['Mainstream', 'Españoles'], featuring: ['Kidd Keo'] },
+        { id: '4', name: 'ElRubiusOMG', youtubeUrl: 'https://youtu.be/OkFOETs00QA?si=oX9m0GMS6CI3KfaA', videoId: 'OkFOETs00QA', tier: null, categories: ['Mainstream', 'Españoles'], featuring: ['Kidd Keo'] },
         { id: '5', name: 'Ibai', youtubeUrl: 'https://www.youtube.com/watch?v=n66zQBqwI9A', videoId: 'n66zQBqwI9A', tier: null, categories: ['Mainstream', 'Españoles'] },
         { id: '6', name: 'Robleis', youtubeUrl: 'https://youtu.be/GpFoGiscj7k?si=y_jc2UR1T4uAhzOT', videoId: 'GpFoGiscj7k', tier: null, categories: ['Mainstream', 'Latinos'] },
         { id: '7', name: 'Agustin51', youtubeUrl: 'https://youtu.be/YNwg-tWMyyY?si=UtRJSu8xqDksTig_', videoId: 'YNwg-tWMyyY', tier: null, categories: ['Mainstream', 'Españoles'] },
@@ -2935,9 +2966,9 @@ function syncInfluencerTiersFromLoadedData() {
         { id: '137', name: 'Archie Ted', youtubeUrl: 'https://youtu.be/B7NdSrZdh8A?si=XRT4pFvm-qJdZbDE', videoId: 'B7NdSrZdh8A', tier: null, categories: ['Españoles'] },
         { id: '138', name: 'xBuyer', youtubeUrl: 'https://youtu.be/5B6CSWVCG68?si=DCPcm-QVsxG1hgxc', videoId: '5B6CSWVCG68', tier: null, categories: ['Españoles'] },
         { id: '139', name: 'Lucia De La Puerta', youtubeUrl: 'https://youtu.be/4EgD9RtpKdg?si=MP_Mu6wjeXU3QYTC', videoId: '4EgD9RtpKdg', tier: null, categories: ['Españoles'] },
-        { id: '140', name: 'ilonqueen', youtubeUrl: 'https://youtu.be/FaVb-N7KfEo?si=Pw2JiXcJc44hKAqK', videoId: 'FaVb-N7KfEo', tier: null, categories: ['Latinos'] }
-
-
+        { id: '140', name: 'ilonqueen', youtubeUrl: 'https://youtu.be/FaVb-N7KfEo?si=Pw2JiXcJc44hKAqK', videoId: 'FaVb-N7KfEo', tier: null, categories: ['Latinos'] },
+        { id: '141', name: 'Zarcort', youtubeUrl: 'https://youtu.be/wAMZ6KpMGQI?si=gyt6EuyImpJfYGsc', videoId: 'wAMZ6KpMGQI', tier: null, categories: ['Españoles'] },
+        { id: '142', name: 'La Marrash', youtubeUrl: 'https://youtu.be/QOooudArnkE?si=2vMxE2pt3oPkR_IK', videoId: 'QOooudArnkE', tier: null, categories: ['Tiktokers', 'Españoles'] },
     ];
 
         // Datos de las canciones de fans - LISTA ACTUALIZADA
@@ -2989,7 +3020,7 @@ function syncInfluencerTiersFromLoadedData() {
             { id: 'tinder', name: 'Tinder', description: 'Usa la calculadora de compatibilidad', icon: '❤️', unlocked: false, progress: 0, maxProgress: 1 },
             { id: 'exporter', name: 'El Exportador', description: 'Genera tu primer código para compartir', icon: '📤', unlocked: false, progress: 0, maxProgress: 1 },
             { id: 'customizer', name: 'Personalizador', description: 'Cambia el nombre de un tier por uno personalizado', icon: '🎨', unlocked: false, progress: 0, maxProgress: 1 },
-            { id: 'intro_hater', name: 'Intro Hater', description: 'Cierra el video en menos de 5 segundos', icon: '⏩', unlocked: false, progress: 0, maxProgress: 1, hidden: true },
+            { id: 'intro_hater', name: 'Hater', description: 'Cierra el video en menos de 5 segundos', icon: '⏩', unlocked: false, progress: 0, maxProgress: 1, hidden: true },
             { id: 'exorcist', name: 'El Exorcista', description: 'Intenta arrastrar una carta fuera de la tierlist', icon: '👻', unlocked: false, progress: 0, maxProgress: 1, hidden: true },
             { id: 'logo_clicker', name: 'Clicker Oculto', description: 'Haz clic 5 veces en el logo', icon: '🖱️', unlocked: false, progress: 0, maxProgress: 5, hidden: true },
             { id: 'detective', name: 'El Detective', description: 'Busca al creador de la web', icon: '🕵️', unlocked: false, progress: 0, maxProgress: 1, hidden: true },
@@ -2998,6 +3029,17 @@ function syncInfluencerTiersFromLoadedData() {
             { id: 'team_minecraft', name: 'Team Minecraft', description: 'Clasifica a todos los influencers de Minecraft', icon: '⛏️', unlocked: false, progress: 0, maxProgress: 1, hidden: true },
             { id: 'the_climb', name: 'El Ascenso', description: 'Mueve una carta directamente del Tier F al S', icon: '🚀', unlocked: false, progress: 0, maxProgress: 1, hidden: true },
             { id: 'fresh_start', name: 'Borrón y Cuenta Nueva', description: 'Reinicia tu progreso usando el botón de reinicio', icon: '💣', unlocked: false, progress: 0, maxProgress: 1, hidden: true },
+            { id: 'pambisito', name: 'Pambisito', description: 'Encuentra la carta de Dalas Review sin usar el buscador', icon: '🍞', unlocked: false, progress: 0, maxProgress: 1, hidden: true },
+            { id: 'before_after', name: 'Antes y Después', description: 'Colecciona la carta de DaniRep 2017 y la de DaniRep Actual', icon: '⏮️', unlocked: false, progress: 0, maxProgress: 1, hidden: true },
+            { id: 'identity_crisis', name: 'Crisis de Identidad', description: 'Consigue ambas cartas de Joaquinpa/Jokki', icon: '🎭', unlocked: false, progress: 0, maxProgress: 1, hidden: true },
+            { id: 'hola_german', name: '¡Hola, soy German!', description: 'Consigue la carta de German Garmendia', icon: '👋', unlocked: false, progress: 0, maxProgress: 1, hidden: true },
+            { id: 'ninos_rata', name: 'Niños Rata', description: 'Consigue la carta de Zarcort', icon: '🐀', unlocked: false, progress: 0, maxProgress: 1, hidden: true },
+            { id: 'karmaland', name: 'Karmaland', description: 'Reúne a Quackity, ElRubiusOMG, Willyrex, illojuan y Lolito Fdez', icon: '🏝️', unlocked: false, progress: 0, maxProgress: 1, hidden: true },
+            { id: 'wii', name: 'Cuando Quieras Jugamos a la Wii', description: 'Consigue la carta de Folagor03', icon: '🎮', unlocked: false, progress: 0, maxProgress: 1, hidden: true },
+            { id: 'gemelos_2', name: 'La Casa de los Gemelos 2', description: 'Reúne a Ruth La Peke, La Marrash, El Patica, Zaira DLM y Labrador', icon: '🏚️', unlocked: false, progress: 0, maxProgress: 1, hidden: true },
+            { id: 'ruptura', name: 'Ruptura', description: 'Reúne a Illojuan y Masi', icon: '💔', unlocked: false, progress: 0, maxProgress: 1, hidden: true },
+            { id: 'juicio', name: 'Juicio', description: 'Reúne a DalasReview y Wismichu', icon: '⚖️', unlocked: false, progress: 0, maxProgress: 1, hidden: true },
+            { id: 'perros_minecraft', name: 'Los Perros de Minecraft', description: 'Reúne a Mikecrack y Bobicraft', icon: '🐕', unlocked: false, progress: 0, maxProgress: 1, hidden: true },
 ];
 
 
@@ -3410,29 +3452,46 @@ function clearCategoryFilter() {
                 card.classList.remove('animating');
                 card.classList.add('flipped');
                 revealedCards.add(influencer.id);
+                card.classList.add('revealed');
+                
+                // Añadir a la lista de no clasificados si no tiene tier
+                if (!influencer.tier) {
+                    tierlistData.unclassified.push(influencer);
+                }
+
+                // --- LOGRO: PAMBISITO (Lógica corregida) ---
+                // Solo se desbloquea si encuentras a Dalas y el buscador está VACÍO en ese momento
+                const searchInput = document.getElementById('searchInput');
+                if (influencer.name === 'DalasReview' && searchInput && searchInput.value.trim() === '') {
+                    updateAchievement('pambisito', 1);
+                }
+                // -------------------------------------------
+
+                saveRevealedCardsToLocalStorage();
+                saveTierlistDataToLocalStorage();
                 // --- LOGRO: ARQUEÓLOGO ---
-// Verificar si la carta revelada es una "Vieja Reliquia"
-const isRelic = influencer.categories && influencer.categories.includes('Viejas Reliquias');
+                // Verificar si la carta revelada es una "Vieja Reliquia"
+                const isRelic = influencer.categories && influencer.categories.includes('Viejas Reliquias');
 
-if (isRelic) {
-    // Contar cuántas reliquias hay en total en los datos
-    const totalRelics = mainInfluencersData.filter(inf => 
-        inf.categories && inf.categories.includes('Viejas Reliquias')
-    ).length;
+                if (isRelic) {
+                    // Contar cuántas reliquias hay en total en los datos
+                    const totalRelics = mainInfluencersData.filter(inf => 
+                        inf.categories && inf.categories.includes('Viejas Reliquias')
+                    ).length;
 
-    // Contar cuántas reliquias hemos revelado hasta ahora
-    const revealedRelicsCount = mainInfluencersData.filter(inf => 
-        inf.categories && inf.categories.includes('Viejas Reliquias') && revealedCards.has(inf.id)
-    ).length;
+                    // Contar cuántas reliquias hemos revelado hasta ahora
+                    const revealedRelicsCount = mainInfluencersData.filter(inf => 
+                        inf.categories && inf.categories.includes('Viejas Reliquias') && revealedCards.has(inf.id)
+                    ).length;
 
-    // Verificar condición: 
-    // 1. Hemos revelado todas las reliquias.
-    // 2. El número total de cartas reveladas es IGUAL al número de reliquias reveladas 
-    //    (significa que no hemos revelado nada más que reliquias).
-    if (revealedRelicsCount === totalRelics && revealedCards.size === revealedRelicsCount) {
-        updateAchievement('archaeologist', 1);
-    }
-}
+                    // Verificar condición: 
+                    // 1. Hemos revelado todas las reliquias.
+                    // 2. El número total de cartas reveladas es IGUAL al número de reliquias reveladas 
+                    //    (significa que no hemos revelado nada más que reliquias).
+                    if (revealedRelicsCount === totalRelics && revealedCards.size === revealedRelicsCount) {
+                        updateAchievement('archaeologist', 1);
+                    }
+                }
                 card.classList.add('revealed');
                 
                 // Añadir a la lista de no clasificados si no tiene tier
@@ -4257,7 +4316,7 @@ if (modalOpenTimestamp) {
             });
         }
 
-        // Función para buscar influencers
+                // Función para buscar influencers
         function searchInfluencers() {
             const searchInput = document.getElementById('searchInput');
             if (!searchInput) return;
@@ -4283,16 +4342,16 @@ if (modalOpenTimestamp) {
             renderCards();
             
             // --- LOGRO: EL DETECTIVE ---
-const searchTermRaw = searchInput.value.toLowerCase();
-if (searchTermRaw.includes('maiquel3000') || searchTermRaw.includes('maiquel3k') || searchTermRaw === 'maiquel') {
-    updateAchievement('detective', 1);
-}
+            const searchTermRaw = searchInput.value.toLowerCase();
+            if (searchTermRaw.includes('maiquel3000') || searchTermRaw.includes('maiquel3k') || searchTermRaw === 'maiquel') {
+                updateAchievement('detective', 1);
+            }
 
-// --- LOGRO: SIN RESULTADOS ---
-// Si no hay resultados y la búsqueda tiene más de 4 caracteres (para evitar búsquedas vacías o de 1 letra)
-if (mainInfluencers.length === 0 && searchTermRaw.length >= 5) {
-    updateAchievement('no_results', 1);
-}
+            // --- LOGRO: SIN RESULTADOS ---
+            // Si no hay resultados y la búsqueda tiene más de 4 caracteres (para evitar búsquedas vacías o de 1 letra)
+            if (mainInfluencers.length === 0 && searchTermRaw.length >= 5) {
+                updateAchievement('no_results', 1);
+            }
         }
 
 // Función para reordenar las tarjetas
@@ -4456,8 +4515,7 @@ function shuffleCards() {
             }
         }
 
-        // --- REVELAR TODAS CON BARRA DE PROGRESO (Async/Await) ---
-                // --- REVELAR TODAS CON BARRA DE PROGRESO Y VELOCIDAD CORREGIDA ---
+        // --- REVELAR TODAS SIN OVERLAY (VERSIÓN CORREGIDA) ---
         async function revealAllCards() {
             if (!confirm('¿Revelar TODAS las cartas?\n\nEsto mostrará el contenido con un efecto especial.')) return;
 
@@ -4473,10 +4531,7 @@ function shuffleCards() {
             saveRevealedCardsToLocalStorage();
             saveTierlistDataToLocalStorage();
 
-            // 2. Preparar Overlay
-            const overlay = document.getElementById('progressOverlay');
-            const fill = document.getElementById('progressFill');
-            const text = document.getElementById('progressText');
+            // 2. Seleccionar cartas a revelar
             const toReveal = document.querySelectorAll('.card:not(.flipped)');
             
             if (toReveal.length === 0) {
@@ -4484,9 +4539,7 @@ function shuffleCards() {
                 return;
             }
 
-            overlay.classList.add('active');
-
-            // 3. Loop con velocidades ajustadas
+            // 3. Loop de animación (Sin overlay, solo efectos en las cartas)
             for (let i = 0; i < toReveal.length; i++) {
                 const card = toReveal[i];
                 
@@ -4497,36 +4550,21 @@ function shuffleCards() {
                 // Partículas
                 createCardExplosion(card);
                 
-                // Actualizar barra
-                const percent = ((i + 1) / toReveal.length) * 100;
-                fill.style.width = `${percent}%`;
-                text.textContent = `${i + 1} de ${toReveal.length} cartas reveladas`;
-                
-                // --- LÓGICA DE VELOCIDAD RESTAURADA ---
-                let delay;
-                if (i < 12) {
-                    // Primeras 12 cartas: Velocidad normal (60ms)
-                    delay = 60;
-                } else {
-                    // Resto de cartas: Velocidad rápida (15ms)
-                    delay = 1;
-                }
-                // -------------------------------------
+                // --- VELOCIDAD AJUSTADA ---
+                // Un pequeño delay para que el navegador pueda renderizar la animación de cada carta
+                // Sin esto, puede que se bloqueen todas a la vez y no se vea el volteo
+                let delay = 30; // Milisegundos entre carta y carta
                 await new Promise(r => setTimeout(r, delay));
             }
 
             updateAchievement('collector_50', revealedCards.size);
             checkAllAchievements();
             
-            // Ocultar overlay y celebrar
-            setTimeout(() => {
-                overlay.classList.remove('active');
-                launchBigConfetti();
-                showNotification('🎉 ¡Pack Opening Completado!');
-            }, 500);
+            // Celebrar al terminar
+            launchBigConfetti();
+            showNotification('🎉 ¡Pack Opening Completado!');
         }
 
-// FUNCIÓN PARA REINICIAR LA APLICACIÓN (VERSIÓN INTELIGENTE)
 function resetApp() {
     const firstConfirm = confirm(
         "⚠️ ADVERTENCIA: ESTA ACCIÓN BORRARÁ TU PROGRESO ⚠️\n\n" +
@@ -4551,8 +4589,9 @@ function resetApp() {
             if (savedData) {
                 try {
                     const fullList = JSON.parse(savedData);
-                    // Filtrar: solo cartas originales (ID 1-140), borra los añadidos manualmente
-                    orderedList = fullList.filter(inf => parseInt(inf.id) <= 140);
+                    // Filtrar: solo cartas originales (ID 1-142), borra los añadidos manualmente
+                    // IMPORTANTE: Usamos 142 aquí para incluir a Zarcort y La Marrash
+                    orderedList = fullList.filter(inf => parseInt(inf.id) <= 142);
                 } catch (e) {
                     console.error("Error al recuperar lista para reset", e);
                 }
@@ -4567,25 +4606,22 @@ function resetApp() {
             
             // --- NUEVO: BORRAR LOGROS ---
             localStorage.removeItem('cancinfluencers_achievements');
-            localStorage.removeItem('cancinfluencers_shuffleCount'); // También reinicia el contador de mezclas
+            localStorage.removeItem('cancinfluencers_shuffleCount');
             
             // 3. Borrar lista vieja
             localStorage.removeItem('cancinfluencers_mainInfluencersData');
             
-                        showNotification('✅ Progreso y logros reiniciados.');
-            setTimeout(() => location.reload(), 1500);
-
             // 4. Guardar la lista filtrada (conservando el orden)
             if (orderedList.length > 0) {
                 localStorage.setItem('cancinfluencers_mainInfluencersData', JSON.stringify(orderedList));
                 localStorage.setItem('cancinfluencers_firstVisit', 'true');
             } else {
-                // Fallback si algo falla
+                // Si por alguna razón orderedList está vacío, forzamos recarga limpia
                 localStorage.clear();
                 localStorage.setItem('cancinfluencers_firstVisit', 'true');
             }
 
-            showNotification('✅ Progreso reiniciado. Orden conservado.');
+            showNotification('✅ Progreso y logros reiniciados. Orden conservado.');
             setTimeout(() => location.reload(), 1500);
         }
     }
@@ -4643,7 +4679,6 @@ function resetApp() {
         }
 
         // Esta función calcula los conteos y actualiza los logros
-                // Esta función calcula los conteos y actualiza los logros
         function checkAllAchievements() {
             const revealedCount = revealedCards.size;
             
@@ -4653,22 +4688,74 @@ function resetApp() {
                 return acc;
             }, 0);
 
-            // Actualizamos progreso (Quitados los logros de tiers S/F y Pack Opening)
+            // Actualizamos progreso general
             updateAchievement('first_reveal', revealedCount >= 1 ? 1 : 0);
             updateAchievement('collector_50', revealedCount);
             updateAchievement('collector_all', revealedCount);
             updateAchievement('critic_10', classifiedCount);
             updateAchievement('critic_50', classifiedCount);
             updateAchievement('critic_100', classifiedCount);
-                // --- LOGRO: TEAM MINECRAFT ---
-    const minecraftInfluencers = mainInfluencersData.filter(inf => inf.categories && inf.categories.includes('Minecraft'));
-    // Verificamos que haya al menos uno y que TODOS tengan un tier asignado (no null y no unclassified)
-    const allMinecraftClassified = minecraftInfluencers.length > 0 && minecraftInfluencers.every(inf => inf.tier && inf.tier !== 'unclassified');
-    
-    if (allMinecraftClassified) {
-        updateAchievement('team_minecraft', 1);
-    }
 
+            // --- LOGRO: TEAM MINECRAFT ---
+            const minecraftInfluencers = mainInfluencersData.filter(inf => inf.categories && inf.categories.includes('Minecraft'));
+            const allMinecraftClassified = minecraftInfluencers.length > 0 && minecraftInfluencers.every(inf => inf.tier && inf.tier !== 'unclassified');
+            if (allMinecraftClassified) {
+                updateAchievement('team_minecraft', 1);
+            }
+
+            // --- NUEVOS LOGROS DE COLECCIÓN ---
+
+            // 1. Antes y Después (DaniRep 2017 [52] y DaniRep Actual [53])
+            if (revealedCards.has('52') && revealedCards.has('53')) {
+                updateAchievement('before_after', 1);
+            }
+
+            // 2. Crisis de Identidad (Joaquinpa 'Jokki' [90] y Jokki 'Joaquinpa' [91])
+            if (revealedCards.has('90') && revealedCards.has('91')) {
+                updateAchievement('identity_crisis', 1);
+            }
+
+            // 3. ¡Hola, soy German! (German Garmendia [27])
+            if (revealedCards.has('27')) {
+                updateAchievement('hola_german', 1);
+            }
+
+            // 4. Niños Rata (Zarcort [141])
+            if (revealedCards.has('141')) {
+                updateAchievement('ninos_rata', 1);
+            }
+
+            // 5. Karmaland (Quackity [60], ElRubiusOMG [3], Willyrex [18], illojuan [9], Lolito Fdez [121])
+            const karmalandIds = ['60', '3', '18', '9', '121'];
+            if (karmalandIds.every(id => revealedCards.has(id))) {
+                updateAchievement('karmaland', 1);
+            }
+
+            // 6. Cuando Quieras Jugamos a la Wii (Folagor03 [115])
+            if (revealedCards.has('115')) {
+                updateAchievement('wii', 1);
+            }
+
+            // 7. La Casa de los Gemelos 2 (Ruth [70], Marrash [142], Patica [132], Zaira [133], Labrador [134])
+            const gemelosIds = ['70', '142', '132', '133', '134'];
+            if (gemelosIds.every(id => revealedCards.has(id))) {
+                updateAchievement('gemelos_2', 1);
+            }
+
+            // 8. Ruptura (Illojuan [9] y Masi [64])
+            if (revealedCards.has('9') && revealedCards.has('64')) {
+                updateAchievement('ruptura', 1);
+            }
+
+            // 9. Juicio (DalasReview [2] y Wismichu [40])
+            if (revealedCards.has('2') && revealedCards.has('40')) {
+                updateAchievement('juicio', 1);
+            }
+
+            // 10. Los Perros de Minecraft (Mikecrack [13] y Bobicraft [109])
+            if (revealedCards.has('13') && revealedCards.has('109')) {
+                updateAchievement('perros_minecraft', 1);
+            }
         }
 
         function updateAchievementsCount() {
