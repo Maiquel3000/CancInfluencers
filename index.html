@@ -3337,6 +3337,51 @@
         .blindtest-play-btn:hover { transform: translate(-50%, -50%) scale(1.1); }
         
         .blindtest-play-btn.hidden { display: none; }
+
+                /* --- ESTILO ALERTA ANUNCIO (OVERLAY) --- */
+        .ad-alert-overlay {
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0, 0, 0, 0.85); /* Fondo oscuro que tapa todo */
+            color: white;
+            display: none; /* Oculto por defecto */
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 50; /* Encima de todo */
+            border-radius: 8px;
+            animation: fadeIn 0.2s ease;
+        }
+
+        .ad-alert-overlay.show {
+            display: flex;
+        }
+
+        .ad-icon {
+            font-size: 3rem;
+            margin-bottom: 10px;
+            animation: shake 0.5s infinite;
+        }
+
+        .ad-text-main {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: #fca5a5;
+        }
+
+        .ad-text-sub {
+            font-size: 0.9rem;
+            color: #9ca3af;
+            margin-top: 5px;
+        }
+
+        @keyframes shake {
+            0% { transform: rotate(0deg); }
+            25% { transform: rotate(-5deg); }
+            50% { transform: rotate(5deg); }
+            75% { transform: rotate(-5deg); }
+            100% { transform: rotate(0deg); }
+        }
         
     </style>
         <!-- LIBRERÍA NECESARIA PARA EXPORTAR IMAGEN -->
@@ -3864,9 +3909,7 @@
 
     </div>
 </div>
-
-
-    <script>
+<script>
 
 // --- CÓDIGO DEL EASTER EGG (CÓDIGO KONAMI - VERSIÓN CORREGIDA) ---
 
@@ -8086,7 +8129,7 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         }
 
-                // --- DETECTOR DE ANUNCIOS AGRESIVO (VERSIÓN FINAL) ---
+           // --- DETECTOR DE ANUNCIOS (CON ALERTA VISUAL) ---
         
         let lastKnownTime = 0; 
 
@@ -8094,72 +8137,55 @@ document.addEventListener('DOMContentLoaded', function() {
             clearInterval(adCheckInterval);
             lastKnownTime = 0; 
             
-            // Revisión cada 200ms (muy rápido)
             adCheckInterval = setInterval(() => {
-                if (!blindTestPlayer || !blindTestData.roundActive) {
-                    clearInterval(adCheckInterval);
-                    return;
-                }
+                if (!blindTestPlayer || !blindTestData.roundActive) return;
 
                 try {
-                    // 1. Método Oficial: Detección de estado
+                    // 1. Detección oficial
                     const adState = blindTestPlayer.getAdState();
-                    
-                    // Si adState es 1, hay un anuncio lineal (video)
                     if (adState === 1) {
-                        console.log("Anuncio oficial detectado (State 1)");
-                        handleAdDetected();
+                        handleAdDetected(); // ¡SALTA!
                         return;
                     }
 
-                    // 2. Método Trampa: Detección por "Tiempo Congelado"
+                    // 2. Detección trampa (video atascado en 0)
                     const currentTime = blindTestPlayer.getCurrentTime();
                     const playerState = blindTestPlayer.getPlayerState();
 
-                    // Si el reproductor dice "Reproduciendo" (1) pero el tiempo no avanza...
-                    if (playerState === 1) { 
-                        // Si el tiempo está pegado en 0 (o muy cerca) durante la partida
-                        if (currentTime < 0.5) {
-                            // Significa que un anuncio está ocupando el stream antes de que empiece la canción real
-                            console.log("Anuncio oculto detectado (Tiempo congelado en 0)");
-                            handleAdDetected();
-                            return;
-                        }
+                    if (playerState === 1 && currentTime < 0.5) {
+                         console.log("Anuncio oculto detectado");
+                         handleAdDetected(); // ¡SALTA!
+                         return;
                     }
                     
                     lastKnownTime = currentTime;
 
-                } catch (e) {
-                    console.error("Error en detector", e);
-                }
+                } catch (e) { console.error(e); }
             }, 200); 
         }
 
         function handleAdDetected() {
-            if (!blindTestData.roundActive) return; 
-
-            clearInterval(adCheckInterval);
+            if (!blindTestData.roundActive) return;
             blindTestData.roundActive = false;
             
-            // Mostrar aviso visual instantáneo
-            const adNotif = document.getElementById('adNotification');
-            if(adNotif) adNotif.style.display = 'block';
-            document.getElementById('blindVisualizer').style.opacity = '0.3';
-            
-            // IMPORTANTE: Detener todo rastro de audio
+            clearInterval(adCheckInterval);
+            clearInterval(blindTestData.timer);
+
+            // 1. MOSTRAR ALERTA GRANDE
+            const overlay = document.getElementById('adAlertOverlay');
+            if(overlay) overlay.classList.add('show'); 
+
+            // 2. Parar audio
             if (blindTestPlayer) {
-                blindTestPlayer.mute(); // Mutear instantáneo
+                blindTestPlayer.mute();
                 blindTestPlayer.stopVideo();
             }
             
-            clearInterval(blindTestData.timer);
-            
-            // Saltar a la siguiente canción muy rápido (0.8 segundos)
+            // 3. Esperar 1.5 segundos para que el usuario lea el mensaje y saltar
             setTimeout(() => {
-                const adNotif = document.getElementById('adNotification');
-                if(adNotif) adNotif.style.display = 'none';
-                startBlindRound(); // SIGUIENTE
-            }, 800); 
+                if(overlay) overlay.classList.remove('show'); // Ocultar alerta
+                startBlindRound(); // Siguiente canción
+            }, 1500); 
         }
 
         function stopBlindAudio() {
@@ -8370,16 +8396,10 @@ document.addEventListener('DOMContentLoaded', function() {
                 <button class="close-btn" id="closeBlindTestModal" aria-label="Cerrar">×</button>
             </div>
             
-            <div class="modal-body" style="position: relative; min-height: 400px;">
+                       <div class="modal-body" style="position: relative; min-height: 400px;">
                 
-                <!-- UI del Juego -->
+                <!-- CAPA 1: UI DEL JUEGO -->
                 <div style="position: relative; z-index: 2;">
-                    
-                    <!-- Notificación de Anuncio (Oculto por defecto) -->
-                    <div id="adNotification" style="display:none; background: rgba(239, 68, 68, 0.2); border:1px solid #ef4444; color:#fca5a5; padding:10px; border-radius:8px; margin-bottom:10px; text-align:center;">
-                        ⚠️ Anuncio detectado. Saltando canción automáticamente...
-                    </div>
-
                     <div class="blindtest-status">
                         <div class="blindtest-score">Puntos: <span id="blindScore">0</span></div>
                         <div class="blindtest-timer" id="blindTimer">15</div>
@@ -8387,22 +8407,29 @@ document.addEventListener('DOMContentLoaded', function() {
 
                     <!-- Visualizador -->
                     <div class="blindtest-visualizer" id="blindVisualizer">
-                        <div class="blindtest-bar" style="animation-delay: 0.1s"></div>
-                        <div class="blindtest-bar" style="animation-delay: 0.3s"></div>
+                        <div class="blindtest-bar"></div>
                         <div class="blindtest-bar" style="animation-delay: 0.2s"></div>
                         <div class="blindtest-bar" style="animation-delay: 0.4s"></div>
                         <div class="blindtest-bar" style="animation-delay: 0.1s"></div>
+                        <div class="blindtest-bar" style="animation-delay: 0.3s"></div>
                     </div>
 
                     <div class="blindtest-options" id="blindOptions"></div>
 
                     <div class="blindtest-controls">
-                        <button class="blindtest-btn skip" id="blindSkipBtn">Saltar</button>
+                        <button class="blindtest-btn skip" id="blindSkipBtn">Saltar (0 pts)</button>
                         <button class="blindtest-btn next" id="blindNextBtn" style="display:none;">Siguiente ➡️</button>
                     </div>
                 </div>
 
-                <!-- Player Invisible -->
+                <!-- CAPA 2: ALERTA DE ANUNCIO (NUEVO) -->
+                <div id="adAlertOverlay" class="ad-alert-overlay">
+                    <div class="ad-icon">🚫</div>
+                    <div class="ad-text-main">ANUNCIO DETECTADO</div>
+                    <div class="ad-text-sub">Saltando canción automáticamente...</div>
+                </div>
+
+                <!-- CAPA 3: PLAYER INVISIBLE -->
                 <div id="blindTestPlayer" class="blindtest-player-hidden"></div>
             </div>
         </div>
