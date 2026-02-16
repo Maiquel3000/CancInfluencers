@@ -7952,8 +7952,7 @@ document.addEventListener('DOMContentLoaded', function() {
             document.getElementById('nextImpostorBtn').style.display = 'block';
         }
 
-                // --- MODO CIEGAS (BLIND TEST) ---
-                // --- MODO CIEGAS (BLIND TEST) - VERSIÓN FINAL CON API ---
+          // --- MODO CIEGAS (AUTOMÁTICO + DETECTOR ANUNCIOS) ---
         
         let blindTestData = {
             score: 0,
@@ -7962,7 +7961,8 @@ document.addEventListener('DOMContentLoaded', function() {
             timeLeft: 15,
             roundActive: false
         };
-        let blindTestPlayer = null; // Variable para la instancia del player
+        let blindTestPlayer = null;
+        let adCheckInterval = null; // Variable para revisar anuncios
 
         function openBlindTestModal() {
             const modal = document.getElementById('blindTestModal');
@@ -7971,8 +7971,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 modal.classList.add('active');
                 blindTestData.score = 0;
                 document.getElementById('blindScore').textContent = '0';
-                resetBlindUI();
-                startBlindRound();
+                startBlindRound(); // Inicia automáticamente
             }, 100);
         }
 
@@ -7981,30 +7980,30 @@ document.addEventListener('DOMContentLoaded', function() {
             modal.classList.remove('active');
             setTimeout(() => modal.style.display = 'none', 300);
             
-            // IMPORTANTE: Destruir el player al cerrar para detener todo
             if (blindTestPlayer) {
                 blindTestPlayer.destroy();
                 blindTestPlayer = null;
             }
             clearInterval(blindTestData.timer);
+            clearInterval(adCheckInterval); // Limpiar checker de anuncios
             blindTestData.roundActive = false;
-        }
-
-        function resetBlindUI() {
-            document.getElementById('blindPlayBtn').classList.remove('hidden');
-            document.getElementById('blindTimer').textContent = "15";
-            document.getElementById('blindTimer').classList.remove('warning');
-            document.getElementById('blindSkipBtn').style.display = 'none';
-            document.getElementById('blindNextBtn').style.display = 'none';
-            document.getElementById('blindVisualizer').style.opacity = '0.3';
-            document.getElementById('blindOptions').innerHTML = '<p style="grid-column: span 2; color:#9ca3af;">Preparando audio...</p>';
         }
 
         function startBlindRound() {
             clearInterval(blindTestData.timer);
+            clearInterval(adCheckInterval);
             blindTestData.roundActive = false;
             
-            // 1. Seleccionar influencer y opciones
+            // 1. Reset UI
+            document.getElementById('adNotification').style.display = 'none';
+            document.getElementById('blindTimer').textContent = "15";
+            document.getElementById('blindTimer').classList.remove('warning');
+            document.getElementById('blindSkipBtn').style.display = 'block';
+            document.getElementById('blindNextBtn').style.display = 'none';
+            document.getElementById('blindVisualizer').style.opacity = '0.3';
+            document.getElementById('blindOptions').innerHTML = '<p style="grid-column: span 2; color:#9ca3af;">Cargando sonido...</p>';
+
+            // 2. Seleccionar influencer
             const randomIndex = Math.floor(Math.random() * mainInfluencersData.length);
             blindTestData.currentInfluencer = mainInfluencersData[randomIndex];
 
@@ -8015,10 +8014,8 @@ document.addEventListener('DOMContentLoaded', function() {
             }
             options.sort(() => Math.random() - 0.5);
 
-            // 2. Renderizar opciones (deshabilitadas)
             const optionsGrid = document.getElementById('blindOptions');
             optionsGrid.innerHTML = '';
-            
             options.forEach(opt => {
                 const btn = document.createElement('button');
                 btn.className = 'blindtest-option';
@@ -8028,78 +8025,117 @@ document.addEventListener('DOMContentLoaded', function() {
                 optionsGrid.appendChild(btn);
             });
 
-            // 3. Resetear UI
-            document.getElementById('blindPlayBtn').classList.remove('hidden');
-            document.getElementById('blindTimer').textContent = "▶️";
-            
-            // 4. Preparar el reproductor si no existe (pero sin cargar video aún)
-            // El player se creará/actualizará al pulsar Play.
-        }
+            // 3. Crear/Usar Player
+            if (blindTestPlayer && typeof blindTestPlayer.loadVideoById === 'function') {
+                // Si ya existe, cargamos el video
+                blindTestPlayer.loadVideoById(blindTestData.currentInfluencer.videoId);
+            } else {
+                // Si no, creamos el reproductor
+                blindTestPlayer = new YT.Player('blindTestPlayer', {
+                    height: '100%',
+                    width: '100%',
+                    videoId: blindTestData.currentInfluencer.videoId,
+                    playerVars: {
+                        'autoplay': 1,
+                        'controls': 0,
+                        'showinfo': 0,
+                        'rel': 0,
+                        'modestbranding': 1,
+                        'mute': 1 // IMPORTANTE: Inicia muteado para evitar bloqueos
+                    },
+                    events: {
+                        'onReady': (event) => {
+                            // TRUCO: Desmutear inmediatamente
+                            event.target.unMute();
+                            event.target.playVideo();
+                        },
+                        'onStateChange': (event) => {
+                            // Si el video empieza a sonar (state 1)
+                            if (event.data === YT.PlayerState.PLAYING) {
+                                blindTestData.roundActive = true;
+                                document.getElementById('blindVisualizer').style.opacity = '1';
+                                document.querySelectorAll('.blindtest-option').forEach(btn => btn.disabled = false);
+                                
+                                // Iniciar Timer
+                                clearInterval(blindTestData.timer);
+                                blindTestData.timeLeft = 15;
+                                document.getElementById('blindTimer').textContent = "15";
+                                blindTestData.timer = setInterval(() => {
+                                    blindTestData.timeLeft--;
+                                    document.getElementById('blindTimer').textContent = blindTestData.timeLeft;
+                                    if (blindTestData.timeLeft <= 5) document.getElementById('blindTimer').classList.add('warning');
+                                    if (blindTestData.timeLeft <= 0) blindTimeOut();
+                                }, 1000);
 
-        // FUNCIÓN MEJORADA: El usuario pulsa Play
-        document.addEventListener('DOMContentLoaded', () => {
-            const playBtn = document.getElementById('blindPlayBtn');
-            if(playBtn) {
-                playBtn.addEventListener('click', () => {
-                    if (blindTestData.roundActive) return;
-
-                    playBtn.classList.add('hidden'); // Ocultar botón
-                    
-                    // --- LÓGICA DE LA API DE YOUTUBE ---
-                    // Si el player ya existe, solo cargamos el nuevo video
-                    if (blindTestPlayer && typeof blindTestPlayer.loadVideoById === 'function') {
-                        blindTestPlayer.loadVideoById(blindTestData.currentInfluencer.videoId);
-                    } else {
-                        // Si no existe, creamos el player usando la API
-                        // Esto reemplaza el iframe vacío
-                        blindTestPlayer = new YT.Player('blindTestPlayer', {
-                            height: '100%',
-                            width: '100%',
-                            videoId: blindTestData.currentInfluencer.videoId,
-                            playerVars: {
-                                'autoplay': 1,    // Iniciar auto
-                                'controls': 0,    // Sin controles
-                                'showinfo': 0,
-                                'rel': 0,
-                                'modestbranding': 1,
-                                'mute': 1         // IMPORTANTE: Iniciar muteado para evitar bloqueos
-                            },
-                            events: {
-                                'onReady': (event) => {
-                                    // TRUCO: Desmutear inmediatamente después de estar listo
-                                    event.target.unMute();
-                                    event.target.playVideo();
-                                },
-                                'onStateChange': (event) => {
-                                    // Manejar si queremos bucles o paradas, pero no es necesario ahora
-                                }
+                                // INICIAR DETECTOR DE ANUNCIOS
+                                startAdDetector();
                             }
-                        });
+                            
+                            // Si el video termina solo (poco probable en 15s)
+                            if (event.data === YT.PlayerState.ENDED) {
+                                blindTimeOut();
+                            }
+                        },
+                        'onError': (event) => {
+                            // Si el video da error, saltamos
+                            showNotification("⚠️ Video no disponible, saltando...");
+                            skipBlindRound();
+                        }
                     }
-                    
-                    // Activar juego
-                    blindTestData.roundActive = true;
-                    blindTestData.timeLeft = 15;
-                    document.getElementById('blindTimer').textContent = "15";
-                    document.getElementById('blindVisualizer').style.opacity = '1';
-                    document.getElementById('blindSkipBtn').style.display = 'block';
-                    
-                    // Habilitar opciones
-                    document.querySelectorAll('.blindtest-option').forEach(btn => btn.disabled = false);
-
-                    // Iniciar Timer
-                    clearInterval(blindTestData.timer);
-                    blindTestData.timer = setInterval(() => {
-                        blindTestData.timeLeft--;
-                        const timerEl = document.getElementById('blindTimer');
-                        timerEl.textContent = blindTestData.timeLeft;
-                        
-                        if (blindTestData.timeLeft <= 5) timerEl.classList.add('warning');
-                        if (blindTestData.timeLeft <= 0) blindTimeOut();
-                    }, 1000);
                 });
             }
-        });
+        }
+
+        // --- DETECTOR DE ANUNCIOS ---
+        function startAdDetector() {
+            // Limpiamos intervalos previos
+            clearInterval(adCheckInterval);
+            
+            // Revisamos cada 500ms si hay un anuncio
+            adCheckInterval = setInterval(() => {
+                if (!blindTestPlayer || !blindTestData.roundActive) {
+                    clearInterval(adCheckInterval);
+                    return;
+                }
+
+                try {
+                    const adState = blindTestPlayer.getAdState(); // 0: No ad, 1: Ad
+                    const currentTime = blindTestPlayer.getCurrentTime();
+
+                    // Si getAdState devuelve 1, hay anuncio
+                    if (adState === 1) {
+                        handleAdDetected();
+                    }
+                    
+                    // TRUCO ADICIONAL: Si el video lleva 3 segundos sonando pero el tiempo es 0, suele ser anuncio no declarado
+                    // (A veces la API no detecta bien el estado 1)
+                    if (blindTestData.timeLeft < 12 && currentTime < 1.0) {
+                         // Si ya pasaron 3s del timer pero el video no avanza, asumimos anuncio o carga infinita
+                         // Comentado para evitar falsos positivos, pero útil a veces:
+                         // handleAdDetected(); 
+                    }
+
+                } catch (e) {
+                    console.log("Ad check failed", e);
+                }
+            }, 500);
+        }
+
+        function handleAdDetected() {
+            clearInterval(adCheckInterval);
+            document.getElementById('adNotification').style.display = 'block';
+            
+            // Detenemos todo
+            stopBlindAudio();
+            clearInterval(blindTestData.timer);
+            blindTestData.roundActive = false;
+            document.querySelectorAll('.blindtest-option').forEach(btn => btn.disabled = true);
+
+            // Saltamos a la siguiente ronda tras 2 segundos
+            setTimeout(() => {
+                startBlindRound();
+            }, 2000);
+        }
 
         function stopBlindAudio() {
             if (blindTestPlayer && typeof blindTestPlayer.stopVideo === 'function') {
@@ -8111,6 +8147,7 @@ document.addEventListener('DOMContentLoaded', function() {
             if (!blindTestData.roundActive) return;
             blindTestData.roundActive = false;
             clearInterval(blindTestData.timer);
+            clearInterval(adCheckInterval); // Paramos detector
             stopBlindAudio();
 
             const isCorrect = id === blindTestData.currentInfluencer.id;
@@ -8139,6 +8176,7 @@ document.addEventListener('DOMContentLoaded', function() {
             if (!blindTestData.roundActive) return;
             blindTestData.roundActive = false;
             clearInterval(blindTestData.timer);
+            clearInterval(adCheckInterval);
             stopBlindAudio();
 
             const allBtns = document.querySelectorAll('.blindtest-option');
@@ -8153,6 +8191,7 @@ document.addEventListener('DOMContentLoaded', function() {
             if (!blindTestData.roundActive) return;
             blindTestData.roundActive = false;
             clearInterval(blindTestData.timer);
+            clearInterval(adCheckInterval);
             stopBlindAudio();
             
             const allBtns = document.querySelectorAll('.blindtest-option');
@@ -8298,45 +8337,49 @@ document.addEventListener('DOMContentLoaded', function() {
         </div>
     </div>
 
-    <!-- Modal para el Juego Ciegas (Blind Test) -->
-<div class="modal" id="blindTestModal">
-    <div class="modal-content blindtest-modal-content">
-        <div class="modal-header">
-            <h3 class="modal-title">🎧 Modo Ciegas</h3>
-            <button class="close-btn" id="closeBlindTestModal" aria-label="Cerrar">×</button>
-        </div>
-        
-        <div class="modal-body" style="position: relative; min-height: 400px;">
-            
-            <!-- Capa de UI -->
-            <div style="position: relative; z-index: 2;">
-                <div class="blindtest-status">
-                    <div class="blindtest-score">Puntos: <span id="blindScore">0</span></div>
-                    <div class="blindtest-timer" id="blindTimer">15</div>
-                </div>
-
-                <button class="blindtest-play-btn" id="blindPlayBtn" aria-label="Reproducir audio">▶️</button>
-
-                <div class="blindtest-visualizer" id="blindVisualizer">
-                    <div class="blindtest-bar" style="animation-delay: 0.1s"></div>
-                    <div class="blindtest-bar" style="animation-delay: 0.3s"></div>
-                    <div class="blindtest-bar" style="animation-delay: 0.2s"></div>
-                    <div class="blindtest-bar" style="animation-delay: 0.4s"></div>
-                    <div class="blindtest-bar" style="animation-delay: 0.1s"></div>
-                </div>
-
-                <div class="blindtest-options" id="blindOptions"></div>
-
-                <div class="blindtest-controls">
-                    <button class="blindtest-btn skip" id="blindSkipBtn" style="display:none;">Saltar (0 pts)</button>
-                    <button class="blindtest-btn next" id="blindNextBtn" style="display:none;">Siguiente ➡️</button>
-                </div>
+        <!-- Modal para el Juego Ciegas (Blind Test) -->
+    <div class="modal" id="blindTestModal">
+        <div class="modal-content blindtest-modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">🎧 Modo Ciegas</h3>
+                <button class="close-btn" id="closeBlindTestModal" aria-label="Cerrar">×</button>
             </div>
-
-            <!-- Capa Invisible del Video -->
-            <!-- IMPORTANTE: El ID debe ser "blindTestPlayer" y el div vacío inicialmente -->
-            <div id="blindTestPlayer" class="blindtest-player-hidden"></div>
             
+            <div class="modal-body" style="position: relative; min-height: 400px;">
+                
+                <!-- UI del Juego -->
+                <div style="position: relative; z-index: 2;">
+                    
+                    <!-- Notificación de Anuncio (Oculto por defecto) -->
+                    <div id="adNotification" style="display:none; background: rgba(239, 68, 68, 0.2); border:1px solid #ef4444; color:#fca5a5; padding:10px; border-radius:8px; margin-bottom:10px; text-align:center;">
+                        ⚠️ Anuncio detectado. Saltando canción automáticamente...
+                    </div>
+
+                    <div class="blindtest-status">
+                        <div class="blindtest-score">Puntos: <span id="blindScore">0</span></div>
+                        <div class="blindtest-timer" id="blindTimer">15</div>
+                    </div>
+
+                    <!-- Visualizador -->
+                    <div class="blindtest-visualizer" id="blindVisualizer">
+                        <div class="blindtest-bar" style="animation-delay: 0.1s"></div>
+                        <div class="blindtest-bar" style="animation-delay: 0.3s"></div>
+                        <div class="blindtest-bar" style="animation-delay: 0.2s"></div>
+                        <div class="blindtest-bar" style="animation-delay: 0.4s"></div>
+                        <div class="blindtest-bar" style="animation-delay: 0.1s"></div>
+                    </div>
+
+                    <div class="blindtest-options" id="blindOptions"></div>
+
+                    <div class="blindtest-controls">
+                        <button class="blindtest-btn skip" id="blindSkipBtn">Saltar</button>
+                        <button class="blindtest-btn next" id="blindNextBtn" style="display:none;">Siguiente ➡️</button>
+                    </div>
+                </div>
+
+                <!-- Player Invisible -->
+                <div id="blindTestPlayer" class="blindtest-player-hidden"></div>
+            </div>
         </div>
     </div>
 </div>
