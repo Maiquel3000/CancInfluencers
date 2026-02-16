@@ -3205,183 +3205,6 @@
         @media (max-width: 400px) {
             .impostor-grid { grid-template-columns: 1fr; }
         }
-
-                /* --- ESTILOS MODO CIEGAS (BLIND TEST) --- */
-        .blindtest-modal-content {
-            max-width: 500px;
-            text-align: center;
-        }
-
-        .blindtest-status {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 20px;
-            padding: 10px;
-            background: rgba(0,0,0,0.2);
-            border-radius: 8px;
-        }
-
-        .blindtest-timer {
-            font-size: 1.5rem;
-            font-weight: bold;
-            color: #fbbf24;
-        }
-
-        .blindtest-timer.warning { color: #ef4444; animation: pulse 0.5s infinite; }
-
-        .blindtest-score {
-            font-size: 1.2rem;
-            color: #10b981;
-        }
-
-        .blindtest-visualizer {
-            height: 60px;
-            background: #111827;
-            border-radius: 8px;
-            margin-bottom: 20px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 4px;
-            overflow: hidden;
-        }
-
-        .blindtest-bar {
-            width: 6px;
-            background: #8b5cf6;
-            border-radius: 2px;
-            animation: soundBar 0.5s ease-in-out infinite alternate;
-        }
-
-        @keyframes soundBar {
-            0% { height: 10px; opacity: 0.5; }
-            100% { height: 40px; opacity: 1; }
-        }
-
-        .blindtest-options {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 15px;
-            margin-bottom: 20px;
-        }
-
-        .blindtest-option {
-            background: #374151;
-            border: 2px solid transparent;
-            padding: 15px;
-            border-radius: 8px;
-            cursor: pointer;
-            font-weight: bold;
-            transition: all 0.2s;
-            font-size: 0.95rem;
-        }
-
-        .blindtest-option:hover {
-            background: #4b5563;
-            transform: translateY(-2px);
-        }
-
-        .blindtest-option.correct { border-color: #10b981; background: rgba(16, 185, 129, 0.2); color: #10b981; }
-        .blindtest-option.wrong { border-color: #ef4444; background: rgba(239, 68, 68, 0.2); color: #ef4444; opacity: 0.6; }
-
-        .blindtest-controls {
-            display: flex;
-            justify-content: center;
-            gap: 15px;
-        }
-
-        .blindtest-btn {
-            padding: 10px 20px;
-            border-radius: 8px;
-            font-weight: bold;
-            border: none;
-            cursor: pointer;
-        }
-
-        .blindtest-btn.skip { background: #4b5563; color: white; }
-        .blindtest-btn.next { background: linear-gradient(to right, #8b5cf6, #6366f1); color: white; display: none; }
-    
-        /* Contenedor del Player de YouTube (Invisible pero presente) */
-        .blindtest-player-hidden {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            opacity: 0;          /* Totalmente invisible */
-            pointer-events: none; /* No interfiere con clics */
-            z-index: 0;          /* Debajo de la UI */
-        }
-
-                /* Botón central de Play para desbloquear audio */
-        .blindtest-play-btn {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            width: 80px;
-            height: 80px;
-            background: rgba(139, 92, 246, 0.9);
-            border-radius: 50%;
-            border: none;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 2rem;
-            color: white;
-            box-shadow: 0 0 20px rgba(139, 92, 246, 0.5);
-            z-index: 10;
-            transition: transform 0.2s;
-        }
-        .blindtest-play-btn:hover { transform: translate(-50%, -50%) scale(1.1); }
-        
-        .blindtest-play-btn.hidden { display: none; }
-
-                /* --- ESTILO ALERTA ANUNCIO (OVERLAY) --- */
-        .ad-alert-overlay {
-            position: absolute;
-            top: 0; left: 0; right: 0; bottom: 0;
-            background: rgba(0, 0, 0, 0.85); /* Fondo oscuro que tapa todo */
-            color: white;
-            display: none; /* Oculto por defecto */
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            z-index: 50; /* Encima de todo */
-            border-radius: 8px;
-            animation: fadeIn 0.2s ease;
-        }
-
-        .ad-alert-overlay.show {
-            display: flex;
-        }
-
-        .ad-icon {
-            font-size: 3rem;
-            margin-bottom: 10px;
-            animation: shake 0.5s infinite;
-        }
-
-        .ad-text-main {
-            font-size: 1.2rem;
-            font-weight: bold;
-            color: #fca5a5;
-        }
-
-        .ad-text-sub {
-            font-size: 0.9rem;
-            color: #9ca3af;
-            margin-top: 5px;
-        }
-
-        @keyframes shake {
-            0% { transform: rotate(0deg); }
-            25% { transform: rotate(-5deg); }
-            50% { transform: rotate(5deg); }
-            75% { transform: rotate(-5deg); }
-            100% { transform: rotate(0deg); }
-        }
         
     </style>
         <!-- LIBRERÍA NECESARIA PARA EXPORTAR IMAGEN -->
@@ -3389,8 +3212,7 @@
 
         <!-- Chart.js para gráficas -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-        <!-- YouTube IFrame API (NECESARIO PARA AUDIO EN CIEGAS) -->
-    <script src="https://www.youtube.com/iframe_api"></script>
+</head>
 </head>
 <body>
                             <!-- Skip Link para Accesibilidad -->
@@ -3909,7 +3731,9 @@
 
     </div>
 </div>
-<script>
+
+
+    <script>
 
 // --- CÓDIGO DEL EASTER EGG (CÓDIGO KONAMI - VERSIÓN CORREGIDA) ---
 
@@ -6542,33 +6366,31 @@ function shuffleCards() {
             console.log('Configurando event listeners...');
 
 
-                    // --- AÑADIR LISTENERS DENTRO DE setupEventListeners ---   
-            // --- LISTENERS (Añadir a setupEventListeners) ---
-            // Modal Ciegas
-            const closeBlindBtn = document.getElementById('closeBlindTestModal');
-            if(closeBlindBtn) closeBlindBtn.addEventListener('click', closeBlindTestModal);
-
-            const nextBlindBtn = document.getElementById('blindNextBtn');
-            if(nextBlindBtn) nextBlindBtn.addEventListener('click', startBlindRound);
+                    // --- AÑADIR LISTENERS DENTRO DE setupEventListeners ---            
+            // --- LISTENERS MODO IMPOSTOR ---
+            const closeImpostorBtn = document.getElementById('closeImpostorModal');
+            if(closeImpostorBtn) closeImpostorBtn.addEventListener('click', closeImpostorModal);
             
-            // Skip button logic is inside the interval start now, but let's bind it:
-            const skipBlindBtn = document.getElementById('blindSkipBtn');
-            if(skipBlindBtn) skipBlindBtn.addEventListener('click', skipBlindRound);
+            const skipBtn = document.getElementById('skipImpostorBtn');
+            if(skipBtn) skipBtn.addEventListener('click', skipImpostorRound);
 
-            // Menu option
-            const modeBlindTest = document.getElementById('modalModeBlindTest');
-            if(modeBlindTest) {
-                modeBlindTest.addEventListener('click', () => {
+            const nextBtn = document.getElementById('nextImpostorBtn');
+            if(nextBtn) nextBtn.addEventListener('click', startImpostorRound);
+
+            // Click en opción del menú "Modos"
+            const modeImpostor = document.getElementById('modalModeImpostor');
+            if(modeImpostor) {
+                modeImpostor.addEventListener('click', () => {
                     closeModesModal();
-                    openBlindTestModal();
+                    openImpostorModal();
                 });
             }
 
-            // Close click outside
-            const blindModal = document.getElementById('blindTestModal');
-            if(blindModal) {
-                blindModal.addEventListener('click', (e) => {
-                    if(e.target === blindModal) closeBlindTestModal();
+            // Cerrar clic fuera Impostor
+            const impModal = document.getElementById('impostorModal');
+            if(impModal) {
+                impModal.addEventListener('click', (e) => {
+                    if(e.target === impModal) closeImpostorModal();
                 });
             }
 
@@ -7994,271 +7816,6 @@ document.addEventListener('DOMContentLoaded', function() {
             document.getElementById('skipImpostorBtn').style.display = 'none';
             document.getElementById('nextImpostorBtn').style.display = 'block';
         }
-
-          // --- MODO CIEGAS (AUTOMÁTICO + DETECTOR ANUNCIOS) ---
-        
-        let blindTestData = {
-            score: 0,
-            currentInfluencer: null,
-            timer: null,
-            timeLeft: 15,
-            roundActive: false
-        };
-        let blindTestPlayer = null;
-        let adCheckInterval = null; // Variable para revisar anuncios
-
-        function openBlindTestModal() {
-            const modal = document.getElementById('blindTestModal');
-            modal.style.display = 'flex';
-            setTimeout(() => {
-                modal.classList.add('active');
-                blindTestData.score = 0;
-                document.getElementById('blindScore').textContent = '0';
-                startBlindRound(); // Inicia automáticamente
-            }, 100);
-        }
-
-        function closeBlindTestModal() {
-            const modal = document.getElementById('blindTestModal');
-            modal.classList.remove('active');
-            setTimeout(() => modal.style.display = 'none', 300);
-            
-            if (blindTestPlayer) {
-                blindTestPlayer.destroy();
-                blindTestPlayer = null;
-            }
-            clearInterval(blindTestData.timer);
-            clearInterval(adCheckInterval); // Limpiar checker de anuncios
-            blindTestData.roundActive = false;
-        }
-
-        function startBlindRound() {
-            clearInterval(blindTestData.timer);
-            clearInterval(adCheckInterval);
-            blindTestData.roundActive = false;
-            
-            // 1. Reset UI
-            document.getElementById('adNotification').style.display = 'none';
-            document.getElementById('blindTimer').textContent = "15";
-            document.getElementById('blindTimer').classList.remove('warning');
-            document.getElementById('blindSkipBtn').style.display = 'block';
-            document.getElementById('blindNextBtn').style.display = 'none';
-            document.getElementById('blindVisualizer').style.opacity = '0.3';
-            document.getElementById('blindOptions').innerHTML = '<p style="grid-column: span 2; color:#9ca3af;">Cargando sonido...</p>';
-
-            // 2. Seleccionar influencer
-            const randomIndex = Math.floor(Math.random() * mainInfluencersData.length);
-            blindTestData.currentInfluencer = mainInfluencersData[randomIndex];
-
-            const options = [blindTestData.currentInfluencer];
-            while (options.length < 4) {
-                const rand = mainInfluencersData[Math.floor(Math.random() * mainInfluencersData.length)];
-                if (!options.find(o => o.id === rand.id)) options.push(rand);
-            }
-            options.sort(() => Math.random() - 0.5);
-
-            const optionsGrid = document.getElementById('blindOptions');
-            optionsGrid.innerHTML = '';
-            options.forEach(opt => {
-                const btn = document.createElement('button');
-                btn.className = 'blindtest-option';
-                btn.textContent = opt.name;
-                btn.disabled = true; 
-                btn.onclick = () => checkBlindAnswer(opt.id, btn);
-                optionsGrid.appendChild(btn);
-            });
-
-            // 3. Crear/Usar Player
-            if (blindTestPlayer && typeof blindTestPlayer.loadVideoById === 'function') {
-                // Si ya existe, cargamos el video
-                blindTestPlayer.loadVideoById(blindTestData.currentInfluencer.videoId);
-            } else {
-                // Si no, creamos el reproductor
-                blindTestPlayer = new YT.Player('blindTestPlayer', {
-                    height: '100%',
-                    width: '100%',
-                    videoId: blindTestData.currentInfluencer.videoId,
-                    playerVars: {
-                        'autoplay': 1,
-                        'controls': 0,
-                        'showinfo': 0,
-                        'rel': 0,
-                        'modestbranding': 1,
-                        'mute': 1 // IMPORTANTE: Inicia muteado para evitar bloqueos
-                    },
-                    events: {
-                        'onReady': (event) => {
-                            // TRUCO: Desmutear inmediatamente
-                            event.target.unMute();
-                            event.target.playVideo();
-                        },
-                        'onStateChange': (event) => {
-                            // Si el video empieza a sonar (state 1)
-                            if (event.data === YT.PlayerState.PLAYING) {
-                                blindTestData.roundActive = true;
-                                document.getElementById('blindVisualizer').style.opacity = '1';
-                                document.querySelectorAll('.blindtest-option').forEach(btn => btn.disabled = false);
-                                
-                                // Iniciar Timer
-                                clearInterval(blindTestData.timer);
-                                blindTestData.timeLeft = 15;
-                                document.getElementById('blindTimer').textContent = "15";
-                                blindTestData.timer = setInterval(() => {
-                                    blindTestData.timeLeft--;
-                                    document.getElementById('blindTimer').textContent = blindTestData.timeLeft;
-                                    if (blindTestData.timeLeft <= 5) document.getElementById('blindTimer').classList.add('warning');
-                                    if (blindTestData.timeLeft <= 0) blindTimeOut();
-                                }, 1000);
-
-                                // INICIAR DETECTOR DE ANUNCIOS
-                                startAdDetector();
-                            }
-                            
-                            // Si el video termina solo (poco probable en 15s)
-                            if (event.data === YT.PlayerState.ENDED) {
-                                blindTimeOut();
-                            }
-                        },
-                        'onError': (event) => {
-                            // Si el video da error, saltamos
-                            showNotification("⚠️ Video no disponible, saltando...");
-                            skipBlindRound();
-                        }
-                    }
-                });
-            }
-        }
-
-           // --- DETECTOR DE ANUNCIOS (CON ALERTA VISUAL) ---
-        
-        let lastKnownTime = 0; 
-
-        function startAdDetector() {
-            clearInterval(adCheckInterval);
-            lastKnownTime = 0; 
-            
-            adCheckInterval = setInterval(() => {
-                if (!blindTestPlayer || !blindTestData.roundActive) return;
-
-                try {
-                    // 1. Detección oficial
-                    const adState = blindTestPlayer.getAdState();
-                    if (adState === 1) {
-                        handleAdDetected(); // ¡SALTA!
-                        return;
-                    }
-
-                    // 2. Detección trampa (video atascado en 0)
-                    const currentTime = blindTestPlayer.getCurrentTime();
-                    const playerState = blindTestPlayer.getPlayerState();
-
-                    if (playerState === 1 && currentTime < 0.5) {
-                         console.log("Anuncio oculto detectado");
-                         handleAdDetected(); // ¡SALTA!
-                         return;
-                    }
-                    
-                    lastKnownTime = currentTime;
-
-                } catch (e) { console.error(e); }
-            }, 200); 
-        }
-
-        function handleAdDetected() {
-            if (!blindTestData.roundActive) return;
-            blindTestData.roundActive = false;
-            
-            clearInterval(adCheckInterval);
-            clearInterval(blindTestData.timer);
-
-            // 1. MOSTRAR ALERTA GRANDE
-            const overlay = document.getElementById('adAlertOverlay');
-            if(overlay) overlay.classList.add('show'); 
-
-            // 2. Parar audio
-            if (blindTestPlayer) {
-                blindTestPlayer.mute();
-                blindTestPlayer.stopVideo();
-            }
-            
-            // 3. Esperar 1.5 segundos para que el usuario lea el mensaje y saltar
-            setTimeout(() => {
-                if(overlay) overlay.classList.remove('show'); // Ocultar alerta
-                startBlindRound(); // Siguiente canción
-            }, 1500); 
-        }
-
-        function stopBlindAudio() {
-            if (blindTestPlayer && typeof blindTestPlayer.stopVideo === 'function') {
-                blindTestPlayer.stopVideo();
-            }
-        }
-
-        function checkBlindAnswer(id, btnElement) {
-            if (!blindTestData.roundActive) return;
-            blindTestData.roundActive = false;
-            clearInterval(blindTestData.timer);
-            clearInterval(adCheckInterval); // Paramos detector
-            stopBlindAudio();
-
-            const isCorrect = id === blindTestData.currentInfluencer.id;
-            const allBtns = document.querySelectorAll('.blindtest-option');
-
-            allBtns.forEach(btn => {
-                btn.disabled = true; 
-                if (btn.textContent === blindTestData.currentInfluencer.name) {
-                    btn.classList.add('correct');
-                } else if (btn === btnElement && !isCorrect) {
-                    btn.classList.add('wrong');
-                }
-            });
-
-            if (isCorrect) {
-                const points = Math.max(1, Math.floor(blindTestData.timeLeft));
-                blindTestData.score += points;
-                document.getElementById('blindScore').textContent = blindTestData.score;
-                showNotification(`¡+${points} puntos!`);
-            }
-
-            endBlindRound();
-        }
-
-        function blindTimeOut() {
-            if (!blindTestData.roundActive) return;
-            blindTestData.roundActive = false;
-            clearInterval(blindTestData.timer);
-            clearInterval(adCheckInterval);
-            stopBlindAudio();
-
-            const allBtns = document.querySelectorAll('.blindtest-option');
-            allBtns.forEach(btn => {
-                btn.disabled = true;
-                if (btn.textContent === blindTestData.currentInfluencer.name) btn.classList.add('correct');
-            });
-            endBlindRound();
-        }
-
-        function skipBlindRound() {
-            if (!blindTestData.roundActive) return;
-            blindTestData.roundActive = false;
-            clearInterval(blindTestData.timer);
-            clearInterval(adCheckInterval);
-            stopBlindAudio();
-            
-            const allBtns = document.querySelectorAll('.blindtest-option');
-            allBtns.forEach(btn => {
-                btn.disabled = true;
-                if (btn.textContent === blindTestData.currentInfluencer.name) btn.classList.add('correct');
-            });
-            endBlindRound();
-        }
-
-        function endBlindRound() {
-            document.getElementById('blindVisualizer').style.opacity = '0.3';
-            document.getElementById('blindSkipBtn').style.display = 'none';
-            document.getElementById('blindNextBtn').style.display = 'block';
-        }
-
                
     </script>
             <!-- Modal para Sugerencias (Integrado) -->
@@ -8376,65 +7933,10 @@ document.addEventListener('DOMContentLoaded', function() {
                     <span class="mode-option-label">Impostor</span>
                     <span style="font-size: 0.8rem; color: #9ca3af;">Minijuego</span>
                 </div>
-
-                                <!-- Opción Ciegas -->
-                <div class="mode-option-card" id="modalModeBlindTest" role="button" tabindex="0">
-                    <span class="mode-option-icon">🎧</span>
-                    <span class="mode-option-label">Ciegas</span>
-                    <span style="font-size: 0.8rem; color: #9ca3af;">Blind Test</span>
                 </div>
-            </div>
             </div>
         </div>
     </div>
 
-        <!-- Modal para el Juego Ciegas (Blind Test) -->
-    <div class="modal" id="blindTestModal">
-        <div class="modal-content blindtest-modal-content">
-            <div class="modal-header">
-                <h3 class="modal-title">🎧 Modo Ciegas</h3>
-                <button class="close-btn" id="closeBlindTestModal" aria-label="Cerrar">×</button>
-            </div>
-            
-                       <div class="modal-body" style="position: relative; min-height: 400px;">
-                
-                <!-- CAPA 1: UI DEL JUEGO -->
-                <div style="position: relative; z-index: 2;">
-                    <div class="blindtest-status">
-                        <div class="blindtest-score">Puntos: <span id="blindScore">0</span></div>
-                        <div class="blindtest-timer" id="blindTimer">15</div>
-                    </div>
-
-                    <!-- Visualizador -->
-                    <div class="blindtest-visualizer" id="blindVisualizer">
-                        <div class="blindtest-bar"></div>
-                        <div class="blindtest-bar" style="animation-delay: 0.2s"></div>
-                        <div class="blindtest-bar" style="animation-delay: 0.4s"></div>
-                        <div class="blindtest-bar" style="animation-delay: 0.1s"></div>
-                        <div class="blindtest-bar" style="animation-delay: 0.3s"></div>
-                    </div>
-
-                    <div class="blindtest-options" id="blindOptions"></div>
-
-                    <div class="blindtest-controls">
-                        <button class="blindtest-btn skip" id="blindSkipBtn">Saltar (0 pts)</button>
-                        <button class="blindtest-btn next" id="blindNextBtn" style="display:none;">Siguiente ➡️</button>
-                    </div>
-                </div>
-
-                <!-- CAPA 2: ALERTA DE ANUNCIO (NUEVO) -->
-                <div id="adAlertOverlay" class="ad-alert-overlay">
-                    <div class="ad-icon">🚫</div>
-                    <div class="ad-text-main">ANUNCIO DETECTADO</div>
-                    <div class="ad-text-sub">Saltando canción automáticamente...</div>
-                </div>
-
-                <!-- CAPA 3: PLAYER INVISIBLE -->
-                <div id="blindTestPlayer" class="blindtest-player-hidden"></div>
-            </div>
-        </div>
-    </div>
-</div>
-    </div>
 </body>
 </html>
