@@ -8086,15 +8086,15 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         }
 
-                // --- DETECTOR DE ANUNCIOS MEJORADO (VERSIÓN 2.0) ---
+                // --- DETECTOR DE ANUNCIOS AGRESIVO (VERSIÓN FINAL) ---
         
-        let stuckTimeCounter = 0; // Contador para detectar videos atascados
+        let lastKnownTime = 0; 
 
         function startAdDetector() {
             clearInterval(adCheckInterval);
-            stuckTimeCounter = 0; // Resetear contador
+            lastKnownTime = 0; 
             
-            // Revisamos cada 200ms (más rápido)
+            // Revisión cada 200ms (muy rápido)
             adCheckInterval = setInterval(() => {
                 if (!blindTestPlayer || !blindTestData.roundActive) {
                     clearInterval(adCheckInterval);
@@ -8102,56 +8102,64 @@ document.addEventListener('DOMContentLoaded', function() {
                 }
 
                 try {
-                    // 1. DETECTOR OFICIAL DE ADs
+                    // 1. Método Oficial: Detección de estado
                     const adState = blindTestPlayer.getAdState();
-                    // adState 0 = Sin anuncio, adState 1 = Anuncio reproduciéndose
+                    
+                    // Si adState es 1, hay un anuncio lineal (video)
                     if (adState === 1) {
-                        handleAdDetected(); 
-                        return; 
+                        console.log("Anuncio oficial detectado (State 1)");
+                        handleAdDetected();
+                        return;
                     }
 
-                    // 2. DETECTOR DE "FALLO TRAMPA" (Anuncios no declarados o carga infinita)
-                    // A veces YouTube no avisa que hay anuncio, pero el video no avanza.
+                    // 2. Método Trampa: Detección por "Tiempo Congelado"
                     const currentTime = blindTestPlayer.getCurrentTime();
-                    
-                    // Si el timer del juego avanza (han pasado 0.2s) pero el video sigue en 0.0...
-                    if (currentTime < 0.5 && blindTestData.timeLeft < 15) {
-                        stuckTimeCounter += 0.2; 
-                        
-                        // Si lleva 1.5 segundos atascado al principio, asumimos que es un anuncio bloqueante
-                        if (stuckTimeCounter > 1.5) {
-                            console.warn("Video atascado detectado (posible anuncio). Saltando...");
+                    const playerState = blindTestPlayer.getPlayerState();
+
+                    // Si el reproductor dice "Reproduciendo" (1) pero el tiempo no avanza...
+                    if (playerState === 1) { 
+                        // Si el tiempo está pegado en 0 (o muy cerca) durante la partida
+                        if (currentTime < 0.5) {
+                            // Significa que un anuncio está ocupando el stream antes de que empiece la canción real
+                            console.log("Anuncio oculto detectado (Tiempo congelado en 0)");
                             handleAdDetected();
+                            return;
                         }
-                    } else {
-                        stuckTimeCounter = 0; // Si avanza, reseteamos el contador
                     }
+                    
+                    lastKnownTime = currentTime;
 
                 } catch (e) {
                     console.error("Error en detector", e);
                 }
-            }, 200); // Intervalo de 200ms
+            }, 200); 
         }
 
         function handleAdDetected() {
-            // Evitamos que se ejecute múltiples veces
             if (!blindTestData.roundActive) return; 
 
             clearInterval(adCheckInterval);
             blindTestData.roundActive = false;
             
-            // UI: Notificar y preparar siguiente
-            document.getElementById('adNotification').style.display = 'block';
+            // Mostrar aviso visual instantáneo
+            const adNotif = document.getElementById('adNotification');
+            if(adNotif) adNotif.style.display = 'block';
             document.getElementById('blindVisualizer').style.opacity = '0.3';
             
-            stopBlindAudio(); // Cortar audio
+            // IMPORTANTE: Detener todo rastro de audio
+            if (blindTestPlayer) {
+                blindTestPlayer.mute(); // Mutear instantáneo
+                blindTestPlayer.stopVideo();
+            }
+            
             clearInterval(blindTestData.timer);
             
-            // Saltar automáticamente a la siguiente ronda tras 1.5 segundos
+            // Saltar a la siguiente canción muy rápido (0.8 segundos)
             setTimeout(() => {
-                document.getElementById('adNotification').style.display = 'none'; // Ocultar aviso
-                startBlindRound(); // SIGUIENTE CANCIÓN
-            }, 1500);
+                const adNotif = document.getElementById('adNotification');
+                if(adNotif) adNotif.style.display = 'none';
+                startBlindRound(); // SIGUIENTE
+            }, 800); 
         }
 
         function stopBlindAudio() {
@@ -8389,7 +8397,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     <div class="blindtest-options" id="blindOptions"></div>
 
                     <div class="blindtest-controls">
-                        <button class="blindtest-btn skip" id="blindSkipBtn">Saltar (0 pts)</button>
+                        <button class="blindtest-btn skip" id="blindSkipBtn">Saltar</button>
                         <button class="blindtest-btn next" id="blindNextBtn" style="display:none;">Siguiente ➡️</button>
                     </div>
                 </div>
