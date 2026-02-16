@@ -8086,12 +8086,15 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         }
 
-        // --- DETECTOR DE ANUNCIOS ---
+                // --- DETECTOR DE ANUNCIOS MEJORADO (VERSIÓN 2.0) ---
+        
+        let stuckTimeCounter = 0; // Contador para detectar videos atascados
+
         function startAdDetector() {
-            // Limpiamos intervalos previos
             clearInterval(adCheckInterval);
+            stuckTimeCounter = 0; // Resetear contador
             
-            // Revisamos cada 500ms si hay un anuncio
+            // Revisamos cada 200ms (más rápido)
             adCheckInterval = setInterval(() => {
                 if (!blindTestPlayer || !blindTestData.roundActive) {
                     clearInterval(adCheckInterval);
@@ -8099,42 +8102,56 @@ document.addEventListener('DOMContentLoaded', function() {
                 }
 
                 try {
-                    const adState = blindTestPlayer.getAdState(); // 0: No ad, 1: Ad
-                    const currentTime = blindTestPlayer.getCurrentTime();
-
-                    // Si getAdState devuelve 1, hay anuncio
+                    // 1. DETECTOR OFICIAL DE ADs
+                    const adState = blindTestPlayer.getAdState();
+                    // adState 0 = Sin anuncio, adState 1 = Anuncio reproduciéndose
                     if (adState === 1) {
-                        handleAdDetected();
+                        handleAdDetected(); 
+                        return; 
                     }
+
+                    // 2. DETECTOR DE "FALLO TRAMPA" (Anuncios no declarados o carga infinita)
+                    // A veces YouTube no avisa que hay anuncio, pero el video no avanza.
+                    const currentTime = blindTestPlayer.getCurrentTime();
                     
-                    // TRUCO ADICIONAL: Si el video lleva 3 segundos sonando pero el tiempo es 0, suele ser anuncio no declarado
-                    // (A veces la API no detecta bien el estado 1)
-                    if (blindTestData.timeLeft < 12 && currentTime < 1.0) {
-                         // Si ya pasaron 3s del timer pero el video no avanza, asumimos anuncio o carga infinita
-                         // Comentado para evitar falsos positivos, pero útil a veces:
-                         // handleAdDetected(); 
+                    // Si el timer del juego avanza (han pasado 0.2s) pero el video sigue en 0.0...
+                    if (currentTime < 0.5 && blindTestData.timeLeft < 15) {
+                        stuckTimeCounter += 0.2; 
+                        
+                        // Si lleva 1.5 segundos atascado al principio, asumimos que es un anuncio bloqueante
+                        if (stuckTimeCounter > 1.5) {
+                            console.warn("Video atascado detectado (posible anuncio). Saltando...");
+                            handleAdDetected();
+                        }
+                    } else {
+                        stuckTimeCounter = 0; // Si avanza, reseteamos el contador
                     }
 
                 } catch (e) {
-                    console.log("Ad check failed", e);
+                    console.error("Error en detector", e);
                 }
-            }, 500);
+            }, 200); // Intervalo de 200ms
         }
 
         function handleAdDetected() {
-            clearInterval(adCheckInterval);
-            document.getElementById('adNotification').style.display = 'block';
-            
-            // Detenemos todo
-            stopBlindAudio();
-            clearInterval(blindTestData.timer);
-            blindTestData.roundActive = false;
-            document.querySelectorAll('.blindtest-option').forEach(btn => btn.disabled = true);
+            // Evitamos que se ejecute múltiples veces
+            if (!blindTestData.roundActive) return; 
 
-            // Saltamos a la siguiente ronda tras 2 segundos
+            clearInterval(adCheckInterval);
+            blindTestData.roundActive = false;
+            
+            // UI: Notificar y preparar siguiente
+            document.getElementById('adNotification').style.display = 'block';
+            document.getElementById('blindVisualizer').style.opacity = '0.3';
+            
+            stopBlindAudio(); // Cortar audio
+            clearInterval(blindTestData.timer);
+            
+            // Saltar automáticamente a la siguiente ronda tras 1.5 segundos
             setTimeout(() => {
-                startBlindRound();
-            }, 2000);
+                document.getElementById('adNotification').style.display = 'none'; // Ocultar aviso
+                startBlindRound(); // SIGUIENTE CANCIÓN
+            }, 1500);
         }
 
         function stopBlindAudio() {
@@ -8372,7 +8389,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     <div class="blindtest-options" id="blindOptions"></div>
 
                     <div class="blindtest-controls">
-                        <button class="blindtest-btn skip" id="blindSkipBtn">Saltar</button>
+                        <button class="blindtest-btn skip" id="blindSkipBtn">Saltar (0 pts)</button>
                         <button class="blindtest-btn next" id="blindNextBtn" style="display:none;">Siguiente ➡️</button>
                     </div>
                 </div>
