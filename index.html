@@ -6945,52 +6945,68 @@ function shuffleCards() {
             setupSidebarTabs(); 
 
                 // --- FUNCIÓN MOVIDA: Exportar Tierlist a Imagen ---
-        function exportTierlistImage() {
+                function exportTierlistImage() {
             showNotification('Generando imagen...');
             
-            const modalContent = document.querySelector('.tierlist-modal-content');
+            // CORRECCIÓN: Usamos .tierlist-modal-main (la columna izquierda) 
+            // en lugar de .tierlist-modal-content que ya no existe.
+            const modalContent = document.querySelector('.tierlist-modal-main');
+            
+            if (!modalContent) {
+                console.error('No se encontró el contenedor principal');
+                showNotification('❌ Error al encontrar el contenedor');
+                return;
+            }
+
             const tierlistContainer = modalContent.querySelector('.tierlist-container');
 
             // Crear un clon para manipularlo sin afectar la vista real
             const clone = modalContent.cloneNode(true);
             const cloneContainer = clone.querySelector('.tierlist-container');
-            const cloneActions = clone.querySelector('.tierlist-actions');
+            const cloneHeader = clone.querySelector('.tierlist-header'); // Header con botones
             
-            // Eliminar botones de acción del clon
-            if (cloneActions) cloneActions.remove();
+            // Eliminar el header del clon para que la imagen salga limpia (sin botones de Exportar/Editar)
+            if (cloneHeader) cloneHeader.remove();
             
-            // Estilos para el clon
+            // Estilos para el clon (fuera de la pantalla)
             clone.style.position = 'absolute';
             clone.style.left = '-9999px';
             clone.style.top = '0';
-            clone.style.width = '1200px'; 
+            clone.style.width = '1200px'; // Ancho fijo para buena calidad
             clone.style.height = 'auto';
             clone.style.maxHeight = 'none';
             clone.style.overflow = 'visible';
             clone.style.zIndex = '-1';
             clone.style.borderRadius = '16px';
             clone.style.padding = '20px';
+            clone.style.backgroundColor = '#1f2937'; // Asegurar color de fondo
 
+            // Ajustar el contenedor interno para que se expanda
             cloneContainer.style.height = 'auto';
             cloneContainer.style.maxHeight = 'none';
             cloneContainer.style.overflow = 'visible';
             cloneContainer.style.paddingRight = '0';
             
+            // Asegurar que las filas no se colapsen
             clone.querySelectorAll('.tier-row').forEach(row => {
                 row.style.flexGrow = '0';
                 row.style.minHeight = '60px';
             });
 
+            // Añadir el clon al cuerpo temporalmente
             document.body.appendChild(clone);
 
+            // Generar la imagen
             html2canvas(clone, {
                 backgroundColor: '#1f2937',
-                scale: 2,
-                useCORS: true,
+                scale: 2, // Escala x2 para mejor definición
+                useCORS: true, // Necesario para las miniaturas de YouTube
                 logging: false
             }).then(canvas => {
+                // Eliminar el clon
                 document.body.removeChild(clone);
                 
+                // Descargar imagen
                 const link = document.createElement('a');
                 link.download = 'mi-tierlist-cancinfluencers.png';
                 link.href = canvas.toDataURL('image/png');
@@ -6998,6 +7014,7 @@ function shuffleCards() {
                 
                 showNotification('✅ ¡Imagen descargada!');
             }).catch(err => {
+                // Limpieza en caso de error
                 document.body.removeChild(clone);
                 console.error(err);
                 showNotification('❌ Error al generar la imagen');
